@@ -817,18 +817,18 @@ KantoGrassWildMons:
 	; morn
 	db 3, CATERPIE
 	db 3, LEDYBA
-	db 5, PIDGEY
-	db 7, BUTTERFREE
+	db 4, CATERPIE
+	db 7, METAPOD
 	db 7, LEDIAN
-	db 4, PIKACHU
+	db 3, CATERPIE
 	db 4, PIKACHU
 	; day
 	db 3, CATERPIE
 	db 3, PIDGEY
-	db 5, PIDGEY
-	db 7, BUTTERFREE
-	db 7, PIDGEOTTO
-	db 4, PIKACHU
+	db 7, METAPOD
+	db 10, BUTTERFREE
+	db 7, VENONAT
+	db 3, CATERPIE
 	db 4, PIKACHU
 	; nite
 	db 3, HOOTHOOT
@@ -836,7 +836,7 @@ KantoGrassWildMons:
 	db 5, HOOTHOOT
 	db 7, NOCTOWL
 	db 7, ARIADOS
-	db 4, NOCTOWL
-	db 4, NOCTOWL
+	db 7, METAPOD
+	db 4, PIKACHU
 
 	db -1 ; end
