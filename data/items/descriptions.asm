@@ -24,7 +24,7 @@ ItemDescriptions:
 	dw FireStoneDesc
 	dw ThunderStoneDesc
 	dw WaterStoneDesc
-	dw TeruSama2Desc
+	dw SkateboardDesc
 	dw HPUpDesc
 	dw ProteinDesc
 	dw IronDesc
@@ -351,8 +351,9 @@ WaterStoneDesc:
 	db   "Evolves certain"
 	next "kinds of #MON.@"
 
-TeruSama2Desc:
-	db   "?@"
+SkateboardDesc:
+	db   "A rideable board"
+	next "for fast movement.@"
 
 HPUpDesc:
 	db   "Raises the HP of"

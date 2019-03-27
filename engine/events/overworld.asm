@@ -1646,12 +1646,131 @@ UnknownText_0xd0ae: ; unused
 	text_far UnknownText_0x1c0979
 	text_end
 
+SkateboardFunction:
+	call .TrySkate
+	and $7f
+	ld [wFieldMoveSucceeded], a
+	ret
+
+.TrySkate:
+	call .CheckEnvironment
+	jr c, .CannotUseSkate
+	ld a, [wPlayerState]
+	cp PLAYER_NORMAL
+	jr z, .GetOnSkate
+	cp PLAYER_SKATEBOARD
+	jr z, .GetOffSkate
+	jr .CannotUseSkate
+
+.GetOnSkate:
+	ld hl, Script_GetOnSkate
+	ld de, Script_GetOnSkate_Register
+	call .CheckIfRegistered
+	call QueueScript
+	xor a
+	ld [wMusicFade], a
+	ld de, MUSIC_NONE
+	call PlayMusic
+	call DelayFrame
+	call MaxVolume
+	ld de, MUSIC_BICYCLE
+	ld a, e
+	ld [wMapMusic], a
+	call PlayMusic
+	ld a, $1
+	ret
+
+.GetOffSkate:
+	ld hl, wBikeFlags
+	bit BIKEFLAGS_ALWAYS_ON_BIKE_F, [hl]
+	jr nz, .CantGetOffSkate
+	ld hl, Script_GetOffSkate
+	ld de, Script_GetOffSkate_Register
+	call .CheckIfRegistered
+	ld a, BANK(Script_GetOffSkate)
+	jr .done
+
+.CantGetOffSkate:
+	ld hl, Script_CantGetOffBike
+	jr .done
+
+.CannotUseSkate:
+	ld a, $0
+	ret
+
+.done
+	call QueueScript
+	ld a, $1
+	ret
+
+.CheckIfRegistered:
+	ld a, [wUsingItemWithSelect]
+	and a
+	ret z
+	ld h, d
+	ld l, e
+	ret
+
+.CheckEnvironment:
+	call GetMapEnvironment
+	call CheckOutdoorMap
+	jr z, .ok
+	cp CAVE
+	jr z, .ok
+	cp GATE
+	jr z, .ok
+	jr .nope
+
+.ok
+	call GetPlayerStandingTile
+	and WALLTILE | WATERTILE ; can't use our bike in a wall or on water
+	jr nz, .nope
+	xor a
+	ret
+
+.nope
+	scf
+	ret
+
+Script_GetOnSkate:
+	reloadmappart
+	special UpdateTimePals
+	loadvar VAR_MOVEMENT, PLAYER_SKATEBOARD
+	writetext GotOnTheBikeText
+	waitbutton
+	closetext
+	special ReplaceKrisSprite
+	end
+
+Script_GetOnSkate_Register:
+	loadvar VAR_MOVEMENT, PLAYER_SKATEBOARD
+	closetext
+	special ReplaceKrisSprite
+	end
+
+Script_GetOffSkate:
+	reloadmappart
+	special UpdateTimePals
+	loadvar VAR_MOVEMENT, PLAYER_NORMAL
+	writetext GotOffTheBikeText
+	waitbutton
+
+FinishGettingOffSkate:
+	closetext
+	special ReplaceKrisSprite
+	special PlayMapMusic
+	end
+
+Script_GetOffSkate_Register:
+	loadvar VAR_MOVEMENT, PLAYER_NORMAL
+	sjump FinishGettingOffSkate
+
 BikeFunction:
 	call .TryBike
 	and $7f
 	ld [wFieldMoveSucceeded], a
 	ret
-
+	
 .TryBike:
 	call .CheckEnvironment
 	jr c, .CannotUseBike

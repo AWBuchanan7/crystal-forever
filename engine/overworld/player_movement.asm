@@ -43,6 +43,8 @@ DoPlayerMovement::
 	jr z, .Normal
 	cp PLAYER_SKATE
 	jr z, .Ice
+	cp PLAYER_SKATEBOARD
+	jr z, .Normal
 
 .Normal:
 	call .CheckForced
