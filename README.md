@@ -1,6 +1,6 @@
-# Pokémon Crystal [![Build Status][travis-badge]][travis]
+# Pokémon Crystal Forever [![Build Status][travis-badge]][travis]
 
-This is a disassembly of Pokémon Crystal.
+This is a disassembly of Pokémon Crystal with various enhancements (see "What's New" below).
 
 It builds the following ROMs:
 
@@ -8,6 +8,20 @@ It builds the following ROMs:
 - Pokemon - Crystal Version (UE) (V1.1) [C][!].gbc `sha1: f2f52230b536214ef7c9924f483392993e226cfb`
 
 To set up the repository, see [INSTALL.md](INSTALL.md).
+
+## What's New
+
+Crystal Forever is intended to be an improved version of Pokémon Crystal, here are some of the new additions.
+
+![Skateboard](https://raw.githubusercontent.com/AWBuchanan7/crystal-forever/master/docs/images/skateboard.png)
+The Skateboard as seen in the SpaceWorld Demos for Gold and Silver has been added!
+
+![Viridian Forest](https://raw.githubusercontent.com/AWBuchanan7/crystal-forever/master/docs/images/viridianforest.png)
+The Viridian Forest has been restored to its likeness from Pokemon Red and Blue. A Scope Lens can be found and various wild pokemon are present! 
+
+Additional Changes:
+
+- A programming error that resulted in the Moon Ball be ineffective has been corrected.
 
 ## See also
 
