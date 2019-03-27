@@ -19,6 +19,10 @@ The Skateboard as seen in the SpaceWorld Demos for Gold and Silver has been adde
 ![Viridian Forest](https://raw.githubusercontent.com/AWBuchanan7/crystal-forever/master/docs/images/viridianforest.png)
 The Viridian Forest has been restored to its likeness from Pokemon Red and Blue. A Scope Lens can be found and various wild pokemon are present! 
 
+Additional Changes:
+
+- A programming error that resulted in the Moon Ball be ineffective has been corrected.
+
 ## See also
 
 - [**FAQ**](FAQ.md)
