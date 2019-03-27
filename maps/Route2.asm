@@ -147,12 +147,14 @@ Route2DiglettsCaveSignText:
 Route2_MapEvents:
 	db 0, 0 ; filler
 
-	db 5 ; warp events
+	db 7 ; warp events
 	warp_event 15, 15, ROUTE_2_NUGGET_HOUSE, 1
 	warp_event 15, 31, ROUTE_2_GATE, 3
 	warp_event 16, 27, ROUTE_2_GATE, 1
 	warp_event 17, 27, ROUTE_2_GATE, 2
 	warp_event 12,  7, DIGLETTS_CAVE, 3
+	warp_event 3, 9, VIRIDIAN_FOREST, 1
+	warp_event 3, 33, VIRIDIAN_FOREST, 2
 
 	db 0 ; coord events
 

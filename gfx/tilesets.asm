@@ -335,3 +335,14 @@ INCBIN "data/tilesets/omanyte_word_room_metatiles.bin"
 
 TilesetAerodactylWordRoomMeta:
 INCBIN "data/tilesets/aerodactyl_word_room_metatiles.bin"
+
+SECTION "Tileset Data 9", ROMX
+
+TilesetKantoForestColl:
+INCLUDE "data/tilesets/kanto_forest_collision.asm"
+
+TilesetKantoForestMeta:
+INCBIN "data/tilesets/kanto_forest_metatiles.bin"
+
+TilesetKantoForestGFX:
+INCBIN "gfx/tilesets/kanto_forest.2bpp.lz"
