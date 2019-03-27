@@ -14,7 +14,7 @@ To set up the repository, see [INSTALL.md](INSTALL.md).
 Crystal Forever is intended to be an improved version of Pokémon Crystal, here are some of the new additions.
 
 ![Skateboard](https://raw.githubusercontent.com/AWBuchanan7/crystal-forever/master/docs/images/skateboard.png)
-The Skateboard as seen in the SpaceWorld Demos for Gold and Silver has been added!
+The Skateboard as seen in the SpaceWorld Demos for Gold and Silver has been added! (It is currently not attainable by normal means, this feature will soon be added).
 
 ![Viridian Forest](https://raw.githubusercontent.com/AWBuchanan7/crystal-forever/master/docs/images/viridianforest.png)
 The Viridian Forest has been restored to its likeness from Pokemon Red and Blue. A Scope Lens can be found and various wild pokemon are present! 
