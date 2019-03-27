@@ -164,6 +164,9 @@ CheckReplaceKrisSprite:
 	ld a, PLAYER_BIKE
 	ld [wPlayerState], a
 	scf
+	ld a, PLAYER_SKATEBOARD
+	ld [wPlayerState], a
+	scf
 	ret
 
 .CheckSurfing2:
@@ -179,20 +182,28 @@ CheckReplaceKrisSprite:
 	call GetMapEnvironment
 	cp INDOOR
 	jr z, .checkbiking
+	jr z, .checkskateboarding
+	jr nz, .nope
 	cp ENVIRONMENT_5
 	jr z, .checkbiking
+	jr z, .checkskateboarding
+	jr nz, .nope
 	cp DUNGEON
 	jr z, .checkbiking
+	jr z, .checkskateboarding
+	jr nz, .nope
 	jr .nope
 .checkbiking
 	ld a, [wPlayerState]
 	cp PLAYER_BIKE
-	jr nz, .nope
 .surfing
 	ld a, PLAYER_NORMAL
 	ld [wPlayerState], a
 	scf
 	ret
+.checkskateboarding
+	ld a, [wPlayerState]
+	cp PLAYER_SKATEBOARD
 
 .nope
 	and a
