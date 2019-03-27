@@ -21,7 +21,7 @@ The Viridian Forest has been restored to its likeness from Pokemon Red and Blue.
 
 Additional Changes:
 
-- A programming error that resulted in the Moon Ball be ineffective has been corrected.
+- A programming error that resulted in the Moon Ball being ineffective has been corrected.
 - A programming error that resulted in the Love Ball boosting the catch rate for the wrong gender has been corrected.
 
 ## See also
