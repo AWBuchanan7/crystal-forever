@@ -695,3 +695,4 @@ ENDM
 	map_attributes MrPokemonsHouse, MR_POKEMONS_HOUSE, $00, 0
 	map_attributes Route31VioletGate, ROUTE_31_VIOLET_GATE, $00, 0
 	map_attributes ViridianForest, VIRIDIAN_FOREST, $01, 0
+	map_attributes CeruleanBikeShop, CERULEAN_BIKE_SHOP, $00, 0

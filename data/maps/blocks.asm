@@ -1050,3 +1050,6 @@ SECTION "Map Blocks 4", ROMX
 
 ViridianForest_Blocks:
 	INCBIN "maps/ViridianForest.blk"
+
+CeruleanBikeShop_Blocks:
+	INCBIN "maps/CeruleanBikeShop.blk"

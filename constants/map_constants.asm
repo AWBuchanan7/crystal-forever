@@ -494,4 +494,5 @@ ENDM
 
 	newgroup
 
-	map_const VIRIDIAN_FOREST,								17, 24 
+	map_const VIRIDIAN_FOREST,								17, 24
+	map_const CERULEAN_BIKE_SHOP,							4, 4
