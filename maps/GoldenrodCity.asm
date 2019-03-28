@@ -267,6 +267,9 @@ GoldenrodCityPokecenterSign:
 GoldenrodCityFlowerShopSign:
 	jumptext GoldenrodCityFlowerShopSignText
 
+GoldenrodCinemaSign:
+	jumptext GoldenrodCinemaSignText
+
 MovementData_0x198a5f:
 	step RIGHT
 	step RIGHT
@@ -549,10 +552,19 @@ UnknownText_0x1991cf:
 	text_start
 	done
 
+GoldenrodCinemaSignText:
+	text "GOLDENROD CINEMA"
+
+	para "Open on Tuesday"
+	line "and Friday eve-"
+	
+	para "-nings."
+	done
+
 GoldenrodCity_MapEvents:
 	db 0, 0 ; filler
 
-	db 15 ; warp events
+	db 16 ; warp events
 	warp_event 24,  7, GOLDENROD_GYM, 1
 	warp_event 29, 29, GOLDENROD_BIKE_SHOP, 1
 	warp_event 31, 21, GOLDENROD_HAPPINESS_RATER, 1
@@ -568,10 +580,11 @@ GoldenrodCity_MapEvents:
 	warp_event  9,  5, GOLDENROD_UNDERGROUND_SWITCH_ROOM_ENTRANCES, 8
 	warp_event 11, 29, GOLDENROD_UNDERGROUND_SWITCH_ROOM_ENTRANCES, 5
 	warp_event 15, 27, GOLDENROD_POKECENTER_1F, 1
+	warp_event 28, 15, GOLDENROD_CINEMA, 1
 
 	db 0 ; coord events
 
-	db 12 ; bg events
+	db 13 ; bg events
 	bg_event 10, 14, BGEVENT_READ, GoldenrodCityStationSign
 	bg_event  4, 17, BGEVENT_READ, GoldenrodCityRadioTowerSign
 	bg_event 26, 27, BGEVENT_READ, GoldenrodDeptStoreSign
@@ -584,6 +597,7 @@ GoldenrodCity_MapEvents:
 	bg_event 12, 30, BGEVENT_READ, GoldenrodCityUndergroundSignSouth
 	bg_event 16, 27, BGEVENT_UP, GoldenrodCityPokecenterSign
 	bg_event 30,  6, BGEVENT_READ, GoldenrodCityFlowerShopSign
+	bg_event 30, 16, BGEVENT_READ, GoldenrodCinemaSign
 
 	db 15 ; object events
 	object_event  7, 18, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, GoldenrodCityPokefanMScript, EVENT_GOLDENROD_CITY_CIVILIANS

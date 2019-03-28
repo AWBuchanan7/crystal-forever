@@ -1053,3 +1053,6 @@ ViridianForest_Blocks:
 
 CeruleanBikeShop_Blocks:
 	INCBIN "maps/CeruleanBikeShop.blk"
+
+GoldenrodCinema_Blocks:
+	INCBIN "maps/GoldenrodCinema.blk"
