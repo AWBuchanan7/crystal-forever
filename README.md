@@ -31,6 +31,12 @@ Additional Changes:
 - A programming error that resulted in the Love Ball boosting the catch rate for the wrong gender has been corrected.
 - Some buildings in Goldenrod City have been removed to make traversing the city easier.
 
+## To Do
+
+- Sprites for female player character skateboarding look janky(?).
+- Goldenrod Cinema's sign says it's only open evenings, but movies are available at any time of day.
+- Trainers (and possibly 'Headbutt' trees) should be added to Viridian Forest.
+
 ## See also
 
 - [**FAQ**](FAQ.md)
