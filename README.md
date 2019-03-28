@@ -20,12 +20,16 @@ The Skateboard as seen in the SpaceWorld Demos for Gold and Silver has been adde
 The Cerulean Bike Shop is now accessible! Speak to the owner inside to obtain his new product: the SKATEBOARD!
 
 ![Viridian Forest](https://raw.githubusercontent.com/AWBuchanan7/crystal-forever/master/docs/images/viridianforest.png)
-The Viridian Forest has been restored to its likeness from Pokemon Red and Blue. A Scope Lens can be found and various wild pokemon are present! 
+The Viridian Forest has been restored to its likeness from Pokemon Red and Blue. A Scope Lens can be found and various wild pokemon are present!
+
+![Goldenrod Cinema](https://raw.githubusercontent.com/AWBuchanan7/crystal-forever/master/docs/images/cinema.png)
+Central Goldenrod City now has a movie theater! Currently it's just a shop front for RageCandyBars and Soda Pops but the intention is to be able to "watch" a movie with a Pokemon in your party, increasing friendship.
 
 Additional Changes:
 
 - A programming error that resulted in the Moon Ball being ineffective has been corrected.
 - A programming error that resulted in the Love Ball boosting the catch rate for the wrong gender has been corrected.
+- Some buildings in Goldenrod City have been removed to make traversing the city easier.
 
 ## See also
 
