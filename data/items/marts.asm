@@ -408,7 +408,7 @@ DefaultMart:
 
 MartCinema:
 	db 2 ; # items
+	db POPCORN
 	db SODA_POP
-	db RAGECANDYBAR
 	db -1 ; end
 	

@@ -281,6 +281,7 @@ AI_Items:
 	dbw X_DEFEND,     .XDefend
 	dbw X_SPEED,      .XSpeed
 	dbw X_SPECIAL,    .XSpecial
+	dbw POPCORN,	  .Popcorn
 	db -1 ; end
 
 .FullHeal:
@@ -394,6 +395,13 @@ AI_Items:
 	call .HealItem
 	jp c, .DontUse
 	ld b, 20
+	call EnemyUsedPotion
+	jp .Use
+
+.Popcorn:
+	call .HealItem
+	jp c, .DontUse
+	ld b, 80
 	call EnemyUsedPotion
 	jp .Use
 
@@ -577,6 +585,11 @@ FullRestoreContinue:
 EnemyUsedPotion:
 	ld a, POTION
 	ld b, 20
+	jr EnemyPotionContinue
+
+EnemyUsedPopcorn:
+	ld a, POPCORN
+	ld b, 80
 	jr EnemyPotionContinue
 
 EnemyUsedSuperPotion:
