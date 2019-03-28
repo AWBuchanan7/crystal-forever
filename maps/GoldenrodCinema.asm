@@ -8,6 +8,20 @@ GoldenrodCinemaText_Closed:
 	line "today."
 	done
 
+GoldenrodCinemaText_TheaterDoorFriday:
+	text "Welcome!"
+
+	para "Today is Friday,"
+	line "we have one show"
+
+	para "today. Today a "
+	line "MOVIE TICKET is"
+	cont "¥500."
+
+	para "Would you like to"
+	line "purchase a TICKET?"
+	done
+
 GoldenrodCinemaText_TheaterDoorTuesday:
 	text "Welcome!"
 
@@ -90,6 +104,8 @@ ConcessionScript:
 	closetext
 	end
 
+
+
 CinemaScript:
 	opentext
 	readvar VAR_WEEKDAY
@@ -171,7 +187,60 @@ CinemaScript:
 	end
 
 .CinemaOpenFriday:
+	checkflag ENGINE_GOLDENROD_CINEMA_SAW_MOVIE
+	iftrue .AlreadySawMovie
 	special PlaceMoneyTopRight
+	writetext GoldenrodCinemaText_TheaterDoorFriday
+	yesorno
+	iffalse .Refused
+	checkmoney YOUR_MONEY, GoldenrodCINEMA_MOVIE_REGULAR_PRICE
+	ifequal HAVE_LESS, .NotEnoughMoney
+	writetext GoldenrodCinemaText_TheaterChooseMon
+	buttonsound
+	special YoungerHaircutBrother
+	ifequal $0, .Refused
+	ifequal $1, .Refused
+	setflag ENGINE_GOLDENROD_CINEMA_SAW_MOVIE
+	ifequal $2, .twob
+	ifequal $3, .threeb
+	sjump .elseb
+.twob
+	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
+	clearevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
+	clearevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_3
+	sjump .thenb
+
+.threeb
+	clearevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
+	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
+	clearevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_3
+	sjump .thenb
+
+.elseb
+	clearevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
+	clearevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
+	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_3
+	sjump .thenb
+
+.thenb
+	takemoney YOUR_MONEY, GoldenrodCINEMA_MOVIE_REGULAR_PRICE
+	special PlaceMoneyTopRight
+	writetext GoldenrodCinemaText_TheaterEnjoy
+	waitbutton
+	closetext
+	special FadeOutPalettes
+	playmusic MUSIC_HEAL
+	pause 60
+	special FadeInPalettes
+	special RestartMapMusic
+	opentext
+	writetext GoldenrodCinemaText_TheaterShowOver
+	waitbutton
+	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
+	iftrue GoldenrodCinemaScript_SlightlyHappier
+	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
+	iftrue GoldenrodCinemaScript_Happier
+	sjump GoldenrodCinemaScript_MuchHappier
 
 GoldenrodCinemaScript_SlightlyHappier:
 	writetext GoldenrodCinemaText_SlightlyHappier
