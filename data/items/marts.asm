@@ -34,6 +34,7 @@ Marts:
 	dw MartMtMoon
 	dw MartIndigoPlateau
 	dw MartUnderground
+	dw MartCinema
 .End
 
 MartCherrygrove:
@@ -404,3 +405,10 @@ DefaultMart:
 	db POKE_BALL
 	db POTION
 	db -1 ; end
+
+MartCinema:
+	db 2 ; # items
+	db SODA_POP
+	db RAGECANDYBAR
+	db -1 ; end
+	
