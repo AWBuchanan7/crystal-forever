@@ -23,7 +23,7 @@ The Cerulean Bike Shop is now accessible! Speak to the owner inside to obtain hi
 The Viridian Forest has been restored to its likeness from Pokemon Red and Blue. A Scope Lens can be found and various wild pokemon are present!
 
 ![Goldenrod Cinema](https://raw.githubusercontent.com/AWBuchanan7/crystal-forever/master/docs/images/cinema.png)
-Central Goldenrod City now has a movie theater! Currently it's just a shop front for RageCandyBars and Soda Pops but the intention is to be able to "watch" a movie with a Pokemon in your party, increasing friendship.
+Central Goldenrod City now has a movie theater! On Tuesdays and Fridays you can purchase Popcorn and Soda Pop and "watch" a movie with a Pokemon in your party, increasing friendship.
 
 Additional Changes:
 
