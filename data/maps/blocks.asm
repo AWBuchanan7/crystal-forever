@@ -1059,3 +1059,9 @@ GoldenrodCinema_Blocks:
 
 UnknownDungeon1F_Blocks:
 	INCBIN "maps/UnknownDungeon1F.blk"
+
+UnknownDungeon1FSage_Blocks:
+	INCBIN "maps/UnknownDungeonSage.blk"
+
+UnknownDungeon2F_Blocks:
+	INCBIN "maps/UnknownDungeon2F.blk"

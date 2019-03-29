@@ -498,3 +498,5 @@ ENDM
 	map_const CERULEAN_BIKE_SHOP,							4, 4
 	map_const GOLDENROD_CINEMA,								7, 4
 	map_const UNKNOWN_DUNGEON_1F,							32, 20
+	map_const UNKNOWN_DUNGEON_1F_SAGE,						5, 4
+	map_const UNKNOWN_DUNGEON_2F,							32, 20

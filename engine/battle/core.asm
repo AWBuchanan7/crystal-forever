@@ -3678,7 +3678,9 @@ TryToRunAwayFromBattle:
 	jp z, .cant_escape
 	cp BATTLETYPE_SUICUNE
 	jp z, .cant_escape
-
+	cp BATTLETYPE_DRAGONBREATH
+	jp z, .cant_escape
+	
 	ld a, [wLinkMode]
 	and a
 	jp nz, .can_escape

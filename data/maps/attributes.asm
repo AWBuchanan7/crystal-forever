@@ -698,3 +698,5 @@ ENDM
 	map_attributes CeruleanBikeShop, CERULEAN_BIKE_SHOP, $00, 0
 	map_attributes GoldenrodCinema, GOLDENROD_CINEMA, $00, 0
 	map_attributes UnknownDungeon1F, UNKNOWN_DUNGEON_1F, $00, 0
+	map_attributes UnknownDungeon1FSage, UNKNOWN_DUNGEON_1F_SAGE, $00, 0
+	map_attributes UnknownDungeon2F, UNKNOWN_DUNGEON_2F, $00, 0
