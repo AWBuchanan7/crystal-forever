@@ -9,9 +9,7 @@ UnknownDungeon2F_MapScripts:
 .DragonbreathNidoqueen:
 	checkevent EVENT_FOUGHT_DRAGONBREATHNIDOQUEEN_IN_UD2F
 	iftrue .NoAppear
-	checkitem ULTRA_BALL
-	iftrue .Appear
-	sjump .NoAppear
+	sjump .Appear
 
 .Appear:
 	appear UNKNOWNDUNGEON2F_DRAGONBREATHNIDOQUEEN

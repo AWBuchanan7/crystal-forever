@@ -43,13 +43,12 @@ ROMX $06
 ROMX $07
 	"Roofs"
 	"Tileset Data 2"
-	"Extra Songs 1"
 ROMX $08
 	"Clock Reset"
 	"Tileset Data 3"
 	"Egg Moves"
 ROMX $09
-	"bank9"
+	"Extra Songs 1"
 ROMX $0a
 	"bankA"
 ROMX $0b
