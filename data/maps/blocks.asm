@@ -1056,3 +1056,6 @@ CeruleanBikeShop_Blocks:
 
 GoldenrodCinema_Blocks:
 	INCBIN "maps/GoldenrodCinema.blk"
+
+UnknownDungeon1F_Blocks:
+	INCBIN "maps/UnknownDungeon1F.blk"

@@ -213,6 +213,7 @@ KRIS EQU __enum__
 	const STEVE
 	const ALLEN
 	const DARIN
+	const SCOTT2
 
 	trainerclass COOLTRAINERF ; 1c
 	const GWEN
@@ -236,6 +237,7 @@ KRIS EQU __enum__
 	const REENA2
 	const REENA3
 	const CARA
+	const AUBREY1
 
 	trainerclass BEAUTY ; 1d
 	const VICTORIA
@@ -255,6 +257,7 @@ KRIS EQU __enum__
 	const THERESA
 	const VALERIE
 	const OLIVIA
+	const MCKAYLA
 
 	trainerclass POKEMANIAC ; 1e
 	const LARRY
