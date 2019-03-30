@@ -79,6 +79,7 @@ AlphabeticalPokedexOrder:
 	db GRAVELER
 	db GRIMER
 	db GROWLITHE
+	db GROVYLE
 	db GYARADOS
 	db HAUNTER
 	db HERACROSS

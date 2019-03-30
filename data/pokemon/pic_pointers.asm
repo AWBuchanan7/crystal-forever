@@ -509,7 +509,6 @@ PokemonPicPointers::
 	dba_pic CelebiBackpic
 	dba_pic TreeckoFrontpic
 	dba_pic TreeckoBackpic
-	dbw -1, -1 ; unused
-	dbw -1, -1 ; unused
+	dba_pic GrovyleFrontpic
+	dba_pic GrovyleBackpic
 	dba_pic EggPic
-	dbw -1, -1 ; unused

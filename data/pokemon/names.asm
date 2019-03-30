@@ -251,7 +251,7 @@ PokemonNames::
 	db "HO-OH@@@@@"
 	db "CELEBI@@@@"
 	db "TREECKO@@@"
-	db "?????@@@@@"
+	db "GROVYLE@@@"
 	db "EGG@@@@@@@"
 	db "?????@@@@@"
 	db "?????@@@@@"

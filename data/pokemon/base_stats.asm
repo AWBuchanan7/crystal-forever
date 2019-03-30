@@ -286,3 +286,4 @@ INCLUDE "data/pokemon/base_stats/celebi.asm"
 
 BaseData256::
 INCLUDE "data/pokemon/base_stats/treecko.asm"
+INCLUDE "data/pokemon/base_stats/grovyle.asm"

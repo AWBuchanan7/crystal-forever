@@ -253,3 +253,4 @@ NewPokedexOrder:
 	db MEW
 	db CELEBI
 	db TREECKO
+	db GROVYLE

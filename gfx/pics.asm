@@ -718,6 +718,8 @@ SECTION "Pics 19", ROMX
 
 TreeckoFrontpic: INCBIN "gfx/pokemon/treecko/front.2bpp.lz"
 TreeckoBackpic: INCBIN "gfx/pokemon/treecko/back.2bpp.lz"
+GrovyleFrontpic: INCBIN "gfx/pokemon/grovyle/front.2bpp.lz"
+GrovyleBackpic: INCBIN "gfx/pokemon/grovyle/back.2bpp.lz"
 
 
 ; Sections "Pics 20" to "Pics 24" are not used for any graphics,
