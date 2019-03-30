@@ -273,8 +273,9 @@ JOHTO_POKEMON EQU const_value
 	const CELEBI     ; fb
 	const TREECKO	 ; fc
 	const GROVYLE	 ; fd
+	const SCEPTILE	 ; fe
 NUM_POKEMON EQU const_value + -1
-	const EGG        ; fd
+	const EGG        ; ff
 
 ; Unown forms
 ; indexes for:

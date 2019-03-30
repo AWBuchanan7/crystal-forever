@@ -252,3 +252,4 @@ AnimationIdlePointers:
 	dw CelebiAnimationIdle
 	dw TreeckoAnimationIdle
 	dw GrovyleAnimationIdle
+	dw SceptileAnimationIdle

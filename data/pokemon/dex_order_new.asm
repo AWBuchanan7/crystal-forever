@@ -254,3 +254,4 @@ NewPokedexOrder:
 	db CELEBI
 	db TREECKO
 	db GROVYLE
+	db SCEPTILE

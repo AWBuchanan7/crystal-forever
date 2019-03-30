@@ -254,3 +254,4 @@ EvosAttacksPointers::
 	dw CelebiEvosAttacks
 	dw TreeckoEvosAttacks
 	dw GrovyleEvosAttacks
+	dw SceptileEvosAttacks

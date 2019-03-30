@@ -253,3 +253,4 @@ PokedexDataPointerTable:
 	dw CelebiPokedexEntry
 	dw TreeckoPokedexEntry
 	dw GrovylePokedexEntry
+	dw SceptilePokedexEntry

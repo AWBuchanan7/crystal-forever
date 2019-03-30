@@ -252,3 +252,4 @@ BitmasksPointers:
 	dw CelebiBitmasks
 	dw TreeckoBitmasks
 	dw GrovyleBitmasks
+	dw SceptileBitmasks

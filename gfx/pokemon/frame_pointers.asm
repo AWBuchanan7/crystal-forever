@@ -252,3 +252,4 @@ FramesPointers:
 	dw CelebiFrames
 	dw TreeckoFrames
 	dw GrovyleFrames
+	dw SceptileFrames

@@ -511,4 +511,6 @@ PokemonPicPointers::
 	dba_pic TreeckoBackpic
 	dba_pic GrovyleFrontpic
 	dba_pic GrovyleBackpic
+	dba_pic SceptileFrontpic
+	dba_pic SceptileBackpic
 	dba_pic EggPic

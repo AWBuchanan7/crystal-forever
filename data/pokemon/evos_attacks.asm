@@ -3421,8 +3421,8 @@ TreeckoEvosAttacks:
 	db 46, GIGA_DRAIN
 	db 0 ; no more level-up moves
 
-GrovyleEvosAttacks
-	;db EVOLVE_LEVEL, 16, SCEPTILE
+GrovyleEvosAttacks:
+	db EVOLVE_LEVEL, 36, SCEPTILE
 	db 0 ; no more evolutions
 	db 1, POUND
 	db 1, LEER
@@ -3438,3 +3438,20 @@ GrovyleEvosAttacks
 	db 41, SLAM
 	db 47, DETECT
 	db 53, FALSE_SWIPE
+
+SceptileEvosAttacks:
+	db 0 ; no more evolutions
+	db 1, POUND
+	db 1, LEER
+	db 1, ABSORB
+	db 1, QUICK_ATTACK
+	db 6, ABSORB
+	db 11, QUICK_ATTACK
+	db 16, FURY_ATTACK
+	db 17, PURSUIT
+	db 23, SCREECH
+	db 29, RAZOR_LEAF
+	db 35, AGILITY
+	db 43, SLAM
+	db 51, DETECT
+	db 59, FALSE_SWIPE
