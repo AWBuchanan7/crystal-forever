@@ -260,3 +260,4 @@ PokemonCries::
 	mon_cry CRY_NIDORAN_M,      0,     0 ; 253
 	mon_cry CRY_NIDORAN_M,      0,     0 ; 254
 	mon_cry CRY_NIDORAN_M,      0,     0 ; 255
+	mon_cry CRY_CHARMANDER,  $14a,  $03a ; TREECKO

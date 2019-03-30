@@ -913,6 +913,9 @@ ENDU ; c7e8
 wUnusedC7E8:: ds 24
 wUnusedC7E8End::
 
+SECTION "basedatatables",WRAM0
+BaseDataTableNo:: ; c840??
+	ds 1
 
 SECTION "Overworld Map", WRAM0
 
@@ -1131,6 +1134,7 @@ wccb8:: ds 1
 wccb9:: ds 1
 wccba:: ds 102
 ENDU ; cd20
+
 
 
 SECTION "Video", WRAM0

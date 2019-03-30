@@ -252,3 +252,4 @@ NewPokedexOrder:
 	db MEWTWO
 	db MEW
 	db CELEBI
+	db TREECKO

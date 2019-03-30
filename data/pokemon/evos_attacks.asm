@@ -3404,3 +3404,19 @@ CelebiEvosAttacks:
 	db 40, BATON_PASS
 	db 50, PERISH_SONG
 	db 0 ; no more level-up moves
+
+TreeckoEvosAttacks:
+	; db EVOLVE_LEVEL, 16, IVYSAUR
+	db 0 ; no more evolutions
+	db 1, POUND
+	db 1, LEER
+	db 6, ABSORB
+	db 11, QUICK_ATTACK
+	db 16, PURSUIT
+	db 21, SCREECH
+	db 26, MEGA_DRAIN
+	db 31, AGILITY
+	db 36, SLAM
+	db 41, DETECT
+	db 46, GIGA_DRAIN
+	db 0 ; no more level-up moves

@@ -864,5 +864,9 @@ LarvitarEggMoves:
 	db ANCIENTPOWER
 	db -1 ; end
 
+TreeckoEggMoves:
+	db LEECH_SEED
+	db -1; end
+
 NoEggMoves:
 	db -1 ; end

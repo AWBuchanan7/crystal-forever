@@ -227,6 +227,7 @@ AlphabeticalPokedexOrder:
 	db TOGEPI
 	db TOGETIC
 	db TOTODILE
+	db TREECKO
 	db TYPHLOSION
 	db TYRANITAR
 	db TYROGUE

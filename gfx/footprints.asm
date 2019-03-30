@@ -585,3 +585,7 @@ INCBIN "gfx/footprints/253.1bpp",        footprint_bottom
 INCBIN "gfx/footprints/254.1bpp",        footprint_bottom
 INCBIN "gfx/footprints/255.1bpp",        footprint_bottom
 INCBIN "gfx/footprints/256.1bpp",        footprint_bottom
+; 257-2?? top halves
+INCBIN "gfx/footprints/treecko.1bpp",     footprint_top
+; 257-2?? bottom halves
+INCBIN "gfx/footprints/treecko.1bpp",     footprint_bottom
