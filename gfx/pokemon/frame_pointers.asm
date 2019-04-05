@@ -250,6 +250,3 @@ FramesPointers:
 	dw LugiaFrames
 	dw HoOhFrames
 	dw CelebiFrames
-	dw TreeckoFrames
-	dw GrovyleFrames
-	dw SceptileFrames

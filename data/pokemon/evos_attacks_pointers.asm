@@ -252,6 +252,3 @@ EvosAttacksPointers::
 	dw LugiaEvosAttacks
 	dw HoOhEvosAttacks
 	dw CelebiEvosAttacks
-	dw TreeckoEvosAttacks
-	dw GrovyleEvosAttacks
-	dw SceptileEvosAttacks

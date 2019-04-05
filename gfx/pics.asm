@@ -711,21 +711,10 @@ UnownPBackpic:       INCBIN "gfx/pokemon/unown_p/back.2bpp.lz"
 UnownIBackpic:       INCBIN "gfx/pokemon/unown_i/back.2bpp.lz"
 UnownRBackpic:       INCBIN "gfx/pokemon/unown_r/back.2bpp.lz"
 
+; Sections "Pics 19" to "Pics 24" are not used for any graphics,
+; but entries for their banks exist in FixPicBank (see engine/gfx/load_pics.asm).
 
 SECTION "Pics 19", ROMX
-
-; Seems to be an accidental copy of the previous bank
-
-TreeckoFrontpic: INCBIN "gfx/pokemon/treecko/front.2bpp.lz"
-TreeckoBackpic: INCBIN "gfx/pokemon/treecko/back.2bpp.lz"
-GrovyleFrontpic: INCBIN "gfx/pokemon/grovyle/front.2bpp.lz"
-GrovyleBackpic: INCBIN "gfx/pokemon/grovyle/back.2bpp.lz"
-SceptileFrontpic: INCBIN "gfx/pokemon/sceptile/front.2bpp.lz"
-SceptileBackpic: INCBIN "gfx/pokemon/sceptile/back.2bpp.lz"
-
-
-; Sections "Pics 20" to "Pics 24" are not used for any graphics,
-; but entries for their banks exist in FixPicBank (see engine/gfx/load_pics.asm).
 
 SECTION "Pics 20", ROMX
 

@@ -250,5 +250,3 @@ AnimationPointers:
 	dw LugiaAnimation
 	dw HoOhAnimation
 	dw CelebiAnimation
-	dw TreeckoAnimation
-	dw GrovyleAnimation

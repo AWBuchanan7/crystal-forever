@@ -79,7 +79,6 @@ AlphabeticalPokedexOrder:
 	db GRAVELER
 	db GRIMER
 	db GROWLITHE
-	db GROVYLE
 	db GYARADOS
 	db HAUNTER
 	db HERACROSS
@@ -189,7 +188,6 @@ AlphabeticalPokedexOrder:
 	db RHYHORN
 	db SANDSHREW
 	db SANDSLASH
-	db SCEPTILE
 	db SCIZOR
 	db SCYTHER
 	db SEADRA
@@ -229,7 +227,6 @@ AlphabeticalPokedexOrder:
 	db TOGEPI
 	db TOGETIC
 	db TOTODILE
-	db TREECKO
 	db TYPHLOSION
 	db TYRANITAR
 	db TYROGUE

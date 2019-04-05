@@ -252,6 +252,3 @@ NewPokedexOrder:
 	db MEWTWO
 	db MEW
 	db CELEBI
-	db TREECKO
-	db GROVYLE
-	db SCEPTILE

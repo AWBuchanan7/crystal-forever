@@ -256,6 +256,3 @@ PokemonCries::
 	mon_cry CRY_TYPHLOSION,  $000,  $100 ; LUGIA
 	mon_cry CRY_AIPOM,       $000,  $180 ; HO_OH
 	mon_cry CRY_ENTEI,       $14a,  $111 ; CELEBI
-	mon_cry CRY_CHARMANDER,  $14a,  $03a ; TREECKO
-	mon_cry CRY_CHARMANDER,  $04a,  $03a ; GROVYLE
-	mon_cry CRY_CHARMANDER,  $01a,  $03a ; SCEPTILE

@@ -507,10 +507,4 @@ PokemonPicPointers::
 	dba_pic HoOhBackpic
 	dba_pic CelebiFrontpic
 	dba_pic CelebiBackpic
-	dba_pic TreeckoFrontpic
-	dba_pic TreeckoBackpic
-	dba_pic GrovyleFrontpic
-	dba_pic GrovyleBackpic
-	dba_pic SceptileFrontpic
-	dba_pic SceptileBackpic
 	dba_pic EggPic

@@ -251,6 +251,3 @@ PokedexDataPointerTable:
 	dw LugiaPokedexEntry
 	dw HoOhPokedexEntry
 	dw CelebiPokedexEntry
-	dw TreeckoPokedexEntry
-	dw GrovylePokedexEntry
-	dw SceptilePokedexEntry

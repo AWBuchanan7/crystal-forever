@@ -250,6 +250,3 @@ AnimationIdlePointers:
 	dw LugiaAnimationIdle
 	dw HoOhAnimationIdle
 	dw CelebiAnimationIdle
-	dw TreeckoAnimationIdle
-	dw GrovyleAnimationIdle
-	dw SceptileAnimationIdle

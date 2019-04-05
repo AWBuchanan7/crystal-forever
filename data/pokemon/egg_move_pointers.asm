@@ -254,6 +254,3 @@ endc
 	dw NoEggMoves
 	dw NoEggMoves
 	dw NoEggMoves
-	dw TreeckoEggMoves
-	dw NoEggMoves
-	dw NoEggMoves
