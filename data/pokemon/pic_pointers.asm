@@ -507,4 +507,7 @@ PokemonPicPointers::
 	dba_pic HoOhBackpic
 	dba_pic CelebiFrontpic
 	dba_pic CelebiBackpic
+	dbw -1, -1 ; unused
+	dbw -1, -1 ; unused
 	dba_pic EggPic
+	dbw -1, -1 ; unused

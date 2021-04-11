@@ -258,6 +258,7 @@ INCLUDE "engine/pokemon/experience.asm"
 INCLUDE "engine/pokemon/switchpartymons.asm"
 INCLUDE "engine/gfx/load_pics.asm"
 INCLUDE "engine/pokemon/move_mon_wo_mail.asm"
+INCLUDE "data/pokemon/base_stats.asm"
 INCLUDE "data/pokemon/names.asm"
 INCLUDE "data/pokemon/unused_pic_banks.asm"
 
@@ -715,7 +716,3 @@ INCBIN "mobile/stadium/stadium2_2.bin"
 else
 INCBIN "mobile/stadium/stadium2_1.bin"
 endc
-
-SECTION "bank79", ROMX
-
-INCLUDE "data/pokemon/base_stats.asm"

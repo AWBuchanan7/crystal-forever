@@ -276,7 +276,7 @@ CeruleanLockedDoorText:
 CeruleanCity_MapEvents:
 	db 0, 0 ; filler
 
-	db 8 ; warp events
+	db 7 ; warp events
 	warp_event  7, 15, CERULEAN_GYM_BADGE_SPEECH_HOUSE, 1
 	warp_event 28, 17, CERULEAN_POLICE_STATION, 1
 	warp_event 13, 19, CERULEAN_TRADE_SPEECH_HOUSE, 1
@@ -284,7 +284,6 @@ CeruleanCity_MapEvents:
 	warp_event 30, 23, CERULEAN_GYM, 1
 	warp_event 25, 29, CERULEAN_MART, 2
 	warp_event 14, 29, CERULEAN_BIKE_SHOP, 1
-	warp_event 0, 13, UNKNOWN_DUNGEON_1F, 1
 
 	db 0 ; coord events
 

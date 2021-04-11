@@ -35,7 +35,6 @@ Marts:
 	dw MartIndigoPlateau
 	dw MartUnderground
 	dw MartCinema
-	dw MartSage
 .End
 
 MartCherrygrove:
@@ -411,12 +410,5 @@ MartCinema:
 	db 2 ; # items
 	db POPCORN
 	db SODA_POP
-	db -1 ; end
-
-MartSage:
-	db 3 ; # items
-	db ULTRA_BALL
-	db HEAL_POWDER
-	db REVIVAL_HERB
 	db -1 ; end
 	
