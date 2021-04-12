@@ -20,7 +20,7 @@ BattleCommand_StoreEnergy:
 	res SUBSTATUS_BIDE, [hl]
 
 	ld hl, UnleashedEnergyText
-	call StdBattleTextBox
+	call StdBattleTextbox
 
 	ld a, BATTLE_VARS_MOVE_POWER
 	call GetBattleVarAddr
@@ -66,7 +66,7 @@ BattleCommand_StoreEnergy:
 
 .still_storing
 	ld hl, StoringEnergyText
-	call StdBattleTextBox
+	call StdBattleTextbox
 	jp EndMoveEffect
 
 BattleCommand_UnleashEnergy:
@@ -95,6 +95,6 @@ BattleCommand_UnleashEnergy:
 	inc a
 	ld [bc], a
 	ld a, 1
-	ld [wKickCounter], a
+	ld [wBattleAnimParam], a
 	call AnimateCurrentMove
 	jp EndMoveEffect

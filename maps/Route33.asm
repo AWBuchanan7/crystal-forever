@@ -1,12 +1,12 @@
-	const_def 2 ; object constants
+	object_const_def
 	const ROUTE33_POKEFAN_M
 	const ROUTE33_LASS
 	const ROUTE33_FRUIT_TREE
 
 Route33_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 Route33LassScript:
 	jumptextfaceplayer Route33LassText
@@ -18,7 +18,7 @@ TrainerHikerAnthony:
 	loadvar VAR_CALLERID, PHONE_HIKER_ANTHONY
 	endifjustbattled
 	opentext
-	checkflag ENGINE_ANTHONY
+	checkflag ENGINE_ANTHONY_READY_FOR_REMATCH
 	iftrue .Rematch
 	checkflag ENGINE_DUNSPARCE_SWARM
 	iftrue .Swarm
@@ -27,7 +27,7 @@ TrainerHikerAnthony:
 	checkevent EVENT_ANTHONY_ASKED_FOR_PHONE_NUMBER
 	iftrue .AskAgain
 	writetext HikerAnthony2AfterText
-	buttonsound
+	promptbutton
 	setevent EVENT_ANTHONY_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber1
 	sjump .AskForPhoneNumber
@@ -68,7 +68,7 @@ TrainerHikerAnthony:
 	startbattle
 	reloadmapafterbattle
 	loadmem wAnthonyFightCount, 1
-	clearflag ENGINE_ANTHONY
+	clearflag ENGINE_ANTHONY_READY_FOR_REMATCH
 	end
 
 .LoadFight1:
@@ -76,7 +76,7 @@ TrainerHikerAnthony:
 	startbattle
 	reloadmapafterbattle
 	loadmem wAnthonyFightCount, 2
-	clearflag ENGINE_ANTHONY
+	clearflag ENGINE_ANTHONY_READY_FOR_REMATCH
 	end
 
 .LoadFight2:
@@ -84,7 +84,7 @@ TrainerHikerAnthony:
 	startbattle
 	reloadmapafterbattle
 	loadmem wAnthonyFightCount, 3
-	clearflag ENGINE_ANTHONY
+	clearflag ENGINE_ANTHONY_READY_FOR_REMATCH
 	end
 
 .LoadFight3:
@@ -92,14 +92,14 @@ TrainerHikerAnthony:
 	startbattle
 	reloadmapafterbattle
 	loadmem wAnthonyFightCount, 4
-	clearflag ENGINE_ANTHONY
+	clearflag ENGINE_ANTHONY_READY_FOR_REMATCH
 	end
 
 .LoadFight4:
 	loadtrainer HIKER, ANTHONY5
 	startbattle
 	reloadmapafterbattle
-	clearflag ENGINE_ANTHONY
+	clearflag ENGINE_ANTHONY_READY_FOR_REMATCH
 	end
 
 .Swarm:
@@ -109,31 +109,31 @@ TrainerHikerAnthony:
 	end
 
 .AskNumber1:
-	jumpstd asknumber1m
+	jumpstd AskNumber1MScript
 	end
 
 .AskNumber2:
-	jumpstd asknumber2m
+	jumpstd AskNumber2MScript
 	end
 
 .RegisteredNumber:
-	jumpstd registerednumberm
+	jumpstd RegisteredNumberMScript
 	end
 
 .NumberAccepted:
-	jumpstd numberacceptedm
+	jumpstd NumberAcceptedMScript
 	end
 
 .NumberDeclined:
-	jumpstd numberdeclinedm
+	jumpstd NumberDeclinedMScript
 	end
 
 .PhoneFull:
-	jumpstd phonefullm
+	jumpstd PhoneFullMScript
 	end
 
 .RematchStd:
-	jumpstd rematchm
+	jumpstd RematchMScript
 	end
 
 Route33Sign:
@@ -195,15 +195,15 @@ Route33SignText:
 Route33_MapEvents:
 	db 0, 0 ; filler
 
-	db 1 ; warp events
+	def_warp_events
 	warp_event 11,  9, UNION_CAVE_1F, 3
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 1 ; bg events
+	def_bg_events
 	bg_event 11, 11, BGEVENT_READ, Route33Sign
 
-	db 3 ; object events
+	def_object_events
 	object_event  6, 13, SPRITE_POKEFAN_M, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 2, TrainerHikerAnthony, -1
 	object_event 13, 16, SPRITE_LASS, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, Route33LassScript, -1
 	object_event 14, 16, SPRITE_FRUIT_TREE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route33FruitTree, -1

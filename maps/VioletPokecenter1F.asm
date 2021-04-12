@@ -1,54 +1,54 @@
-	const_def 2 ; object constants
+	object_const_def
 	const VIOLETPOKECENTER1F_NURSE
 	const VIOLETPOKECENTER1F_GAMEBOY_KID
 	const VIOLETPOKECENTER1F_GENTLEMAN
 	const VIOLETPOKECENTER1F_YOUNGSTER
-	const VIOLETPOKECENTER1F_SCIENTIST
+	const VIOLETPOKECENTER1F_ELMS_AIDE
 
 VioletPokecenter1F_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 VioletPokecenterNurse:
-	jumpstd pokecenternurse
+	jumpstd PokecenterNurseScript
 
 VioletPokecenter1F_ElmsAideScript:
 	faceplayer
 	opentext
 	checkevent EVENT_REFUSED_TO_TAKE_EGG_FROM_ELMS_AIDE
 	iftrue .SecondTimeAsking
-	writetext UnknownText_0x69555
+	writetext VioletPokecenterElmsAideFavorText
 .AskTakeEgg:
 	yesorno
 	iffalse .RefusedEgg
 	readvar VAR_PARTYCOUNT
 	ifequal PARTY_LENGTH, .PartyFull
-	giveegg TOGEPI, 5
+	giveegg TOGEPI, EGG_LEVEL
 	getstring STRING_BUFFER_4, .eggname
 	scall .AideGivesEgg
 	setevent EVENT_GOT_TOGEPI_EGG_FROM_ELMS_AIDE
 	clearevent EVENT_ELMS_AIDE_IN_LAB
 	clearevent EVENT_TOGEPI_HATCHED
 	setmapscene ROUTE_32, SCENE_ROUTE32_OFFER_SLOWPOKETAIL
-	writetext UnknownText_0x695c5
+	writetext VioletPokecenterElmsAideGiveEggText
 	waitbutton
 	closetext
 	readvar VAR_FACING
 	ifequal UP, .AideWalksAroundPlayer
 	turnobject PLAYER, DOWN
-	applymovement VIOLETPOKECENTER1F_SCIENTIST, MovementData_AideWalksStraightOutOfPokecenter
+	applymovement VIOLETPOKECENTER1F_ELMS_AIDE, MovementData_AideWalksStraightOutOfPokecenter
 	playsound SFX_EXIT_BUILDING
-	disappear VIOLETPOKECENTER1F_SCIENTIST
+	disappear VIOLETPOKECENTER1F_ELMS_AIDE
 	waitsfx
 	end
 
 .AideWalksAroundPlayer:
-	applymovement VIOLETPOKECENTER1F_SCIENTIST, MovementData_AideWalksLeftToExitPokecenter
+	applymovement VIOLETPOKECENTER1F_ELMS_AIDE, MovementData_AideWalksLeftToExitPokecenter
 	turnobject PLAYER, DOWN
-	applymovement VIOLETPOKECENTER1F_SCIENTIST, MovementData_AideFinishesLeavingPokecenter
+	applymovement VIOLETPOKECENTER1F_ELMS_AIDE, MovementData_AideFinishesLeavingPokecenter
 	playsound SFX_EXIT_BUILDING
-	disappear VIOLETPOKECENTER1F_SCIENTIST
+	disappear VIOLETPOKECENTER1F_ELMS_AIDE
 	waitsfx
 	end
 
@@ -56,24 +56,24 @@ VioletPokecenter1F_ElmsAideScript:
 	db "EGG@"
 
 .AideGivesEgg:
-	jumpstd receivetogepiegg
+	jumpstd ReceiveTogepiEggScript
 	end
 
 .PartyFull:
-	writetext UnknownText_0x69693
+	writetext VioletCityElmsAideFullPartyText
 	waitbutton
 	closetext
 	end
 
 .RefusedEgg:
-	writetext UnknownText_0x696f2
+	writetext VioletPokecenterElmsAideRefuseText
 	waitbutton
 	closetext
 	setevent EVENT_REFUSED_TO_TAKE_EGG_FROM_ELMS_AIDE
 	end
 
 .SecondTimeAsking:
-	writetext UnknownText_0x69712
+	writetext VioletPokecenterElmsAideAskEggText
 	sjump .AskTakeEgg
 
 VioletPokecenter1FGameboyKidScript:
@@ -103,7 +103,7 @@ MovementData_AideFinishesLeavingPokecenter:
 	step DOWN
 	step_end
 
-UnknownText_0x69555:
+VioletPokecenterElmsAideFavorText:
 	text "<PLAY_G>, long"
 	line "time, no see."
 
@@ -117,7 +117,7 @@ UnknownText_0x69555:
 	line "#MON EGG?"
 	done
 
-UnknownText_0x695c5:
+VioletPokecenterElmsAideGiveEggText:
 	text "We discovered that"
 	line "a #MON will not"
 
@@ -137,7 +137,7 @@ UnknownText_0x695c5:
 	cont "hatches!"
 	done
 
-UnknownText_0x69693:
+VioletCityElmsAideFullPartyText:
 	text "Oh, no. You can't"
 	line "carry any more"
 	cont "#MON with you."
@@ -147,17 +147,17 @@ UnknownText_0x69693:
 	cont "room for the EGG."
 	done
 
-UnknownText_0x696f2:
+VioletPokecenterElmsAideRefuseText:
 	text "B-but… PROF.ELM"
 	line "asked for you…"
 	done
 
-UnknownText_0x69712:
+VioletPokecenterElmsAideAskEggText:
 	text "<PLAY_G>, will you"
 	line "take the EGG?"
 	done
 
-UnknownText_0x6972d:
+VioletPokecenterFarawayLinkText: ; unreferenced
 	text "I've been thinking"
 	line "it'd be great to"
 
@@ -168,7 +168,7 @@ UnknownText_0x6972d:
 	line "far away."
 	done
 
-UnknownText_0x69791:
+VioletPokecenterMobileAdapterText: ; unreferenced
 	text "I just battled a"
 	line "friend in CIANWOOD"
 	cont "over a link."
@@ -216,16 +216,16 @@ VioletPokecenter1FYoungsterText:
 VioletPokecenter1F_MapEvents:
 	db 0, 0 ; filler
 
-	db 3 ; warp events
+	def_warp_events
 	warp_event  3,  7, VIOLET_CITY, 5
 	warp_event  4,  7, VIOLET_CITY, 5
 	warp_event  0,  7, POKECENTER_2F, 1
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 0 ; bg events
+	def_bg_events
 
-	db 5 ; object events
+	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VioletPokecenterNurse, -1
 	object_event  7,  6, SPRITE_GAMEBOY_KID, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, VioletPokecenter1FGameboyKidScript, -1
 	object_event  1,  4, SPRITE_GENTLEMAN, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VioletPokecenter1FGentlemanScript, -1

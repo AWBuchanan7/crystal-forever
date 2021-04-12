@@ -1,4 +1,5 @@
 EggMovePointers::
+	table_width 2, EggMovePointers
 	dw BulbasaurEggMoves
 	dw NoEggMoves
 	dw NoEggMoves
@@ -118,11 +119,7 @@ EggMovePointers::
 	dw NoEggMoves
 	dw GoldeenEggMoves
 	dw NoEggMoves
-if _CRYSTAL
 	dw NoEggMoves
-else
-	dw StaryuEggMoves
-endc
 	dw NoEggMoves
 	dw MrMimeEggMoves
 	dw ScytherEggMoves
@@ -254,3 +251,4 @@ endc
 	dw NoEggMoves
 	dw NoEggMoves
 	dw NoEggMoves
+	assert_table_length NUM_POKEMON

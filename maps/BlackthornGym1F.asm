@@ -1,14 +1,14 @@
-	const_def 2 ; object constants
+	object_const_def
 	const BLACKTHORNGYM1F_CLAIR
 	const BLACKTHORNGYM1F_COOLTRAINER_M1
 	const BLACKTHORNGYM1F_COOLTRAINER_M2
 	const BLACKTHORNGYM1F_COOLTRAINER_F
-	const BLACKTHORNGYM1F_GYM_GUY
+	const BLACKTHORNGYM1F_GYM_GUIDE
 
 BlackthornGym1F_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 1 ; callbacks
+	def_callbacks
 	callback MAPCALLBACK_TILES, .Boulders
 
 .Boulders:
@@ -24,7 +24,7 @@ BlackthornGym1F_MapScripts:
 	iffalse .skip3
 	changeblock 8, 6, $3b ; fallen boulder 2
 .skip3
-	return
+	endcallback
 
 BlackthornGymClairScript:
 	faceplayer
@@ -65,7 +65,7 @@ BlackthornGymClairScript:
 	checkevent EVENT_GOT_TM24_DRAGONBREATH
 	iftrue .GotTM24
 	writetext BlackthornGymClairText_YouKeptMeWaiting
-	buttonsound
+	promptbutton
 	giveitem TM_DRAGONBREATH
 	iffalse .BagFull
 	getitemname STRING_BUFFER_3, TM_DRAGONBREATH
@@ -75,7 +75,7 @@ BlackthornGymClairScript:
 	itemnotify
 	setevent EVENT_GOT_TM24_DRAGONBREATH
 	writetext BlackthornGymClairText_DescribeTM24
-	buttonsound
+	promptbutton
 	sjump .GotTM24
 
 .BagFull:
@@ -123,18 +123,18 @@ TrainerCooltrainerfLola:
 	closetext
 	end
 
-BlackthornGymGuyScript:
+BlackthornGymGuideScript:
 	faceplayer
 	opentext
 	checkevent EVENT_BEAT_CLAIR
-	iftrue .BlackthornGymGuyWinScript
-	writetext BlackthornGymGuyText
+	iftrue .BlackthornGymGuideWinScript
+	writetext BlackthornGymGuideText
 	waitbutton
 	closetext
 	end
 
-.BlackthornGymGuyWinScript:
-	writetext BlackthornGymGuyWinText
+.BlackthornGymGuideWinScript:
+	writetext BlackthornGymGuideWinText
 	waitbutton
 	closetext
 	end
@@ -142,10 +142,10 @@ BlackthornGymGuyScript:
 BlackthornGymStatue:
 	checkflag ENGINE_RISINGBADGE
 	iftrue .Beaten
-	jumpstd gymstatue1
+	jumpstd GymStatue1Script
 .Beaten:
 	gettrainername STRING_BUFFER_4, CLAIR, CLAIR1
-	jumpstd gymstatue2
+	jumpstd GymStatue2Script
 
 ClairIntroText:
 	text "I am CLAIR."
@@ -346,7 +346,7 @@ CooltrainerfLolaAfterBattleText:
 	cont "type moves."
 	done
 
-BlackthornGymGuyText:
+BlackthornGymGuideText:
 	text "Yo! CHAMP in"
 	line "making!"
 
@@ -371,7 +371,7 @@ BlackthornGymGuyText:
 	line "ice-type moves."
 	done
 
-BlackthornGymGuyWinText:
+BlackthornGymGuideWinText:
 	text "You were great to"
 	line "beat CLAIR!"
 
@@ -387,7 +387,7 @@ BlackthornGymGuyWinText:
 BlackthornGym1F_MapEvents:
 	db 0, 0 ; filler
 
-	db 7 ; warp events
+	def_warp_events
 	warp_event  4, 17, BLACKTHORN_CITY, 1
 	warp_event  5, 17, BLACKTHORN_CITY, 1
 	warp_event  1,  7, BLACKTHORN_GYM_2F, 1
@@ -396,15 +396,15 @@ BlackthornGym1F_MapEvents:
 	warp_event  7,  7, BLACKTHORN_GYM_2F, 4
 	warp_event  7,  6, BLACKTHORN_GYM_2F, 5
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 2 ; bg events
+	def_bg_events
 	bg_event  3, 15, BGEVENT_READ, BlackthornGymStatue
 	bg_event  6, 15, BGEVENT_READ, BlackthornGymStatue
 
-	db 5 ; object events
+	def_object_events
 	object_event  5,  3, SPRITE_CLAIR, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, BlackthornGymClairScript, -1
 	object_event  6,  6, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerCooltrainermMike, -1
 	object_event  1, 14, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerCooltrainermPaul, -1
 	object_event  9,  2, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 1, TrainerCooltrainerfLola, -1
-	object_event  7, 15, SPRITE_GYM_GUY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, BlackthornGymGuyScript, -1
+	object_event  7, 15, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, BlackthornGymGuideScript, -1

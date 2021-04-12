@@ -48,14 +48,10 @@ AnimateMon_HOF:
 
 pokeanim: MACRO
 rept _NARG
-; Workaround for a bug where macro args can't come after the start of a symbol
-if !DEF(\1_POKEANIM)
-\1_POKEANIM EQUS "PokeAnim_\1_"
-endc
-	db (\1_POKEANIM - PokeAnim_SetupCommands) / 2
+	db (PokeAnim_\1_SetupCommand - PokeAnim_SetupCommands) / 2
 	shift
 endr
-	db (PokeAnim_Finish_ - PokeAnim_SetupCommands) / 2
+	db (PokeAnim_Finish_SetupCommand - PokeAnim_SetupCommands) / 2
 ENDM
 
 PokeAnims:
@@ -87,7 +83,7 @@ AnimateFrontpic:
 .loop
 	call SetUpPokeAnim
 	push af
-	farcall HDMATransferTileMapToWRAMBank3
+	farcall HDMATransferTilemapToWRAMBank3
 	pop af
 	jr nc, .loop
 	ret
@@ -132,22 +128,24 @@ SetUpPokeAnim:
 	scf
 	ret
 
-PokeAnim_SetupCommands:
-setup_command: MACRO
-\1_: dw \1
+add_setup_command: MACRO
+\1_SetupCommand:
+	dw \1
 ENDM
-	setup_command PokeAnim_Finish
-	setup_command PokeAnim_BasePic
-	setup_command PokeAnim_SetWait
-	setup_command PokeAnim_Wait
-	setup_command PokeAnim_Setup
-	setup_command PokeAnim_Setup2
-	setup_command PokeAnim_Idle
-	setup_command PokeAnim_Play
-	setup_command PokeAnim_Play2
-	setup_command PokeAnim_Cry
-	setup_command PokeAnim_CryNoWait
-	setup_command PokeAnim_StereoCry
+
+PokeAnim_SetupCommands:
+	add_setup_command PokeAnim_Finish
+	add_setup_command PokeAnim_BasePic
+	add_setup_command PokeAnim_SetWait
+	add_setup_command PokeAnim_Wait
+	add_setup_command PokeAnim_Setup
+	add_setup_command PokeAnim_Setup2
+	add_setup_command PokeAnim_Idle
+	add_setup_command PokeAnim_Play
+	add_setup_command PokeAnim_Play2
+	add_setup_command PokeAnim_Cry
+	add_setup_command PokeAnim_CryNoWait
+	add_setup_command PokeAnim_StereoCry
 
 PokeAnim_SetWait:
 	ld a, 18
@@ -261,9 +259,9 @@ PokeAnim_DeinitFrames:
 	ld a, BANK(wPokeAnimCoord)
 	ldh [rSVBK], a
 	call PokeAnim_PlaceGraphic
-	farcall HDMATransferTileMapToWRAMBank3
+	farcall HDMATransferTilemapToWRAMBank3
 	call PokeAnim_SetVBank0
-	farcall HDMATransferAttrMapToWRAMBank3
+	farcall HDMATransferAttrmapToWRAMBank3
 	pop af
 	ldh [rSVBK], a
 	ret
@@ -415,7 +413,7 @@ PokeAnim_End:
 PokeAnim_GetDuration:
 ; a * (1 + [wPokeAnimSpeed] / 16)
 	ld c, a
-	ld b, $0
+	ld b, 0
 	ld hl, 0
 	ld a, [wPokeAnimSpeed]
 	call AddNTimes
@@ -468,7 +466,7 @@ PokeAnim_GetPointer:
 	push hl
 	ld a, [wPokeAnimFrame]
 	ld e, a
-	ld d, $0
+	ld d, 0
 	ld hl, wPokeAnimPointerAddr
 	ld a, [hli]
 	ld h, [hl]
@@ -476,7 +474,7 @@ PokeAnim_GetPointer:
 	add hl, de
 	add hl, de
 	ld a, [wPokeAnimPointerBank]
-	call GetFarHalfword
+	call GetFarWord
 	ld a, l
 	ld [wPokeAnimCommand], a
 	ld a, h
@@ -490,7 +488,7 @@ PokeAnim_GetBitmaskIndex:
 	ld a, [wPokeAnimCommand]
 	dec a
 	ld c, a
-	ld b, $0
+	ld b, 0
 	ld hl, wPokeAnimFramesAddr
 	ld a, [hli]
 	ld h, [hl]
@@ -498,7 +496,7 @@ PokeAnim_GetBitmaskIndex:
 	add hl, bc
 	add hl, bc
 	ld a, [wPokeAnimFramesBank]
-	call GetFarHalfword
+	call GetFarWord
 	ld a, [wPokeAnimFramesBank]
 	call GetFarByte
 	ld [wPokeAnimCurBitmask], a
@@ -538,7 +536,7 @@ PokeAnim_CopyBitmaskToBuffer:
 poke_anim_box: MACRO
 y = 7
 rept \1
-x = 7 + -\1
+x = 7 - \1
 rept \1
 	db x + y
 x = x + 1
@@ -630,14 +628,16 @@ PokeAnim_ConvertAndApplyBitmask:
 	call AddNTimes
 	ld a, [wBoxAlignment]
 	and a
-	jr nz, .go
+	jr nz, .subtract
+	; hl += [wPokeAnimBitmaskCurCol]
 	ld a, [wPokeAnimBitmaskCurCol]
 	ld e, a
 	ld d, 0
 	add hl, de
-	jr .skip2
+	jr .done
 
-.go
+.subtract
+	; hl -= [wPokeAnimBitmaskCurCol]
 	ld a, [wPokeAnimBitmaskCurCol]
 	ld e, a
 	ld a, l
@@ -647,10 +647,10 @@ PokeAnim_ConvertAndApplyBitmask:
 	sbc 0
 	ld h, a
 
-.skip2
+.done
 	ret
 
-; unused
+.UnusedSizeData: ; unreferenced
 	db 6, 5, 4
 
 .GetTilemap:
@@ -830,13 +830,13 @@ PokeAnim_SetVBank1:
 	xor a
 	ldh [hBGMapMode], a
 	call .SetFlag
-	farcall HDMATransferAttrMapToWRAMBank3
+	farcall HDMATransferAttrmapToWRAMBank3
 	pop af
 	ldh [rSVBK], a
 	ret
 
 .SetFlag:
-	call PokeAnim_GetAttrMapCoord
+	call PokeAnim_GetAttrmapCoord
 	ld b, 7
 	ld c, 7
 	ld de, SCREEN_WIDTH
@@ -858,7 +858,7 @@ PokeAnim_SetVBank1:
 	ret
 
 PokeAnim_SetVBank0:
-	call PokeAnim_GetAttrMapCoord
+	call PokeAnim_GetAttrmapCoord
 	ld b, 7
 	ld c, 7
 	ld de, SCREEN_WIDTH
@@ -879,12 +879,12 @@ PokeAnim_SetVBank0:
 	jr nz, .row
 	ret
 
-PokeAnim_GetAttrMapCoord:
+PokeAnim_GetAttrmapCoord:
 	ld hl, wPokeAnimCoord
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	ld de, wAttrMap - wTileMap
+	ld de, wAttrmap - wTilemap
 	add hl, de
 	ret
 
@@ -917,7 +917,7 @@ GetMonAnimPointer:
 	add hl, de
 	ld a, c
 	ld [wPokeAnimPointerBank], a
-	call GetFarHalfword
+	call GetFarWord
 	ld a, l
 	ld [wPokeAnimPointerAddr], a
 	ld a, h
@@ -984,7 +984,7 @@ GetMonFramesPointer:
 	add hl, de
 	add hl, de
 	ld a, b
-	call GetFarHalfword
+	call GetFarWord
 	ld a, l
 	ld [wPokeAnimFramesAddr], a
 	ld a, h
@@ -1022,7 +1022,7 @@ GetMonBitmaskPointer:
 	add hl, de
 	add hl, de
 	ld a, [wPokeAnimBitmaskBank]
-	call GetFarHalfword
+	call GetFarWord
 	ld a, l
 	ld [wPokeAnimBitmaskAddr], a
 	ld a, h

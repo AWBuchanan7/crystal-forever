@@ -3,7 +3,7 @@ BillsGrandfather:
 	jr c, .cancel
 	ld a, [wCurPartySpecies]
 	ld [wScriptVar], a
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	jp CopyPokemonName_Buffer1_Buffer3
 
@@ -12,12 +12,12 @@ BillsGrandfather:
 	ld [wScriptVar], a
 	ret
 
-YoungerHaircutBrother:
-	ld hl, HappinessData_YoungerHaircutBrother
-	jr HaircutOrGrooming
-
 OlderHaircutBrother:
 	ld hl, HappinessData_OlderHaircutBrother
+	jr HaircutOrGrooming
+
+YoungerHaircutBrother:
+	ld hl, HappinessData_YoungerHaircutBrother
 	jr HaircutOrGrooming
 
 DaisysGrooming:
@@ -33,7 +33,7 @@ HaircutOrGrooming:
 	cp EGG
 	jr z, .egg
 	push hl
-	call GetCurNick
+	call GetCurNickname
 	call CopyPokemonName_Buffer1_Buffer3
 	pop hl
 	call Random

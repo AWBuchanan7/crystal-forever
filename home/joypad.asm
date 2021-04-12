@@ -1,5 +1,5 @@
-JoypadInt::
-; Replaced by Joypad, called from VBlank instead of the useless
+Joypad::
+; Replaced by UpdateJoypad, called from VBlank instead of the useless
 ; joypad interrupt.
 
 ; This is a placeholder in case the interrupt is somehow enabled.
@@ -13,7 +13,8 @@ ClearJoypad::
 	ldh [hJoyDown], a
 	ret
 
-Joypad::
+UpdateJoypad::
+; This is called automatically every frame in VBlank.
 ; Read the joypad register and translate it to something more
 ; workable for use in-game. There are 8 buttons, so we can use
 ; one byte to contain all player input.
@@ -26,8 +27,8 @@ Joypad::
 ; hJoypadSum: pressed so far
 
 ; Any of these three bits can be used to disable input.
-	ld a, [wcfbe]
-	and %11010000
+	ld a, [wJoypadDisable]
+	and (1 << JOYPAD_DISABLE_MON_FAINT_F) | (1 << JOYPAD_DISABLE_SGB_TRANSFER_F) | (1 << 4)
 	ret nz
 
 ; If we're saving, input is disabled.
@@ -260,19 +261,20 @@ StopAutoInput::
 	ld [wInputType], a
 	ret
 
-JoyTitleScreenInput::
+JoyTitleScreenInput:: ; unreferenced
 .loop
-
 	call DelayFrame
 
 	push bc
 	call JoyTextDelay
 	pop bc
 
+; Save data can be deleted by pressing Up + B + Select.
 	ldh a, [hJoyDown]
 	cp D_UP | SELECT | B_BUTTON
 	jr z, .keycombo
 
+; Press Start or A to start the game.
 	ldh a, [hJoyLast]
 	and START | A_BUTTON
 	jr nz, .keycombo
@@ -294,7 +296,7 @@ JoyWaitAorB::
 	ldh a, [hJoyPressed]
 	and A_BUTTON | B_BUTTON
 	ret nz
-	call RTC
+	call UpdateTimeAndPals
 	jr .loop
 
 WaitButton::
@@ -338,14 +340,20 @@ JoyTextDelay::
 	ret
 
 WaitPressAorB_BlinkCursor::
-	ldh a, [hMapObjectIndexBuffer]
+; Show a blinking cursor in the lower right-hand
+; corner of a textbox and wait until A or B is
+; pressed.
+;
+; NOTE: The cursor has to be shown before calling
+; this function or no cursor will be shown at all.
+	ldh a, [hMapObjectIndex]
 	push af
-	ldh a, [hObjectStructIndexBuffer]
+	ldh a, [hObjectStructIndex]
 	push af
 	xor a
-	ldh [hMapObjectIndexBuffer], a
+	ldh [hMapObjectIndex], a
 	ld a, 6
-	ldh [hObjectStructIndexBuffer], a
+	ldh [hObjectStructIndex], a
 
 .loop
 	push hl
@@ -359,9 +367,9 @@ WaitPressAorB_BlinkCursor::
 	jr z, .loop
 
 	pop af
-	ldh [hObjectStructIndexBuffer], a
+	ldh [hObjectStructIndex], a
 	pop af
-	ldh [hMapObjectIndexBuffer], a
+	ldh [hMapObjectIndex], a
 	ret
 
 SimpleWaitPressAorB::
@@ -372,7 +380,10 @@ SimpleWaitPressAorB::
 	jr z, .loop
 	ret
 
-ButtonSound::
+PromptButton::
+; Show a blinking cursor in the lower right-hand
+; corner of a textbox and wait until A or B is
+; pressed, afterwards, play a sound.
 	ld a, [wLinkMode]
 	and a
 	jr nz, .link
@@ -403,7 +414,7 @@ ButtonSound::
 	ldh a, [hJoyPressed]
 	and A_BUTTON | B_BUTTON
 	jr nz, .received_input
-	call RTC
+	call UpdateTimeAndPals
 	ld a, $1
 	ldh [hBGMapMode], a
 	call DelayFrame
@@ -436,37 +447,37 @@ BlinkCursor::
 	cp b
 	pop bc
 	jr nz, .place_arrow
-	ldh a, [hMapObjectIndexBuffer]
+	ldh a, [hMapObjectIndex]
 	dec a
-	ldh [hMapObjectIndexBuffer], a
+	ldh [hMapObjectIndex], a
 	ret nz
-	ldh a, [hObjectStructIndexBuffer]
+	ldh a, [hObjectStructIndex]
 	dec a
-	ldh [hObjectStructIndexBuffer], a
+	ldh [hObjectStructIndex], a
 	ret nz
 	ld a, "─"
 	ld [hl], a
 	ld a, -1
-	ldh [hMapObjectIndexBuffer], a
+	ldh [hMapObjectIndex], a
 	ld a, 6
-	ldh [hObjectStructIndexBuffer], a
+	ldh [hObjectStructIndex], a
 	ret
 
 .place_arrow
-	ldh a, [hMapObjectIndexBuffer]
+	ldh a, [hMapObjectIndex]
 	and a
 	ret z
 	dec a
-	ldh [hMapObjectIndexBuffer], a
+	ldh [hMapObjectIndex], a
 	ret nz
 	dec a
-	ldh [hMapObjectIndexBuffer], a
-	ldh a, [hObjectStructIndexBuffer]
+	ldh [hMapObjectIndex], a
+	ldh a, [hObjectStructIndex]
 	dec a
-	ldh [hObjectStructIndexBuffer], a
+	ldh [hObjectStructIndex], a
 	ret nz
 	ld a, 6
-	ldh [hObjectStructIndexBuffer], a
+	ldh [hObjectStructIndex], a
 	ld a, "▼"
 	ld [hl], a
 	ret

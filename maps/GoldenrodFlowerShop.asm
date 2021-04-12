@@ -1,11 +1,11 @@
-	const_def 2 ; object constants
+	object_const_def
 	const GOLDENRODFLOWERSHOP_TEACHER
 	const GOLDENRODFLOWERSHOP_FLORIA
 
 GoldenrodFlowerShop_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 FlowerShopTeacherScript:
 	checkevent EVENT_FOUGHT_SUDOWOODO
@@ -20,8 +20,8 @@ FlowerShopTeacherScript:
 	iffalse .NoPlainBadge
 	faceplayer
 	opentext
-	writetext UnknownText_0x554c2
-	buttonsound
+	writetext GoldenrodFlowerShopTeacherHeresTheSquirtbottleText
+	promptbutton
 	verbosegiveitem SQUIRTBOTTLE
 	setevent EVENT_GOT_SQUIRTBOTTLE
 	closetext
@@ -32,19 +32,19 @@ FlowerShopTeacherScript:
 .Lalala:
 	turnobject GOLDENRODFLOWERSHOP_TEACHER, LEFT
 	opentext
-	writetext UnknownText_0x5552e
+	writetext GoldenrodFlowerShopTeacherLalalaHavePlentyOfWaterText
 	waitbutton
 	closetext
 	end
 
 .GotSquirtbottle:
-	jumptextfaceplayer UnknownText_0x5550d
+	jumptextfaceplayer GoldenrodFlowerShopTeacherDontDoAnythingDangerousText
 
 .NoPlainBadge:
-	jumptextfaceplayer UnknownText_0x55463
+	jumptextfaceplayer GoldenrodFlowerShopTeacherAskWantToBorrowWaterBottleText
 
 .HaventMetFloria:
-	jumptextfaceplayer UnknownText_0x553d4
+	jumptextfaceplayer GoldenrodFlowerShopTeacherMySisterWentToSeeWigglyTreeRoute36Text
 
 FlowerShopFloriaScript:
 	faceplayer
@@ -53,7 +53,7 @@ FlowerShopFloriaScript:
 	iftrue .FoughtSudowoodo
 	checkevent EVENT_GOT_SQUIRTBOTTLE
 	iftrue .GotSquirtbottle
-	writetext UnknownText_0x55561
+	writetext GoldenrodFlowerShopFloriaWonderIfSisWillLendWaterBottleText
 	waitbutton
 	closetext
 	setevent EVENT_TALKED_TO_FLORIA_AT_FLOWER_SHOP
@@ -62,30 +62,27 @@ FlowerShopFloriaScript:
 	end
 
 .GotSquirtbottle:
-	writetext UnknownText_0x555e6
+	writetext GoldenrodFlowerShopFloriaYouBeatWhitneyText
 	waitbutton
 	closetext
 	end
 
 .FoughtSudowoodo:
-	writetext UnknownText_0x55604
+	writetext GoldenrodFlowerShopFloriaItReallyWasAMonText
 	waitbutton
 	closetext
 	end
 
-FlowerShopShelf1:
-; unused
-	jumpstd picturebookshelf
+FlowerShopShelf1: ; unreferenced
+	jumpstd PictureBookshelfScript
 
-FlowerShopShelf2:
-; unused
-	jumpstd magazinebookshelf
+FlowerShopShelf2: ; unreferenced
+	jumpstd MagazineBookshelfScript
 
-FlowerShopRadio:
-; unused
-	jumpstd radio2
+FlowerShopRadio: ; unreferenced
+	jumpstd Radio2Script
 
-UnknownText_0x553d4:
+GoldenrodFlowerShopTeacherMySisterWentToSeeWigglyTreeRoute36Text:
 	text "Have you seen that"
 	line "wiggly tree that's"
 
@@ -102,7 +99,7 @@ UnknownText_0x553d4:
 	line "it dangerous?"
 	done
 
-UnknownText_0x55463:
+GoldenrodFlowerShopTeacherAskWantToBorrowWaterBottleText:
 	text "Do you want to"
 	line "borrow the water"
 
@@ -113,7 +110,7 @@ UnknownText_0x55463:
 	line "dangerous with it."
 	done
 
-UnknownText_0x554c2:
+GoldenrodFlowerShopTeacherHeresTheSquirtbottleText:
 	text "Oh, you're better"
 	line "than WHITNEY…"
 
@@ -122,18 +119,18 @@ UnknownText_0x554c2:
 	cont "SQUIRTBOTTLE!"
 	done
 
-UnknownText_0x5550d:
+GoldenrodFlowerShopTeacherDontDoAnythingDangerousText:
 	text "Don't do anything"
 	line "too dangerous!"
 	done
 
-UnknownText_0x5552e:
+GoldenrodFlowerShopTeacherLalalaHavePlentyOfWaterText:
 	text "Lalala lalalala."
 	line "Have plenty of"
 	cont "water, my lovely!"
 	done
 
-UnknownText_0x55561:
+GoldenrodFlowerShopFloriaWonderIfSisWillLendWaterBottleText:
 	text "When I told my sis"
 	line "about the jiggly"
 
@@ -147,12 +144,12 @@ UnknownText_0x55561:
 	line "bottle…"
 	done
 
-UnknownText_0x555e6:
+GoldenrodFlowerShopFloriaYouBeatWhitneyText:
 	text "Wow, you beat"
 	line "WHITNEY? Cool!"
 	done
 
-UnknownText_0x55604:
+GoldenrodFlowerShopFloriaItReallyWasAMonText:
 	text "So it really was a"
 	line "#MON!"
 	done
@@ -160,14 +157,14 @@ UnknownText_0x55604:
 GoldenrodFlowerShop_MapEvents:
 	db 0, 0 ; filler
 
-	db 2 ; warp events
+	def_warp_events
 	warp_event  2,  7, GOLDENROD_CITY, 6
 	warp_event  3,  7, GOLDENROD_CITY, 6
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 0 ; bg events
+	def_bg_events
 
-	db 2 ; object events
+	def_object_events
 	object_event  2,  4, SPRITE_TEACHER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, FlowerShopTeacherScript, -1
 	object_event  5,  6, SPRITE_LASS, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, FlowerShopFloriaScript, EVENT_FLORIA_AT_FLOWER_SHOP

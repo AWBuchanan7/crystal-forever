@@ -6,32 +6,33 @@ UNDERGROUND_DOOR_OPEN1   EQU $2d
 UNDERGROUND_DOOR_OPEN2   EQU $3d
 
 ugdoor: MACRO
-\1_YCOORD EQU \2
-\1_XCOORD EQU \3
+UGDOOR_\1_XCOORD EQU \2
+UGDOOR_\1_YCOORD EQU \3
 ENDM
 
-	ugdoor UGDOOR_1,  $10, $06
-	ugdoor UGDOOR_2,  $0a, $06
-	ugdoor UGDOOR_3,  $02, $06
-	ugdoor UGDOOR_4,  $02, $0a
-	ugdoor UGDOOR_5,  $0a, $0a
-	ugdoor UGDOOR_6,  $10, $0a
-	ugdoor UGDOOR_7,  $0c, $06
-	ugdoor UGDOOR_8,  $0c, $08
-	ugdoor UGDOOR_9,  $06, $06
-	ugdoor UGDOOR_10, $06, $08
-	ugdoor UGDOOR_11, $0c, $0a
-	ugdoor UGDOOR_12, $0c, $0c
-	ugdoor UGDOOR_13, $06, $0a
-	ugdoor UGDOOR_14, $06, $0c
-	ugdoor UGDOOR_15, $12, $0a
-	ugdoor UGDOOR_16, $12, $0c
+	;      id,  x,  y
+	ugdoor  1,  6, 16
+	ugdoor  2,  6, 10
+	ugdoor  3,  6,  2
+	ugdoor  4, 10,  2
+	ugdoor  5, 10, 10
+	ugdoor  6, 10, 16
+	ugdoor  7,  6, 12
+	ugdoor  8,  8, 12
+	ugdoor  9,  6,  6
+	ugdoor 10,  8,  6
+	ugdoor 11, 10, 12
+	ugdoor 12, 12, 12
+	ugdoor 13, 10,  6
+	ugdoor 14, 12,  6
+	ugdoor 15, 10, 18
+	ugdoor 16, 12, 18
 
 doorstate: MACRO
 	changeblock UGDOOR_\1_YCOORD, UGDOOR_\1_XCOORD, UNDERGROUND_DOOR_\2
 ENDM
 
-	const_def 2 ; object constants
+	object_const_def
 	const GOLDENRODUNDERGROUNDSWITCHROOMENTRANCES_PHARMACIST1
 	const GOLDENRODUNDERGROUNDSWITCHROOMENTRANCES_PHARMACIST2
 	const GOLDENRODUNDERGROUNDSWITCHROOMENTRANCES_ROCKET1
@@ -45,11 +46,11 @@ ENDM
 	const GOLDENRODUNDERGROUNDSWITCHROOMENTRANCES_SILVER
 
 GoldenrodUndergroundSwitchRoomEntrances_MapScripts:
-	db 2 ; scene scripts
+	def_scene_scripts
 	scene_script .DummyScene0 ; SCENE_DEFAULT
 	scene_script .DummyScene1 ; SCENE_FINISHED
 
-	db 1 ; callbacks
+	def_callbacks
 	callback MAPCALLBACK_TILES, .UpdateDoorPositions
 
 .DummyScene0:
@@ -108,7 +109,7 @@ GoldenrodUndergroundSwitchRoomEntrances_MapScripts:
 	doorstate 15, CLOSED1
 	doorstate 16, OPEN1
 .false14
-	return
+	endcallback
 
 GoldenrodUndergroundSwitchRoomEntrancesSuperNerdScript:
 	jumptextfaceplayer GoldenrodUndergroundSwitchRoomEntrances_SuperNerdText
@@ -273,7 +274,7 @@ TrainerGruntF3:
 Switch1Script:
 	opentext
 	writetext SwitchRoomText_Switch1
-	buttonsound
+	promptbutton
 	checkevent EVENT_SWITCH_1
 	iftrue .On
 	writetext SwitchRoomText_OffTurnOn
@@ -298,7 +299,7 @@ Switch1Script:
 Switch2Script:
 	opentext
 	writetext SwitchRoomText_Switch2
-	buttonsound
+	promptbutton
 	checkevent EVENT_SWITCH_2
 	iftrue .On
 	writetext SwitchRoomText_OffTurnOn
@@ -323,7 +324,7 @@ Switch2Script:
 Switch3Script:
 	opentext
 	writetext SwitchRoomText_Switch3
-	buttonsound
+	promptbutton
 	checkevent EVENT_SWITCH_3
 	iftrue .On
 	writetext SwitchRoomText_OffTurnOn
@@ -348,7 +349,7 @@ Switch3Script:
 EmergencySwitchScript:
 	opentext
 	writetext SwitchRoomText_Emergency
-	buttonsound
+	promptbutton
 	checkevent EVENT_EMERGENCY_SWITCH
 	iftrue .On
 	writetext SwitchRoomText_OffTurnOn
@@ -931,7 +932,7 @@ SwitchRoomText_Emergency:
 GoldenrodUndergroundSwitchRoomEntrances_MapEvents:
 	db 0, 0 ; filler
 
-	db 9 ; warp events
+	def_warp_events
 	warp_event 23,  3, GOLDENROD_UNDERGROUND, 6
 	warp_event 22, 10, GOLDENROD_UNDERGROUND_WAREHOUSE, 1
 	warp_event 23, 10, GOLDENROD_UNDERGROUND_WAREHOUSE, 2
@@ -942,11 +943,11 @@ GoldenrodUndergroundSwitchRoomEntrances_MapEvents:
 	warp_event 20, 29, GOLDENROD_CITY, 13
 	warp_event 21, 29, GOLDENROD_CITY, 13
 
-	db 2 ; coord events
+	def_coord_events
 	coord_event 19,  4, SCENE_DEFAULT, UndergroundSilverScene1
 	coord_event 19,  5, SCENE_DEFAULT, UndergroundSilverScene2
 
-	db 6 ; bg events
+	def_bg_events
 	bg_event 16,  1, BGEVENT_READ, Switch1Script
 	bg_event 10,  1, BGEVENT_READ, Switch2Script
 	bg_event  2,  1, BGEVENT_READ, Switch3Script
@@ -954,7 +955,7 @@ GoldenrodUndergroundSwitchRoomEntrances_MapEvents:
 	bg_event  8,  9, BGEVENT_ITEM, GoldenrodUndergroundSwitchRoomEntrancesHiddenMaxPotion
 	bg_event  1,  8, BGEVENT_ITEM, GoldenrodUndergroundSwitchRoomEntrancesHiddenRevive
 
-	db 11 ; object events
+	def_object_events
 	object_event  9, 12, SPRITE_PHARMACIST, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 2, TrainerBurglarDuncan, EVENT_RADIO_TOWER_ROCKET_TAKEOVER
 	object_event  4,  8, SPRITE_PHARMACIST, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 2, TrainerBurglarEddie, EVENT_RADIO_TOWER_ROCKET_TAKEOVER
 	object_event 17,  2, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_TRAINER, 3, TrainerGruntM13, EVENT_RADIO_TOWER_ROCKET_TAKEOVER

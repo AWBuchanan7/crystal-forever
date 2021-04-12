@@ -1,4 +1,4 @@
-	const_def 2 ; object constants
+	object_const_def
 	const FASTSHIPB1F_SAILOR1
 	const FASTSHIPB1F_SAILOR2
 	const FASTSHIPB1F_SAILOR3
@@ -13,11 +13,11 @@
 	const FASTSHIPB1F_YOUNGSTER2
 
 FastShipB1F_MapScripts:
-	db 2 ; scene scripts
+	def_scene_scripts
 	scene_script .DummyScene0 ; SCENE_DEFAULT
 	scene_script .DummyScene1 ; SCENE_FINISHED
 
-	db 0 ; callbacks
+	def_callbacks
 
 .DummyScene0:
 	end
@@ -28,7 +28,7 @@ FastShipB1F_MapScripts:
 FastShipB1FSailorBlocksLeft:
 	checkevent EVENT_FAST_SHIP_B1F_SAILOR_RIGHT
 	iftrue FastShipB1FAlreadyBlocked
-	applymovement FASTSHIPB1F_SAILOR2, FashShipB1FSailorBlocksLeftMovement
+	applymovement FASTSHIPB1F_SAILOR2, FastShipB1FSailorBlocksLeftMovement
 	moveobject FASTSHIPB1F_SAILOR1, 30, 6
 	appear FASTSHIPB1F_SAILOR1
 	pause 5
@@ -38,7 +38,7 @@ FastShipB1FSailorBlocksLeft:
 FastShipB1FSailorBlocksRight:
 	checkevent EVENT_FAST_SHIP_B1F_SAILOR_LEFT
 	iftrue FastShipB1FAlreadyBlocked
-	applymovement FASTSHIPB1F_SAILOR1, FashShipB1FSailorBlocksRightMovement
+	applymovement FASTSHIPB1F_SAILOR1, FastShipB1FSailorBlocksRightMovement
 	moveobject FASTSHIPB1F_SAILOR2, 31, 6
 	appear FASTSHIPB1F_SAILOR2
 	pause 5
@@ -79,7 +79,7 @@ FastShipB1FSailorScript:
 	end
 
 .NotFoundGirl:
-	buttonsound
+	promptbutton
 	writetext FastShipB1FOnDutySailorSawLittleGirlText
 	waitbutton
 	closetext
@@ -201,17 +201,17 @@ TrainerSchoolboyRicky:
 	closetext
 	end
 
-FashShipB1FTrashcan:
-	jumpstd trashcan
+FastShipB1FTrashcan:
+	jumpstd TrashCanScript
 
-FashShipB1FSailorBlocksRightMovement:
+FastShipB1FSailorBlocksRightMovement:
 	fix_facing
 	big_step RIGHT
 	remove_fixed_facing
 	turn_head DOWN
 	step_end
 
-FashShipB1FSailorBlocksLeftMovement:
+FastShipB1FSailorBlocksLeftMovement:
 	fix_facing
 	big_step LEFT
 	remove_fixed_facing
@@ -449,18 +449,18 @@ SchoolboyRickyAfterBattleText:
 FastShipB1F_MapEvents:
 	db 0, 0 ; filler
 
-	db 2 ; warp events
+	def_warp_events
 	warp_event  5, 11, FAST_SHIP_1F, 11
 	warp_event 31, 13, FAST_SHIP_1F, 12
 
-	db 2 ; coord events
+	def_coord_events
 	coord_event 30,  7, SCENE_DEFAULT, FastShipB1FSailorBlocksLeft
 	coord_event 31,  7, SCENE_DEFAULT, FastShipB1FSailorBlocksRight
 
-	db 1 ; bg events
-	bg_event 27,  9, BGEVENT_READ, FashShipB1FTrashcan
+	def_bg_events
+	bg_event 27,  9, BGEVENT_READ, FastShipB1FTrashcan
 
-	db 12 ; object events
+	def_object_events
 	object_event 30,  6, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, FastShipB1FSailorScript, EVENT_FAST_SHIP_B1F_SAILOR_LEFT
 	object_event 31,  6, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, FastShipB1FSailorScript, EVENT_FAST_SHIP_B1F_SAILOR_RIGHT
 	object_event  9, 11, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 3, TrainerSailorJeff, EVENT_FAST_SHIP_PASSENGERS_FIRST_TRIP

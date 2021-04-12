@@ -15,7 +15,7 @@ _CheckTrainerBattle::
 
 ; Skip the player object.
 	ld a, 1
-	ld de, wMapObjects + OBJECT_LENGTH
+	ld de, wMap1Object
 
 .loop
 
@@ -78,7 +78,7 @@ _CheckTrainerBattle::
 
 .next
 	pop de
-	ld hl, OBJECT_LENGTH
+	ld hl, MAPOBJECT_LENGTH
 	add hl, de
 	ld d, h
 	ld e, l
@@ -95,31 +95,31 @@ _CheckTrainerBattle::
 	pop af
 	ldh [hLastTalked], a
 	ld a, b
-	ld [wEngineBuffer2], a
+	ld [wSeenTrainerDistance], a
 	ld a, c
-	ld [wEngineBuffer3], a
+	ld [wSeenTrainerDirection], a
 	jr LoadTrainer_continue
 
 TalkToTrainer::
 	ld a, 1
-	ld [wEngineBuffer2], a
+	ld [wSeenTrainerDistance], a
 	ld a, -1
-	ld [wEngineBuffer3], a
+	ld [wSeenTrainerDirection], a
 
 LoadTrainer_continue::
 	call GetMapScriptsBank
-	ld [wEngineBuffer1], a
+	ld [wSeenTrainerBank], a
 
 	ldh a, [hLastTalked]
 	call GetMapObject
 
 	ld hl, MAPOBJECT_SCRIPT_POINTER
 	add hl, bc
-	ld a, [wEngineBuffer1]
-	call GetFarHalfword
+	ld a, [wSeenTrainerBank]
+	call GetFarWord
 	ld de, wTempTrainer
 	ld bc, wTempTrainerEnd - wTempTrainer
-	ld a, [wEngineBuffer1]
+	ld a, [wSeenTrainerBank]
 	call FarCopyBytes
 	xor a
 	ld [wRunningTrainerBattleScript], a
@@ -136,7 +136,7 @@ FacingPlayerDistance_bc::
 
 FacingPlayerDistance::
 ; Return carry if the sprite at bc is facing the player,
-; and its distance in d.
+; its distance in d, and its direction in e.
 
 	ld hl, OBJECT_NEXT_MAP_X ; x
 	add hl, bc
@@ -203,7 +203,7 @@ FacingPlayerDistance::
 	and a
 	ret
 
-CheckTrainerFlag::
+CheckTrainerFlag:: ; unreferenced
 	push bc
 	ld hl, OBJECT_MAP_OBJECT_INDEX
 	add hl, bc
@@ -215,7 +215,7 @@ CheckTrainerFlag::
 	ld h, [hl]
 	ld l, a
 	call GetMapScriptsBank
-	call GetFarHalfword
+	call GetFarWord
 	ld d, h
 	ld e, l
 	push de
@@ -230,7 +230,8 @@ CheckTrainerFlag::
 PrintWinLossText::
 	ld a, [wBattleType]
 	cp BATTLETYPE_CANLOSE
-	jr .canlose ; ??????????
+	; code was probably dummied out here
+	jr .canlose
 
 ; unused
 	ld hl, wWinTextPointer

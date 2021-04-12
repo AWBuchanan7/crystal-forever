@@ -7,19 +7,23 @@
 	const MONMENUVALUE_MOVE   ; 5
 	const MONMENUVALUE_MAIL   ; 6
 	const MONMENUVALUE_ERROR  ; 7
+NUM_MONMENUVALUES EQU const_value - 1
 
 MonMenuOptionStrings:
 ; entries correspond to MONMENUVALUE_* constants
-	db "STATS@"
-	db "SWITCH@"
-	db "ITEM@"
-	db "CANCEL@"
-	db "MOVE@"
-	db "MAIL@"
-	db "ERROR!@"
+	list_start MonMenuOptionStrings
+	li "STATS"
+	li "SWITCH"
+	li "ITEM"
+	li "CANCEL"
+	li "MOVE"
+	li "MAIL"
+	li "ERROR!"
+	assert_list_length NUM_MONMENUVALUES
 
 MonMenuOptions:
 ; category, item, value; actions are in PokemonActionSubmenu (see engine/pokemon/mon_menu.asm)
+	table_width 3, MonMenuOptions
 ; moves
 	db MONMENU_FIELD_MOVE, MONMENUITEM_CUT,        CUT
 	db MONMENU_FIELD_MOVE, MONMENUITEM_FLY,        FLY
@@ -43,4 +47,5 @@ MonMenuOptions:
 	db MONMENU_MENUOPTION, MONMENUITEM_MOVE,       MONMENUVALUE_MOVE
 	db MONMENU_MENUOPTION, MONMENUITEM_MAIL,       MONMENUVALUE_MAIL
 	db MONMENU_MENUOPTION, MONMENUITEM_ERROR,      MONMENUVALUE_ERROR
-	db -1
+	assert_table_length NUM_MONMENUITEMS
+	db -1 ; end

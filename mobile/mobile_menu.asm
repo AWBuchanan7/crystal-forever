@@ -23,7 +23,7 @@ Function49f16:
 	hlcoord 0, 12
 	ld b, 4
 	ld c, SCREEN_HEIGHT
-	call TextBox
+	call Textbox
 	xor a
 	ld de, String_0x49fe9
 	hlcoord 1, 14
@@ -65,7 +65,7 @@ Function49f16:
 .b_button
 	pop bc
 	call ClearBGPalettes
-	call ClearTileMap
+	call ClearTilemap
 	ld a, MUSIC_MAIN_MENU
 	ld [wMapMusic], a
 	ld de, MUSIC_MAIN_MENU
@@ -108,24 +108,20 @@ MobileString1:
 	db   "@"
 
 MobileStrings2:
-
+; string 0
 String_0x49fe9:
 	db   "めいし¯つくったり"
 	next "ほぞんしておける　フォルダーです@"
-
-String_0x4a004:
+; string 1
 	db   "モバイルたいせんや　じぶんのめいしで"
 	next "つかう　あいさつ¯つくります@"
-
-String_0x4a026:
+; string 2
 	db   "あなた<NO>じゅうしょや　ねんれいの"
 	next "せ<TTE>い¯かえられます@"
-
-String_0x4a042:
+; string 3
 	db  "モバイルセンター<NI>せつぞくするとき"
 	next "ひつような　こと¯きめます@"
-
-String_0x4a062:
+; string 4
 	db   "まえ<NO>がめん　<NI>もどります"
 	next "@"
 
@@ -146,7 +142,7 @@ MobileMenu_InitMenuBuffers:
 	ld [hli], a
 	ld a, $20 ; w2DMenuCursorOffsets
 	ld [hli], a
-	; this is a stupid way to load $c3
+	; could have done "ld a, A_BUTTON | D_UP | D_DOWN | B_BUTTON" instead
 	ld a, A_BUTTON
 	add D_UP
 	add D_DOWN
@@ -180,7 +176,7 @@ Function4a0c2:
 	ld a, 2
 	call MenuClickSound
 	ld a, BANK(sPlayerData)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, sPlayerData + wPlayerName - wPlayerData
 	ld de, wPlayerName
 	ld bc, NAME_LENGTH_JAPANESE
@@ -208,7 +204,7 @@ Function4a100:
 	call ClearBGPalettes
 	call Function4a13b
 	call ClearBGPalettes
-	call ClearTileMap
+	call ClearTilemap
 
 asm_4a111:
 	pop bc
@@ -258,7 +254,7 @@ Function4a149:
 	hlcoord 0, 12
 	ld b, $4
 	ld c, $12
-	call TextBox
+	call Textbox
 	ld a, [wMenuCursorY]
 	dec a
 	ld hl, Strings_4a23d
@@ -271,7 +267,7 @@ Function4a149:
 	call ClearBox
 	hlcoord 1, 14
 	call PlaceString
-	farcall Mobile_OpenAndCloseMenu_HDMATransferTileMapAndAttrMap
+	farcall Mobile_OpenAndCloseMenu_HDMATransferTilemapAndAttrmap
 	call SetPalettes
 	call StaticMenuJoypad
 	ld hl, wMenuCursorY
@@ -378,7 +374,7 @@ Function4a28a:
 	call WaitBGMap
 	call LoadStandardMenuHeader
 	ld a, $5
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [$aa4b]
 	call CloseSRAM
 	and a
@@ -390,7 +386,7 @@ Function4a28a:
 	hlcoord 14, 1
 	ld de, String_4a34b
 	call PlaceString
-	farcall Mobile_OpenAndCloseMenu_HDMATransferTileMapAndAttrMap
+	farcall Mobile_OpenAndCloseMenu_HDMATransferTilemapAndAttrmap
 	call Function4a118
 	call ScrollingMenuJoypad
 	push af
@@ -413,13 +409,13 @@ Function4a28a:
 
 .DeleteLoginPassword:
 	call PlaceHollowCursor
-	ld hl, UnknownText_0x4a358
+	ld hl, DeleteSavedLoginPasswordText
 	call PrintText
 	hlcoord 14, 7
 	ld b, 3
 	ld c, 4
-	call TextBox
-	farcall Mobile_OpenAndCloseMenu_HDMATransferTileMapAndAttrMap
+	call Textbox
+	farcall Mobile_OpenAndCloseMenu_HDMATransferTilemapAndAttrmap
 	ld hl, DeletePassword_YesNo_MenuHeader
 	call LoadMenuHeader
 	call VerticalMenu
@@ -429,24 +425,24 @@ Function4a28a:
 	cp $2
 	jr z, .dont_delete_password
 	ld a, BANK(sMobileLoginPassword)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, sMobileLoginPassword
 	xor a
 	ld bc, MOBILE_LOGIN_PASSWORD_LENGTH
 	call ByteFill
 	call CloseSRAM
-	ld hl, UnknownText_0x4a35d
+	ld hl, DeletedTheLoginPasswordText
 	call PrintText
 	call JoyWaitAorB
 .dont_delete_password
 	call ExitMenu
 .quit
 	call Call_ExitMenu
-	farcall Mobile_OpenAndCloseMenu_HDMATransferTileMapAndAttrMap
+	farcall Mobile_OpenAndCloseMenu_HDMATransferTilemapAndAttrmap
 	xor a
 	ret
 
-MenuHeader_0x4a346:
+MenuHeader_0x4a346: ; unreferenced
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 12, 0, SCREEN_WIDTH - 1, 6
 
@@ -455,14 +451,12 @@ String_4a34b:
 	next "けす"
 	next "もどる@"
 
-UnknownText_0x4a358:
-	; Delete the saved LOG-IN PASSWORD?
-	text_far UnknownText_0x1c5196
+DeleteSavedLoginPasswordText:
+	text_far _DeleteSavedLoginPasswordText
 	text_end
 
-UnknownText_0x4a35d:
-	; Deleted the LOG-IN PASSWORD.
-	text_far UnknownText_0x1c51b9
+DeletedTheLoginPasswordText:
+	text_far _DeletedTheLoginPasswordText
 	text_end
 
 DeletePassword_YesNo_MenuHeader:
@@ -504,7 +498,7 @@ Function4a373:
 	ld [hli], a
 	ret
 
-Function4a39a:
+Function4a39a: ; unreferenced
 	call Function4a485
 	call Function4a492
 	call Function4a3aa
@@ -576,7 +570,7 @@ Function4a3aa:
 	call Function4a6d8
 	ret
 
-Function4a449:
+Function4a449: ; unreferenced
 	ld bc, 3 * SCREEN_WIDTH
 	ld a, $0
 	hlcoord 0, 0
@@ -602,14 +596,14 @@ Function4a449:
 	ret
 
 Function4a485:
-	ld de, GFX_49c0c
+	ld de, MobileMenuGFX
 	ld hl, vTiles2 tile $00
-	lb bc, BANK(GFX_49c0c), 13
+	lb bc, BANK(MobileMenuGFX), 13
 	call Get2bpp
 	ret
 
 Function4a492:
-	call MG_Mobile_Layout00
+	call _CrystalCGB_MobileLayout0
 	ret
 
 MainMenu_MobileStudium:
@@ -667,7 +661,7 @@ Function4a4c4:
 	hlcoord 0, 12
 	ld b, $4
 	ld c, $12
-	call TextBox
+	call Textbox
 	xor a
 	ld hl, Strings_4a5f6
 	ld d, h
@@ -717,7 +711,7 @@ asm_4a54d:
 .asm_4a574
 	pop bc
 	call ClearBGPalettes
-	call ClearTileMap
+	call ClearTilemap
 	jp Function49f0a
 .asm_4a57e
 	ld hl, wMenuCursorY
@@ -846,3 +840,9 @@ Function4a6d8:
 	dec b
 	jr nz, Function4a6d8
 	ret
+
+if DEF(_DEBUG)
+MainMenu_DebugRoom:
+	farcall _DebugRoom
+	ret
+endc

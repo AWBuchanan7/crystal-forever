@@ -1,11 +1,11 @@
 ; These functions seem to be related to backwards compatibility
 
 ValidateOTTrademon:
-	ld a, [wd003]
+	ld a, [wCurOTTradePartyMon]
 	ld hl, wOTPartyMon1Species
 	call GetPartyLocation
 	push hl
-	ld a, [wd003]
+	ld a, [wCurOTTradePartyMon]
 	inc a
 	ld c, a
 	ld b, 0
@@ -30,7 +30,7 @@ ValidateOTTrademon:
 	cp LINK_TIMECAPSULE
 	jr nz, .normal
 	ld hl, wOTPartySpecies
-	ld a, [wd003]
+	ld a, [wCurOTTradePartyMon]
 	ld c, a
 	ld b, 0
 	add hl, bc
@@ -64,12 +64,12 @@ ValidateOTTrademon:
 	scf
 	ret
 
-Functionfb5dd:
-	ld a, [wd002]
+CheckAnyOtherAliveMonsForTrade:
+	ld a, [wCurTradePartyMon]
 	ld d, a
 	ld a, [wPartyCount]
 	ld b, a
-	ld c, $0
+	ld c, 0
 .loop
 	ld a, c
 	cp d
@@ -87,7 +87,7 @@ Functionfb5dd:
 	inc c
 	dec b
 	jr nz, .loop
-	ld a, [wd003]
+	ld a, [wCurOTTradePartyMon]
 	ld hl, wOTPartyMon1HP
 	call GetPartyLocation
 	ld a, [hli]
@@ -117,12 +117,12 @@ PlaceTradePartnerNamesAndParty:
 	hlcoord 7, 9
 	ld de, wOTPartySpecies
 .PlaceSpeciesNames:
-	ld c, $0
+	ld c, 0
 .loop
 	ld a, [de]
 	cp -1
 	ret z
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	push bc
 	push hl
 	push de

@@ -1,3 +1,17 @@
+; MailGFXPointers indexes
+; LoadMailPalettes.MailPals indexes (see gfx/mail/mail.pal)
+	const_def
+	const FLOWER_MAIL_INDEX  ; 0
+	const SURF_MAIL_INDEX    ; 1
+	const LITEBLUEMAIL_INDEX ; 2
+	const PORTRAITMAIL_INDEX ; 3
+	const LOVELY_MAIL_INDEX  ; 4
+	const EON_MAIL_INDEX     ; 5
+	const MORPH_MAIL_INDEX   ; 6
+	const BLUESKY_MAIL_INDEX ; 7
+	const MUSIC_MAIL_INDEX   ; 8
+	const MIRAGE_MAIL_INDEX  ; 9
+
 ReadPartyMonMail:
 	ld a, [wCurPartyMon]
 	ld hl, sPartyMail
@@ -9,13 +23,13 @@ ReadAnyMail:
 	push de
 	call ClearBGPalettes
 	call ClearSprites
-	call ClearTileMap
+	call ClearTilemap
 	call DisableLCD
 	call LoadFontsExtra
 	pop de
 	push de
 	ld a, BANK(sPartyMail)
-	call GetSRAMBank
+	call OpenSRAM
 	farcall IsMailEuropean
 	call CloseSRAM
 	ld a, c
@@ -35,7 +49,7 @@ ReadAnyMail:
 	call .LoadGFX
 	call EnableLCD
 	call WaitBGMap
-	ld a, [wBuffer3]
+	ld a, [wCurMailIndex]
 	ld e, a
 	farcall LoadMailPalettes
 	call SetPalettes
@@ -69,16 +83,16 @@ ReadAnyMail:
 	ld l, e
 	push hl
 	ld a, BANK(sPartyMail)
-	call GetSRAMBank
+	call OpenSRAM
 	ld de, sPartyMon1MailAuthorID - sPartyMon1Mail
 	add hl, de
+	ld a, [hli] ; author id
+	ld [wCurMailAuthorID], a
 	ld a, [hli]
-	ld [wBuffer1], a
-	ld a, [hli]
-	ld [wBuffer2], a
-	ld a, [hli]
+	ld [wCurMailAuthorID + 1], a
+	ld a, [hli] ; species
 	ld [wCurPartySpecies], a
-	ld b, [hl]
+	ld b, [hl] ; type
 	call CloseSRAM
 	ld hl, MailGFXPointers
 	ld c, 0
@@ -99,7 +113,7 @@ ReadAnyMail:
 
 .got_pointer
 	ld a, c
-	ld [wBuffer3], a
+	ld [wCurMailIndex], a
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
@@ -111,6 +125,7 @@ ReadAnyMail:
 	ret
 
 MailGFXPointers:
+; entries correspond to *MAIL_INDEX constants
 	dbw FLOWER_MAIL,  LoadFlowerMailGFX
 	dbw SURF_MAIL,    LoadSurfMailGFX
 	dbw LITEBLUEMAIL, LoadLiteBlueMailGFX
@@ -121,19 +136,19 @@ MailGFXPointers:
 	dbw BLUESKY_MAIL, LoadBlueSkyMailGFX
 	dbw MUSIC_MAIL,   LoadMusicMailGFX
 	dbw MIRAGE_MAIL,  LoadMirageMailGFX
-	db -1
+	db -1 ; end
 
 LoadSurfMailGFX:
 	push bc
 	ld hl, vTiles2 tile $31
 	ld de, SurfMailBorderGFX
-	ld c, 8 * 8
+	ld c, 8 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, MailLaprasGFX
-	ld c, 6 * 8
+	ld c, 6 * LEN_1BPP_TILE
 	call LoadMailGFX_Color3
 	ld de, SurfMailWaveGFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	jr FinishLoadingSurfLiteBlueMailGFX
 
@@ -141,25 +156,25 @@ LoadLiteBlueMailGFX:
 	push bc
 	ld hl, vTiles2 tile $31
 	ld de, LiteBlueMailBorderGFX
-	ld c, 8 * 8
+	ld c, 8 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, MailDratiniGFX
-	ld c, 6 * 8
+	ld c, 6 * LEN_1BPP_TILE
 	call LoadMailGFX_Color3
 	ld de, PortraitMailUnderlineGFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 
 FinishLoadingSurfLiteBlueMailGFX:
 	ld de, SurfLiteBlueMailSmallShapesGFX
-	ld c, 2 * 8
+	ld c, 2 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
-	ld c, 2 * 8
+	ld c, 2 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
 	ld de, SurfLiteBlueMailLargeShapesGFX
-	ld c, 8 * 8
+	ld c, 8 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
-	ld c, 8 * 8
+	ld c, 8 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 
 	call DrawMailBorder
@@ -211,29 +226,29 @@ LoadEonMailGFX:
 	push bc
 	ld hl, vTiles2 tile $31
 	ld de, EonMailBorder1GFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, EonMailBorder2GFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
 	ld de, EonMailBorder2GFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
 	ld de, EonMailBorder1GFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
-	ld de, SurfMailBorderGFX + 6 * 8
-	ld c, 1 * 8
+	ld de, SurfMailBorderGFX + 6 * LEN_1BPP_TILE
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, MailEeveeGFX
-	ld c, 6 * 8
+	ld c, 6 * LEN_1BPP_TILE
 	call LoadMailGFX_Color3
 	ld hl, vTiles2 tile $3d
 	ld de, MailLargeCircleGFX
-	ld c, 4 * 8
+	ld c, 4 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
 	ld de, EonMailBorder2GFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 
 	ld a, $31
@@ -260,19 +275,19 @@ LoadLovelyMailGFX:
 	push bc
 	ld hl, vTiles2 tile $31
 	ld de, LovelyMailBorderGFX
-	ld c, 5 * 8
+	ld c, 5 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, MailPoliwagGFX
-	ld c, 6 * 8
+	ld c, 6 * LEN_1BPP_TILE
 	call LoadMailGFX_Color3
 	ld de, LovelyMailUnderlineGFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, LovelyMailLargeHeartGFX
-	ld c, 4 * 8
+	ld c, 4 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, LovelyMailSmallHeartGFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
 
 	call DrawMailBorder2
@@ -320,25 +335,25 @@ LovelyEonMail_PlaceIcons:
 LoadMorphMailGFX:
 	push bc
 	ld hl, vTiles2 tile $31
-	ld bc, 5 * 8
+	ld bc, 5 * LEN_1BPP_TILE
 	call MailGFX_GenerateMonochromeTilesColor2
-	ld de, MorphMailBorderCornerGFX + 3 * 8
-	ld c, 1 * 8
+	ld de, MorphMailBorderCornerGFX + 3 * LEN_1BPP_TILE
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, MorphMailBorderCornerGFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, MorphMailBorderGFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, EonMailBorder1GFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
 	ld de, MorphMailDividerGFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, MailDittoGFX
-	ld c, 6 * 8
+	ld c, 6 * LEN_1BPP_TILE
 	call LoadMailGFX_Color3
 	call DrawMailBorder2
 	ld a, $31
@@ -396,31 +411,31 @@ LoadBlueSkyMailGFX:
 	push bc
 	ld hl, vTiles2 tile $31
 	ld de, EonMailBorder1GFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld a, $ff
 	ld bc, 1 tiles
 	call ByteFill
 	ld de, BlueSkyMailGrassGFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color3
-	ld de, MailDragoniteGFX
-	ld c, 23 * 8
+	ld de, MailDragoniteAndSentretGFX
+	ld c, 23 * LEN_1BPP_TILE
 	call LoadMailGFX_Color3
 	ld de, MailCloudGFX
-	ld c, 6 * 8
+	ld c, 6 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
-	ld de, FlowerMailBorderGFX + 6 * 8
-	ld c, 1 * 8
+	ld de, FlowerMailBorderGFX + 6 * LEN_1BPP_TILE
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
 	ld de, MailCloudGFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
-	ld de, MailCloudGFX + 2 * 8
-	ld c, 2 * 8
+	ld de, MailCloudGFX + 2 * LEN_1BPP_TILE
+	ld c, 2 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
-	ld de, MailCloudGFX + 5 * 8
-	ld c, 1 * 8
+	ld de, MailCloudGFX + 5 * LEN_1BPP_TILE
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
 
 	ld a, $31
@@ -482,18 +497,18 @@ LoadFlowerMailGFX:
 	push bc
 	ld hl, vTiles2 tile $31
 	ld de, FlowerMailBorderGFX
-	ld c, 8 * 8
+	ld c, 8 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
 	ld de, MailOddishGFX
-	ld c, 4 * 8
+	ld c, 4 * LEN_1BPP_TILE
 	call LoadMailGFX_Color3
-	ld de, FlowerMailBorderGFX + 6 * 8
-	ld c, 1 * 8
+	ld de, FlowerMailBorderGFX + 6 * LEN_1BPP_TILE
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, FlowerMailFlowerGFX
-	ld c, 4 * 8
+	ld c, 4 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
-	ld c, 4 * 8
+	ld c, 4 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 
 	call DrawMailBorder
@@ -536,17 +551,17 @@ LoadPortraitMailGFX:
 	push bc
 	ld hl, vTiles2 tile $31
 	ld de, PortraitMailBorderGFX
-	ld c, 5 * 8
+	ld c, 5 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, PortraitMailUnderlineGFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld hl, vTiles2 tile $3d
 	ld de, PortraitMailLargePokeballGFX
-	ld c, 4 * 8
+	ld c, 4 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
 	ld de, PortraitMailSmallPokeballGFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 
 	call DrawMailBorder2
@@ -566,22 +581,22 @@ LoadMusicMailGFX:
 	push bc
 	ld hl, vTiles2 tile $31
 	ld de, MusicMailBorderGFX
-	ld c, 4 * 8
+	ld c, 4 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, MorphMailBorderGFX
-	ld c, 2 * 8
+	ld c, 2 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, MailNatuGFX
-	ld c, 6 * 8
+	ld c, 6 * LEN_1BPP_TILE
 	call LoadMailGFX_Color3
 	xor a
 	ld bc, 1 tiles
 	call ByteFill
 	ld de, MusicMailLargeNoteGFX
-	ld c, 3 * 8
+	ld c, 3 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
 	ld de, MusicMailSmallNoteGFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
 
 	ld a, $31
@@ -607,19 +622,19 @@ LoadMusicMailGFX:
 LoadMirageMailGFX:
 	push bc
 	ld hl, vTiles2 tile $31
-	ld bc, 5 * 8
+	ld bc, 5 * LEN_1BPP_TILE
 	call MailGFX_GenerateMonochromeTilesColor2
 	ld de, BlueSkyMailGrassGFX
-	ld c, 1 * 8
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
 	ld de, MailMewGFX
-	ld c, 18 * 8
+	ld c, 18 * LEN_1BPP_TILE
 	call LoadMailGFX_Color2
-	ld de, LiteBlueMailBorderGFX + 1 * 8
-	ld c, 1 * 8
+	ld de, LiteBlueMailBorderGFX + 1 * LEN_1BPP_TILE
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
-	ld de, LiteBlueMailBorderGFX + 6 * 8
-	ld c, 1 * 8
+	ld de, LiteBlueMailBorderGFX + 6 * LEN_1BPP_TILE
+	ld c, 1 * LEN_1BPP_TILE
 	call LoadMailGFX_Color1
 
 	call DrawMailBorder2
@@ -680,7 +695,7 @@ MailGFX_PlaceMessage:
 	ld bc, MAIL_STRUCT_LENGTH
 	ld de, wTempMail
 	ld a, BANK(sPartyMail)
-	call GetSRAMBank
+	call OpenSRAM
 	call CopyBytes
 	call CloseSRAM
 	ld hl, wTempMailAuthor
@@ -697,19 +712,20 @@ MailGFX_PlaceMessage:
 	ld a, [de]
 	and a
 	ret z
-	ld a, [wBuffer3]
+	ld a, [wCurMailIndex]
 	hlcoord 8, 14
-	cp $3 ; PORTRAITMAIL
+	cp PORTRAITMAIL_INDEX
 	jr z, .place_author
 	hlcoord 6, 14
-	cp $6 ; MORPH_MAIL
+	cp MORPH_MAIL_INDEX
 	jr z, .place_author
 	hlcoord 5, 14
 
 .place_author
 	jp PlaceString
 
-Unreferenced_Functionb984e:
+InvertBytes: ; unreferenced
+; invert bc bytes starting at hl
 .loop
 	ld a, [hl]
 	xor $ff
@@ -766,7 +782,7 @@ Mail_Place14TileAlternatingRow:
 	ld b, 14 / 2
 	jr Mail_PlaceAlternatingRow
 
-Mail_Place16TileAlternatingRow:
+Mail_Place16TileAlternatingRow: ; unreferenced
 	push af
 	ld b, 16 / 2
 	jr Mail_PlaceAlternatingRow
@@ -774,6 +790,7 @@ Mail_Place16TileAlternatingRow:
 Mail_Place18TileAlternatingRow:
 	push af
 	ld b, 18 / 2
+	; fallthrough
 
 Mail_PlaceAlternatingRow:
 .loop
@@ -811,16 +828,16 @@ Mail_PlaceAlternatingColumn:
 	pop af
 	ret
 
-Mail_Draw7TileRow:
-	ld b, $7
+Mail_Draw7TileRow: ; unreferenced
+	ld b, 7
 	jr Mail_DrawRowLoop
 
 Mail_Draw13TileRow:
-	ld b, $d
+	ld b, 13
 	jr Mail_DrawRowLoop
 
 Mail_Draw16TileRow:
-	ld b, $10
+	ld b, 16
 	jr Mail_DrawRowLoop
 
 Mail_DrawTopBottomBorder:
@@ -829,6 +846,7 @@ Mail_DrawTopBottomBorder:
 
 Mail_DrawFullWidthBorder:
 	ld b, SCREEN_WIDTH
+	; fallthrough
 
 Mail_DrawRowLoop:
 .loop

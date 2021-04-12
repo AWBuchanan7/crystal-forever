@@ -1,4 +1,4 @@
-	const_def 2 ; object constants
+	object_const_def
 	const VERMILIONCITY_TEACHER
 	const VERMILIONCITY_GRAMPS
 	const VERMILIONCITY_MACHOP
@@ -7,14 +7,14 @@
 	const VERMILIONCITY_POKEFAN_M
 
 VermilionCity_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 1 ; callbacks
+	def_callbacks
 	callback MAPCALLBACK_NEWMAP, .FlyPoint
 
 .FlyPoint:
 	setflag ENGINE_FLYPOINT_VERMILION
-	return
+	endcallback
 
 VermilionCityTeacherScript:
 	jumptextfaceplayer VermilionCityTeacherText
@@ -42,13 +42,13 @@ VermilionSnorlax:
 	opentext
 	special SnorlaxAwake
 	iftrue .Awake
-	writetext UnknownText_0x1aab64
+	writetext VermilionCitySnorlaxSleepingText
 	waitbutton
 	closetext
 	end
 
 .Awake:
-	writetext UnknownText_0x1aab84
+	writetext VermilionCityRadioNearSnorlaxText
 	pause 15
 	cry SNORLAX
 	closetext
@@ -69,31 +69,31 @@ VermilionGymBadgeGuy:
 	ifequal NUM_BADGES, .AllBadges
 	ifgreater 13, .MostBadges
 	ifgreater 9, .SomeBadges
-	writetext UnknownText_0x1aabc8
+	writetext VermilionCityBadgeGuyTrainerText
 	waitbutton
 	closetext
 	end
 
 .SomeBadges:
-	writetext UnknownText_0x1aac2b
+	writetext VermilionCityBadgeGuySomeBadgesText
 	waitbutton
 	closetext
 	end
 
 .MostBadges:
-	writetext UnknownText_0x1aac88
+	writetext VermilionCityBadgeGuyMostBadgesText
 	waitbutton
 	closetext
 	end
 
 .AllBadges:
-	writetext UnknownText_0x1aacf3
-	buttonsound
+	writetext VermilionCityBadgeGuyAllBadgesText
+	promptbutton
 	verbosegiveitem HP_UP
 	iffalse .Done
 	setevent EVENT_GOT_HP_UP_FROM_VERMILION_GUY
 .AlreadyGotItem:
-	writetext UnknownText_0x1aad4a
+	writetext VermilionCityBadgeGuyBattleEdgeText
 	waitbutton
 .Done:
 	closetext
@@ -115,10 +115,10 @@ VermilionCityPortSign:
 	jumptext VermilionCityPortSignText
 
 VermilionCityPokecenterSign:
-	jumpstd pokecentersign
+	jumpstd PokecenterSignScript
 
 VermilionCityMartSign:
-	jumpstd martsign
+	jumpstd MartSignScript
 
 VermilionCityHiddenFullHeal:
 	hiddenitem FULL_HEAL, EVENT_VERMILION_CITY_HIDDEN_FULL_HEAL
@@ -163,12 +163,12 @@ VermilionCitySuperNerdText:
 	cont "#MON GYM."
 	done
 
-UnknownText_0x1aab64:
+VermilionCitySnorlaxSleepingText:
 	text "SNORLAX is snoring"
 	line "peacefully…"
 	done
 
-UnknownText_0x1aab84:
+VermilionCityRadioNearSnorlaxText:
 	text "The #GEAR was"
 	line "placed near the"
 	cont "sleeping SNORLAX…"
@@ -178,7 +178,7 @@ UnknownText_0x1aab84:
 	para "SNORLAX woke up!"
 	done
 
-UnknownText_0x1aabc8:
+VermilionCityBadgeGuyTrainerText:
 	text "Skilled trainers"
 	line "gather in KANTO."
 
@@ -189,7 +189,7 @@ UnknownText_0x1aabc8:
 	line "to defeat."
 	done
 
-UnknownText_0x1aac2b:
+VermilionCityBadgeGuySomeBadgesText:
 	text "You've started to"
 	line "collect KANTO GYM"
 	cont "BADGES?"
@@ -199,7 +199,7 @@ UnknownText_0x1aac2b:
 	cont "here are tough?"
 	done
 
-UnknownText_0x1aac88:
+VermilionCityBadgeGuyMostBadgesText:
 	text "I guess you'll be"
 	line "finished with your"
 
@@ -211,7 +211,7 @@ UnknownText_0x1aac88:
 	cont "BADGES."
 	done
 
-UnknownText_0x1aacf3:
+VermilionCityBadgeGuyAllBadgesText:
 	text "Congratulations!"
 
 	para "You got all the"
@@ -221,7 +221,7 @@ UnknownText_0x1aacf3:
 	line "for your efforts."
 	done
 
-UnknownText_0x1aad4a:
+VermilionCityBadgeGuyBattleEdgeText:
 	text "Having a variety"
 	line "of #MON types"
 
@@ -268,7 +268,7 @@ VermilionCityPortSignText:
 VermilionCity_MapEvents:
 	db 0, 0 ; filler
 
-	db 10 ; warp events
+	def_warp_events
 	warp_event  5,  5, VERMILION_FISHING_SPEECH_HOUSE, 1
 	warp_event  9,  5, VERMILION_POKECENTER_1F, 1
 	warp_event  7, 13, POKEMON_FAN_CLUB, 1
@@ -280,9 +280,9 @@ VermilionCity_MapEvents:
 	warp_event 20, 31, VERMILION_PORT_PASSAGE, 2
 	warp_event 34,  7, DIGLETTS_CAVE, 1
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 8 ; bg events
+	def_bg_events
 	bg_event 25,  3, BGEVENT_READ, VermilionCitySign
 	bg_event  5, 19, BGEVENT_READ, VermilionGymSign
 	bg_event  5, 13, BGEVENT_READ, PokemonFanClubSign
@@ -292,7 +292,7 @@ VermilionCity_MapEvents:
 	bg_event 22, 13, BGEVENT_READ, VermilionCityMartSign
 	bg_event 12, 19, BGEVENT_ITEM, VermilionCityHiddenFullHeal
 
-	db 6 ; object events
+	def_object_events
 	object_event 18,  9, SPRITE_TEACHER, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionCityTeacherScript, -1
 	object_event 23,  6, SPRITE_GRAMPS, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionMachopOwner, -1
 	object_event 26,  7, SPRITE_MACHOP, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, VermilionMachop, -1

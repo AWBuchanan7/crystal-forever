@@ -1,4 +1,4 @@
-	const_def 2 ; object constants
+	object_const_def
 	const TINTOWER1F_SUICUNE
 	const TINTOWER1F_RAIKOU
 	const TINTOWER1F_ENTEI
@@ -11,11 +11,11 @@
 	const TINTOWER1F_SAGE6
 
 TinTower1F_MapScripts:
-	db 2 ; scene scripts
+	def_scene_scripts
 	scene_script .FaceSuicune ; SCENE_DEFAULT
 	scene_script .DummyScene ; SCENE_FINISHED
 
-	db 2 ; callbacks
+	def_callbacks
 	callback MAPCALLBACK_OBJECTS, .NPCsCallback
 	callback MAPCALLBACK_TILES, .StairsCallback
 
@@ -40,7 +40,7 @@ TinTower1F_MapScripts:
 	iffalse .Done
 	appear TINTOWER1F_EUSINE
 .Done:
-	return
+	endcallback
 
 .FaceBeasts:
 	checkevent EVENT_FOUGHT_SUICUNE
@@ -64,7 +64,7 @@ TinTower1F_MapScripts:
 .NoEntei:
 	disappear TINTOWER1F_ENTEI
 .BeastsDone:
-	return
+	endcallback
 
 .FoughtSuicune:
 	disappear TINTOWER1F_SUICUNE
@@ -72,48 +72,48 @@ TinTower1F_MapScripts:
 	disappear TINTOWER1F_ENTEI
 	clearevent EVENT_TIN_TOWER_1F_WISE_TRIO_1
 	setevent EVENT_TIN_TOWER_1F_WISE_TRIO_2
-	return
+	endcallback
 
 .StairsCallback:
 	checkevent EVENT_GOT_RAINBOW_WING
 	iftrue .DontHideStairs
 	changeblock 10, 2, $09 ; floor
 .DontHideStairs:
-	return
+	endcallback
 
 .SuicuneBattle:
-	applymovement PLAYER, TinTowerPlayerMovement1
+	applymovement PLAYER, TinTower1FPlayerEntersMovement
 	pause 15
 	setval RAIKOU
 	special MonCheck
-	iftrue .Next1 ; if player caught Raikou, he doesn't appear in Tin Tower
-	applymovement TINTOWER1F_RAIKOU, TinTowerRaikouMovement1
+	iftrue .Next1 ; if player caught Raikou, it doesn't appear in Tin Tower
+	applymovement TINTOWER1F_RAIKOU, TinTower1FRaikouApproachesMovement
 	turnobject PLAYER, LEFT
 	cry RAIKOU
 	pause 10
 	playsound SFX_WARP_FROM
-	applymovement TINTOWER1F_RAIKOU, TinTowerRaikouMovement2
+	applymovement TINTOWER1F_RAIKOU, TinTower1FRaikouLeavesMovement
 	disappear TINTOWER1F_RAIKOU
 	playsound SFX_EXIT_BUILDING
 	waitsfx
 .Next1:
 	setval ENTEI
 	special MonCheck
-	iftrue .Next2 ; if player caught Entei, he doesn't appear in Tin Tower
-	applymovement TINTOWER1F_ENTEI, TinTowerEnteiMovement1
+	iftrue .Next2 ; if player caught Entei, it doesn't appear in Tin Tower
+	applymovement TINTOWER1F_ENTEI, TinTower1FEnteiApproachesMovement
 	turnobject PLAYER, RIGHT
 	cry ENTEI
 	pause 10
 	playsound SFX_WARP_FROM
-	applymovement TINTOWER1F_ENTEI, TinTowerEnteiMovement2
+	applymovement TINTOWER1F_ENTEI, TinTower1FEnteiLeavesMovement
 	disappear TINTOWER1F_ENTEI
 	playsound SFX_EXIT_BUILDING
 	waitsfx
 .Next2:
 	turnobject PLAYER, UP
 	pause 10
-	applymovement PLAYER, TinTowerPlayerMovement2
-	applymovement TINTOWER1F_SUICUNE, TinTowerSuicuneMovement
+	applymovement PLAYER, TinTower1FPlayerBacksUpMovement
+	applymovement TINTOWER1F_SUICUNE, TinTower1FSuicuneApproachesMovement
 	cry SUICUNE
 	pause 20
 	loadwildmon SUICUNE, 40
@@ -137,28 +137,28 @@ TinTower1F_MapScripts:
 	playsound SFX_ENTER_DOOR
 	moveobject TINTOWER1F_EUSINE, 10, 15
 	appear TINTOWER1F_EUSINE
-	applymovement TINTOWER1F_EUSINE, MovementData_0x1851ec
+	applymovement TINTOWER1F_EUSINE, TinTower1FEusineEntersMovement
 	playsound SFX_ENTER_DOOR
 	moveobject TINTOWER1F_SAGE1, 9, 15
 	appear TINTOWER1F_SAGE1
-	applymovement TINTOWER1F_SAGE1, MovementData_0x1851f5
+	applymovement TINTOWER1F_SAGE1, TinTower1FSage1EntersMovement
 	playsound SFX_ENTER_DOOR
 	moveobject TINTOWER1F_SAGE2, 9, 15
 	appear TINTOWER1F_SAGE2
-	applymovement TINTOWER1F_SAGE2, MovementData_0x1851fb
+	applymovement TINTOWER1F_SAGE2, TinTower1FSage2EntersMovement
 	playsound SFX_ENTER_DOOR
 	moveobject TINTOWER1F_SAGE3, 9, 15
 	appear TINTOWER1F_SAGE3
-	applymovement TINTOWER1F_SAGE3, MovementData_0x1851fe
+	applymovement TINTOWER1F_SAGE3, TinTower1FSage3EntersMovement
 	moveobject TINTOWER1F_SAGE1, 7, 13
 	moveobject TINTOWER1F_SAGE2, 9, 13
 	moveobject TINTOWER1F_SAGE3, 11, 13
 	turnobject PLAYER, RIGHT
 	opentext
-	writetext TinTowerEusineSuicuneText
+	writetext TinTower1FEusineSuicuneText
 	waitbutton
 	closetext
-	applymovement TINTOWER1F_EUSINE, MovementData_0x1851f1
+	applymovement TINTOWER1F_EUSINE, TinTower1FEusineLeavesMovement
 	playsound SFX_EXIT_BUILDING
 	disappear TINTOWER1F_EUSINE
 	waitsfx
@@ -192,7 +192,7 @@ TinTower1FSage5Script:
 	checkevent EVENT_GOT_RAINBOW_WING
 	iftrue .GotRainbowWing
 	writetext TinTower1FSage5Text1
-	buttonsound
+	promptbutton
 	verbosegiveitem RAINBOW_WING
 	closetext
 	refreshscreen
@@ -224,23 +224,23 @@ TinTower1FSage6Script:
 .FoughtHoOh:
 	jumptextfaceplayer TinTower1FSage6Text2
 
-TinTowerEusine:
-	jumptextfaceplayer TinTowerEusineHoOhText
+TinTower1FEusine:
+	jumptextfaceplayer TinTower1FEusineHoOhText
 
-TinTowerPlayerMovement1:
+TinTower1FPlayerEntersMovement:
 	slow_step UP
 	slow_step UP
 	slow_step UP
 	slow_step UP
 	step_end
 
-TinTowerRaikouMovement1:
+TinTower1FRaikouApproachesMovement:
 	set_sliding
 	fast_jump_step DOWN
 	remove_sliding
 	step_end
 
-TinTowerRaikouMovement2:
+TinTower1FRaikouLeavesMovement:
 	set_sliding
 	fast_jump_step DOWN
 	fast_jump_step RIGHT
@@ -248,13 +248,13 @@ TinTowerRaikouMovement2:
 	remove_sliding
 	step_end
 
-TinTowerEnteiMovement1:
+TinTower1FEnteiApproachesMovement:
 	set_sliding
 	fast_jump_step DOWN
 	remove_sliding
 	step_end
 
-TinTowerEnteiMovement2:
+TinTower1FEnteiLeavesMovement:
 	set_sliding
 	fast_jump_step DOWN
 	fast_jump_step LEFT
@@ -262,32 +262,32 @@ TinTowerEnteiMovement2:
 	remove_sliding
 	step_end
 
-TinTowerSuicuneMovement:
+TinTower1FSuicuneApproachesMovement:
 	set_sliding
 	fast_jump_step DOWN
 	remove_sliding
 	step_end
 
-TinTowerPlayerMovement2:
+TinTower1FPlayerBacksUpMovement:
 	fix_facing
 	big_step DOWN
 	remove_fixed_facing
 	step_end
 
-MovementData_0x1851ec:
+TinTower1FEusineEntersMovement:
 	step UP
 	step UP
 	step UP
 	turn_head LEFT
 	step_end
 
-MovementData_0x1851f1:
+TinTower1FEusineLeavesMovement:
 	step DOWN
 	step DOWN
 	step DOWN
 	step_end
 
-MovementData_0x1851f5:
+TinTower1FSage1EntersMovement:
 	step UP
 	step UP
 	step LEFT
@@ -295,19 +295,19 @@ MovementData_0x1851f5:
 	turn_head UP
 	step_end
 
-MovementData_0x1851fb:
+TinTower1FSage2EntersMovement:
 	step UP
 	step UP
 	step_end
 
-MovementData_0x1851fe:
+TinTower1FSage3EntersMovement:
 	step UP
 	step RIGHT
 	step RIGHT
 	step UP
 	step_end
 
-TinTowerEusineSuicuneText:
+TinTower1FEusineSuicuneText:
 	text "EUSINE: Awesome!"
 	line "Too awesome, even!"
 
@@ -440,7 +440,7 @@ TinTower1FSage6Text1:
 	cont "and advance."
 	done
 
-TinTowerEusineHoOhText:
+TinTower1FEusineHoOhText:
 	text "I knew it."
 
 	para "I knew you'd get"
@@ -523,20 +523,20 @@ TinTower1FSage6Text2:
 TinTower1F_MapEvents:
 	db 0, 0 ; filler
 
-	db 3 ; warp events
+	def_warp_events
 	warp_event  9, 15, ECRUTEAK_CITY, 12
 	warp_event 10, 15, ECRUTEAK_CITY, 12
 	warp_event 10,  2, TIN_TOWER_2F, 2
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 0 ; bg events
+	def_bg_events
 
-	db 10 ; object events
+	def_object_events
 	object_event  9,  9, SPRITE_SUICUNE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_TIN_TOWER_1F_SUICUNE
 	object_event  7,  9, SPRITE_RAIKOU, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_TIN_TOWER_1F_RAIKOU
 	object_event 12,  9, SPRITE_ENTEI, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_TIN_TOWER_1F_ENTEI
-	object_event  8,  3, SPRITE_SUPER_NERD, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, TinTowerEusine, EVENT_TIN_TOWER_1F_EUSINE
+	object_event  8,  3, SPRITE_SUPER_NERD, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, TinTower1FEusine, EVENT_TIN_TOWER_1F_EUSINE
 	object_event  5,  9, SPRITE_SAGE, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, TinTower1FSage1Script, EVENT_TIN_TOWER_1F_WISE_TRIO_1
 	object_event 11, 11, SPRITE_SAGE, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, TinTower1FSage2Script, EVENT_TIN_TOWER_1F_WISE_TRIO_1
 	object_event 14,  6, SPRITE_SAGE, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, TinTower1FSage3Script, EVENT_TIN_TOWER_1F_WISE_TRIO_1

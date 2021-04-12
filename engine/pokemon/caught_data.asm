@@ -1,5 +1,5 @@
 CheckPartyFullAfterContest:
-	ld a, [wContestMon]
+	ld a, [wContestMonSpecies]
 	and a
 	jp z, .DidntCatchAnything
 	ld [wCurPartySpecies], a
@@ -14,7 +14,7 @@ CheckPartyFullAfterContest:
 	ld c, a
 	ld b, 0
 	add hl, bc
-	ld a, [wContestMon]
+	ld a, [wContestMonSpecies]
 	ld [hli], a
 	ld [wCurSpecies], a
 	ld a, -1
@@ -31,14 +31,14 @@ CheckPartyFullAfterContest:
 	call CopyBytes
 	ld a, [wPartyCount]
 	dec a
-	ld hl, wPartyMonOT
+	ld hl, wPartyMonOTs
 	call SkipNames
 	ld d, h
 	ld e, l
 	ld hl, wPlayerName
 	call CopyBytes
 	ld a, [wCurPartySpecies]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	ld hl, wStringBuffer1
 	ld de, wMonOrItemNameBuffer
@@ -76,18 +76,18 @@ CheckPartyFullAfterContest:
 	call GetPartyLocation
 	ld a, [hl]
 	and CAUGHT_GENDER_MASK
-	ld b, NATIONAL_PARK
+	ld b, LANDMARK_NATIONAL_PARK
 	or b
 	ld [hl], a
 	xor a
-	ld [wContestMon], a
+	ld [wContestMonSpecies], a
 	and a ; BUGCONTEST_CAUGHT_MON
 	ld [wScriptVar], a
 	ret
 
 .TryAddToBox:
 	ld a, BANK(sBoxCount)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, sBoxCount
 	ld a, [hl]
 	cp MONS_PER_BOX
@@ -105,7 +105,7 @@ CheckPartyFullAfterContest:
 	call CopyBytes
 	callfar InsertPokemonIntoBox
 	ld a, [wCurPartySpecies]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	call GiveANickname_YesNo
 	ld hl, wStringBuffer1
@@ -118,7 +118,7 @@ CheckPartyFullAfterContest:
 
 .Box_SkipNickname:
 	ld a, BANK(sBoxMonNicknames)
-	call GetSRAMBank
+	call OpenSRAM
 	ld de, sBoxMonNicknames
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
@@ -126,17 +126,17 @@ CheckPartyFullAfterContest:
 
 .BoxFull:
 	ld a, BANK(sBoxMon1Level)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [sBoxMon1Level]
 	ld [wCurPartyLevel], a
 	call CloseSRAM
 	call SetBoxMonCaughtData
 	ld a, BANK(sBoxMon1CaughtLocation)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, sBoxMon1CaughtLocation
 	ld a, [hl]
 	and CAUGHT_GENDER_MASK
-	ld b, NATIONAL_PARK
+	ld b, LANDMARK_NATIONAL_PARK
 	or b
 	ld [hl], a
 	call CloseSRAM
@@ -152,13 +152,12 @@ CheckPartyFullAfterContest:
 	ret
 
 GiveANickname_YesNo:
-	ld hl, TextJump_GiveANickname
+	ld hl, CaughtAskNicknameText
 	call PrintText
 	jp YesNoBox
 
-TextJump_GiveANickname:
-	; Give a nickname to the @  you received?
-	text_far UnknownText_0x1c12fc
+CaughtAskNicknameText:
+	text_far _CaughtAskNicknameText
 	text_end
 
 SetCaughtData:
@@ -201,7 +200,7 @@ SetBoxmonOrEggmonCaughtData:
 
 SetBoxMonCaughtData:
 	ld a, BANK(sBoxMon1CaughtLevel)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, sBoxMon1CaughtLevel
 	call SetBoxmonOrEggmonCaughtData
 	call CloseSRAM
@@ -210,7 +209,7 @@ SetBoxMonCaughtData:
 SetGiftBoxMonCaughtData:
 	push bc
 	ld a, BANK(sBoxMon1CaughtLevel)
-	call GetSRAMBank
+	call OpenSRAM
 	ld hl, sBoxMon1CaughtLevel
 	pop bc
 	call SetGiftMonCaughtData
@@ -227,7 +226,7 @@ SetGiftPartyMonCaughtData:
 SetGiftMonCaughtData:
 	xor a
 	ld [hli], a
-	ld a, GIFT_LOCATION
+	ld a, LANDMARK_GIFT
 	rrc b
 	or b
 	ld [hl], a

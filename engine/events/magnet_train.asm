@@ -3,14 +3,14 @@ MagnetTrain:
 	and a
 	jr nz, .ToGoldenrod
 	ld a, 1 ; forwards
-	lb bc,  $40,  $60
-	lb de, (11 * 8) - (11 * 8 + 4), -$60
+	lb bc, 8 * TILE_WIDTH, 12 * TILE_WIDTH
+	lb de, (11 * TILE_WIDTH) - (11 * TILE_WIDTH + 4), -12 * TILE_WIDTH
 	jr .continue
 
 .ToGoldenrod:
 	ld a, -1 ; backwards
-	lb bc, -$40, -$60
-	lb de, (11 * 8) + (11 * 8 + 4), $60
+	lb bc, -8 * TILE_WIDTH, -12 * TILE_WIDTH
+	lb de, (11 * TILE_WIDTH) + (11 * TILE_WIDTH + 4), 12 * TILE_WIDTH
 
 .continue
 	ld h, a
@@ -34,11 +34,11 @@ MagnetTrain:
 	push af
 	ldh a, [hSCY]
 	push af
-	call MagntTrain_LoadGFX_PlayMusic
+	call MagnetTrain_LoadGFX_PlayMusic
 	ld hl, hVBlank
 	ld a, [hl]
 	push af
-	ld [hl], $1
+	ld [hl], 1
 .loop
 	ld a, [wJumptableIndex]
 	and a
@@ -69,8 +69,8 @@ MagnetTrain:
 	ld [wRequested2bppSource + 1], a
 	ld [wRequested2bppDest], a
 	ld [wRequested2bppDest + 1], a
-	ld [wRequested2bpp], a
-	call ClearTileMap
+	ld [wRequested2bppSize], a
+	call ClearTilemap
 
 	pop af
 	ldh [hSCY], a
@@ -78,24 +78,26 @@ MagnetTrain:
 	ldh [hSCX], a
 	xor a
 	ldh [hBGMapMode], a
+
 	pop af
 	ldh [rSVBK], a
 	ret
 
 MagnetTrain_UpdateLYOverrides:
 	ld hl, wLYOverridesBackup
-	ld c, $2f
+	ld c, 6 * TILE_WIDTH - 1
 	ld a, [wMagnetTrainOffset]
 	add a
 	ldh [hSCX], a
 	call .loadloop
-	ld c, $30
+	ld c, 6 * TILE_WIDTH
 	ld a, [wMagnetTrainPosition]
 	call .loadloop
-	ld c, $31
+	ld c, 6 * TILE_WIDTH + 1
 	ld a, [wMagnetTrainOffset]
 	add a
 	call .loadloop
+
 	ld a, [wMagnetTrainDirection]
 	ld d, a
 	ld hl, wMagnetTrainOffset
@@ -111,20 +113,22 @@ MagnetTrain_UpdateLYOverrides:
 	jr nz, .loadloop
 	ret
 
-MagntTrain_LoadGFX_PlayMusic:
+MagnetTrain_LoadGFX_PlayMusic:
 	call ClearBGPalettes
 	call ClearSprites
 	call DisableLCD
 	callfar ClearSpriteAnims
 	call SetMagnetTrainPals
 	call DrawMagnetTrain
-	ld a, $90
+	ld a, SCREEN_HEIGHT_PX
 	ldh [hWY], a
 	call EnableLCD
 	xor a
 	ldh [hBGMapMode], a
 	ldh [hSCX], a
 	ldh [hSCY], a
+
+	; Load the player sprite's standing frames
 	ldh a, [rSVBK]
 	push af
 	ld a, BANK(wPlayerGender)
@@ -135,6 +139,8 @@ MagntTrain_LoadGFX_PlayMusic:
 	ld hl, vTiles0
 	ld c, 4
 	call Request2bpp
+
+	; Load the player sprite's walking frames
 	ld hl, 12 tiles
 	add hl, de
 	ld d, h
@@ -142,7 +148,9 @@ MagntTrain_LoadGFX_PlayMusic:
 	ld hl, vTiles0 tile $04
 	ld c, 4
 	call Request2bpp
+
 	call MagnetTrain_InitLYOverrides
+
 	ld hl, wJumptableIndex
 	xor a
 	ld [hli], a ; wJumptableIndex
@@ -150,6 +158,7 @@ MagntTrain_LoadGFX_PlayMusic:
 	ld [hli], a ; wMagnetTrainOffset
 	ld [hli], a ; wMagnetTrainPosition
 	ld [hli], a ; wMagnetTrainWaitCounter
+
 	ld de, MUSIC_MAGNET_TRAIN
 	call PlayMusic2
 	ret
@@ -159,26 +168,27 @@ DrawMagnetTrain:
 	xor a
 .loop
 	call GetMagnetTrainBGTiles
-	ld b, 32 / 2
+	ld b, BG_MAP_WIDTH / 2
 	call .FillAlt
 	inc a
-	cp $12
+	cp SCREEN_HEIGHT
 	jr c, .loop
+
 	hlbgcoord 0, 6
-	ld de, MagnetTrainTilemap1
-	ld c, 20
+	ld de, MagnetTrainTilemap
+	ld c, SCREEN_WIDTH
 	call .FillLine
 	hlbgcoord 0, 7
-	ld de, MagnetTrainTilemap2
-	ld c, 20
+	ld de, MagnetTrainTilemap + SCREEN_WIDTH
+	ld c, SCREEN_WIDTH
 	call .FillLine
 	hlbgcoord 0, 8
-	ld de, MagnetTrainTilemap3
-	ld c, 20
+	ld de, MagnetTrainTilemap + (SCREEN_WIDTH * 2)
+	ld c, SCREEN_WIDTH
 	call .FillLine
 	hlbgcoord 0, 9
-	ld de, MagnetTrainTilemap4
-	ld c, 20
+	ld de, MagnetTrainTilemap + (SCREEN_WIDTH * 3)
+	ld c, SCREEN_WIDTH
 	call .FillLine
 	ret
 
@@ -213,25 +223,8 @@ GetMagnetTrainBGTiles:
 	ret
 
 MagnetTrainBGTiles:
-; Alternating tiles for each line of the Magnet Train tilemap.
-	db $4c, $4d ; bush
-	db $5c, $5d ; bush
-	db $4c, $4d ; bush
-	db $5c, $5d ; bush
-	db $08, $08 ; fence
-	db $18, $18 ; fence
-	db $1f, $1f ; track
-	db $31, $31 ; track
-	db $11, $11 ; track
-	db $11, $11 ; track
-	db $0d, $0d ; track
-	db $31, $31 ; track
-	db $04, $04 ; fence
-	db $18, $18 ; fence
-	db $4c, $4d ; bush
-	db $5c, $5d ; bush
-	db $4c, $4d ; bush
-	db $5c, $5d ; bush
+; 2x18 tilemap, repeated in vertical strips for the background.
+INCBIN "gfx/overworld/magnet_train_bg.tilemap"
 
 MagnetTrain_InitLYOverrides:
 	ld hl, wLYOverrides
@@ -247,7 +240,7 @@ MagnetTrain_InitLYOverrides:
 	ret
 
 SetMagnetTrainPals:
-	ld a, $1
+	ld a, 1
 	ldh [rVBK], a
 
 	; bushes
@@ -274,21 +267,12 @@ SetMagnetTrainPals:
 	ld a, PAL_BG_YELLOW
 	call ByteFill
 
-	ld a, $0
+	ld a, 0
 	ldh [rVBK], a
 	ret
 
 MagnetTrain_Jumptable:
-	ld a, [wJumptableIndex]
-	ld e, a
-	ld d, 0
-	ld hl, .Jumptable
-	add hl, de
-	add hl, de
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp hl
+	jumptable .Jumptable, wJumptableIndex
 
 .Jumptable:
 	dw .InitPlayerSpriteAnim
@@ -305,7 +289,7 @@ MagnetTrain_Jumptable:
 	ret
 
 .InitPlayerSpriteAnim:
-	ld d, 10 * 8 + 5
+	ld d, (8 + 2) * TILE_WIDTH + 5
 	ld a, [wMagnetTrainPlayerSpriteInitX]
 	ld e, a
 	ld b, SPRITE_ANIM_INDEX_MAGNET_TRAIN_RED
@@ -317,17 +301,16 @@ MagnetTrain_Jumptable:
 	bit PLAYERGENDER_FEMALE_F, a
 	jr z, .got_gender
 	ld b, SPRITE_ANIM_INDEX_MAGNET_TRAIN_BLUE
-
 .got_gender
 	pop af
 	ldh [rSVBK], a
 	ld a, b
-	call _InitSpriteAnimStruct
+	call InitSpriteAnimStruct
 	ld hl, SPRITEANIMSTRUCT_TILE_ID
 	add hl, bc
-	ld [hl], $0
+	ld [hl], 0
 	call .Next
-	ld a, $80
+	ld a, 128
 	ld [wMagnetTrainWaitCounter], a
 	ret
 
@@ -350,7 +333,7 @@ MagnetTrain_Jumptable:
 
 .PrepareToHoldTrain:
 	call .Next
-	ld a, $80
+	ld a, 128
 	ld [wMagnetTrainWaitCounter], a
 	ret
 
@@ -408,6 +391,7 @@ MagnetTrain_Jumptable_FirstRunThrough:
 	call MagnetTrain_UpdateLYOverrides
 	call PushLYOverrides
 	call DelayFrame
+
 	ldh a, [rSVBK]
 	push af
 	ld a, BANK(wEnvironment)
@@ -416,20 +400,23 @@ MagnetTrain_Jumptable_FirstRunThrough:
 	push af
 	ld a, [wEnvironment]
 	push af
+
 	ld a, [wTimeOfDay]
 	maskbits NUM_DAYTIMES
 	ld [wTimeOfDayPal], a
-	ld a, $1
+	ld a, TOWN
 	ld [wEnvironment], a
 	ld b, SCGB_MAPPALS
 	call GetSGBLayout
 	call UpdateTimePals
+
 	ldh a, [rBGP]
 	ld [wBGP], a
 	ldh a, [rOBP0]
 	ld [wOBP0], a
 	ldh a, [rOBP1]
 	ld [wOBP1], a
+
 	pop af
 	ld [wEnvironment], a
 	pop af
@@ -438,11 +425,6 @@ MagnetTrain_Jumptable_FirstRunThrough:
 	ldh [rSVBK], a
 	ret
 
-MagnetTrainTilemap1:
-	db $1f, $05, $06, $0a, $0a, $0a, $09, $0a, $0a, $0a, $0a, $0a, $0a, $09, $0a, $0a, $0a, $0b, $0c, $1f
-MagnetTrainTilemap2:
-	db $14, $15, $16, $1a, $1a, $1a, $19, $1a, $1a, $1a, $1a, $1a, $1a, $19, $1a, $1a, $1a, $1b, $1c, $1d
-MagnetTrainTilemap3:
-	db $24, $25, $26, $27, $07, $2f, $29, $28, $28, $28, $28, $28, $28, $29, $07, $2f, $2a, $2b, $2c, $2d
-MagnetTrainTilemap4:
-	db $20, $1f, $2e, $1f, $17, $00, $2e, $1f, $1f, $1f, $1f, $1f, $1f, $2e, $17, $00, $1f, $2e, $1f, $0f
+MagnetTrainTilemap:
+; 20x4 tilemap
+INCBIN "gfx/overworld/magnet_train_fg.tilemap"

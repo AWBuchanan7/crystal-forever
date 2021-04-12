@@ -1,19 +1,19 @@
-	const_def 2 ; object constants
-	const SLOWPOKEWELLB2F_GYM_GUY
+	object_const_def
+	const SLOWPOKEWELLB2F_GYM_GUIDE
 	const SLOWPOKEWELLB2F_POKE_BALL
 
 SlowpokeWellB2F_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
-SlowpokeWellB2FGymGuyScript:
+SlowpokeWellB2FGymGuideScript:
 	faceplayer
 	opentext
 	checkevent EVENT_GOT_KINGS_ROCK_IN_SLOWPOKE_WELL
 	iftrue .GotKingsRock
-	writetext SlowpokeWellB2FGymGuyText
-	buttonsound
+	writetext SlowpokeWellB2FGymGuideText
+	promptbutton
 	verbosegiveitem KINGS_ROCK
 	iffalse .NoRoom
 	setevent EVENT_GOT_KINGS_ROCK_IN_SLOWPOKE_WELL
@@ -22,7 +22,7 @@ SlowpokeWellB2FGymGuyScript:
 	end
 
 .GotKingsRock:
-	writetext SlowpokeWellB2FGymGuyText_GotKingsRock
+	writetext SlowpokeWellB2FGymGuideText_GotKingsRock
 	waitbutton
 	closetext
 	end
@@ -30,7 +30,7 @@ SlowpokeWellB2FGymGuyScript:
 SlowpokeWellB2FTMRainDance:
 	itemball TM_RAIN_DANCE
 
-SlowpokeWellB2FGymGuyText:
+SlowpokeWellB2FGymGuideText:
 	text "I'm waiting to see"
 	line "SLOWPOKE's moment"
 	cont "of evolution."
@@ -50,7 +50,7 @@ SlowpokeWellB2FGymGuyText:
 	cont "you."
 	done
 
-SlowpokeWellB2FGymGuyText_GotKingsRock:
+SlowpokeWellB2FGymGuideText_GotKingsRock:
 	text "I'm going to be"
 	line "like SLOWPOKE."
 
@@ -62,13 +62,13 @@ SlowpokeWellB2FGymGuyText_GotKingsRock:
 SlowpokeWellB2F_MapEvents:
 	db 0, 0 ; filler
 
-	db 1 ; warp events
+	def_warp_events
 	warp_event  9, 11, SLOWPOKE_WELL_B1F, 2
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 0 ; bg events
+	def_bg_events
 
-	db 2 ; object events
-	object_event  5,  4, SPRITE_GYM_GUY, SPRITEMOVEDATA_WANDER, 1, 2, -1, -1, 0, OBJECTTYPE_SCRIPT, 1, SlowpokeWellB2FGymGuyScript, -1
+	def_object_events
+	object_event  5,  4, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_WANDER, 1, 2, -1, -1, 0, OBJECTTYPE_SCRIPT, 1, SlowpokeWellB2FGymGuideScript, -1
 	object_event 15,  5, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, SlowpokeWellB2FTMRainDance, EVENT_SLOWPOKE_WELL_B2F_TM_RAIN_DANCE

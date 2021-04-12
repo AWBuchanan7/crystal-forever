@@ -1,6 +1,9 @@
+__trainer_class__ = 0
+
 trainerclass: MACRO
-	enum \1
-const_value = 1
+\1 EQU __trainer_class__
+__trainer_class__ = __trainer_class__ + 1
+	const_def 1
 ENDM
 
 ; trainer class ids
@@ -15,16 +18,16 @@ ENDM
 ; - BTTrainerClassSprites (see data/trainers/sprites.asm)
 ; - BTTrainerClassGenders (see data/trainers/genders.asm)
 ; trainer constants are Trainers indexes, for the sub-tables of TrainerGroups (see data/trainers/parties.asm)
-	enum_start
-CHRIS EQU __enum__
+CHRIS EQU __trainer_class__
 	trainerclass TRAINER_NONE ; 0
 	const PHONECONTACT_MOM
 	const PHONECONTACT_BIKESHOP
 	const PHONECONTACT_BILL
 	const PHONECONTACT_ELM
 	const PHONECONTACT_BUENA
+NUM_NONTRAINER_PHONECONTACTS EQU const_value - 1
 
-KRIS EQU __enum__
+KRIS EQU __trainer_class__
 	trainerclass FALKNER ; 1
 	const FALKNER1
 
@@ -285,7 +288,7 @@ KRIS EQU __enum__
 	const GRUNTM_9
 	const GRUNTM_10
 	const GRUNTM_11
-	const GRUNTM_12
+	const GRUNTM_12_UNUSED
 	const GRUNTM_13
 	const GRUNTM_14
 	const GRUNTM_15
@@ -295,15 +298,15 @@ KRIS EQU __enum__
 	const GRUNTM_19
 	const GRUNTM_20
 	const GRUNTM_21
-	const GRUNTM_22
-	const GRUNTM_23
+	const GRUNTM_22_UNUSED
+	const GRUNTM_23_UNUSED
 	const GRUNTM_24
 	const GRUNTM_25
-	const GRUNTM_26
-	const GRUNTM_27
+	const GRUNTM_26_UNUSED
+	const GRUNTM_27_UNUSED
 	const GRUNTM_28
 	const GRUNTM_29
-	const GRUNTM_30
+	const GRUNTM_30_UNUSED
 	const GRUNTM_31
 
 	trainerclass GENTLEMAN ; 20
@@ -653,8 +656,8 @@ KRIS EQU __enum__
 	const ALLAN
 
 	trainerclass KIMONO_GIRL ; 3c
-	const NAOKO1
-	const NAOKO2
+	const NAOKO_UNUSED
+	const NAOKO
 	const SAYO
 	const ZUKI
 	const KUNI
@@ -700,4 +703,4 @@ KRIS EQU __enum__
 	trainerclass MYSTICALMAN ; 43
 	const EUSINE
 
-NUM_TRAINER_CLASSES EQU __enum__
+NUM_TRAINER_CLASSES EQU __trainer_class__ - 1

@@ -12,7 +12,7 @@ BattleCommand_Transform:
 	ld [wNumHits], a
 	ld [wFXAnimID + 1], a
 	ld a, $1
-	ld [wKickCounter], a
+	ld [wBattleAnimParam], a
 	ld a, BATTLE_VARS_SUBSTATUS4
 	call GetBattleVarAddr
 	bit SUBSTATUS_SUBSTITUTE, [hl]
@@ -99,7 +99,7 @@ BattleCommand_Transform:
 	jr nz, .pp_loop
 	pop hl
 	ld a, [hl]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	ld hl, wEnemyStats
 	ld de, wPlayerStats
@@ -130,12 +130,12 @@ BattleCommand_Transform:
 	ld [wNumHits], a
 	ld [wFXAnimID + 1], a
 	ld a, $2
-	ld [wKickCounter], a
+	ld [wBattleAnimParam], a
 	pop af
 	ld a, SUBSTITUTE
 	call nz, LoadAnim
 	ld hl, TransformedText
-	jp StdBattleTextBox
+	jp StdBattleTextbox
 
 BattleSideCopy:
 ; Copy bc bytes from hl to de if it's the player's turn.

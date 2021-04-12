@@ -74,7 +74,7 @@ Pack:
 	ld hl, ItemsPocketMenuHeader
 	call CopyMenuHeader
 	ld a, [wItemsPocketCursor]
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	ld a, [wItemsPocketScrollPosition]
 	ld [wMenuScrollPosition], a
 	call ScrollingMenu
@@ -102,7 +102,7 @@ Pack:
 	ld hl, KeyItemsPocketMenuHeader
 	call CopyMenuHeader
 	ld a, [wKeyItemsPocketCursor]
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	ld a, [wKeyItemsPocketScrollPosition]
 	ld [wMenuScrollPosition], a
 	call ScrollingMenu
@@ -135,7 +135,7 @@ Pack:
 	call Pack_InterpretJoypad
 	ret c
 	farcall _CheckTossableItem
-	ld a, [wItemAttributeParamBuffer]
+	ld a, [wItemAttributeValue]
 	and a
 	jr nz, .use_quit
 	ld hl, .MenuHeader2
@@ -224,7 +224,7 @@ Pack:
 	ld hl, BallsPocketMenuHeader
 	call CopyMenuHeader
 	ld a, [wBallsPocketCursor]
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	ld a, [wBallsPocketScrollPosition]
 	ld [wMenuScrollPosition], a
 	call ScrollingMenu
@@ -241,29 +241,29 @@ Pack:
 
 .ItemBallsKey_LoadSubmenu:
 	farcall _CheckTossableItem
-	ld a, [wItemAttributeParamBuffer]
+	ld a, [wItemAttributeValue]
 	and a
 	jr nz, .tossable
 	farcall CheckSelectableItem
-	ld a, [wItemAttributeParamBuffer]
+	ld a, [wItemAttributeValue]
 	and a
 	jr nz, .selectable
 	farcall CheckItemMenu
-	ld a, [wItemAttributeParamBuffer]
+	ld a, [wItemAttributeValue]
 	and a
 	jr nz, .usable
 	jr .unusable
 
 .selectable
 	farcall CheckItemMenu
-	ld a, [wItemAttributeParamBuffer]
+	ld a, [wItemAttributeValue]
 	and a
 	jr nz, .selectable_usable
 	jr .selectable_unusable
 
 .tossable
 	farcall CheckSelectableItem
-	ld a, [wItemAttributeParamBuffer]
+	ld a, [wItemAttributeValue]
 	and a
 	jr nz, .tossable_selectable
 	jr .tossable_unselectable
@@ -424,7 +424,7 @@ Jumptable_GiveTossQuit:
 
 UseItem:
 	farcall CheckItemMenu
-	ld a, [wItemAttributeParamBuffer]
+	ld a, [wItemAttributeValue]
 	ld hl, .dw
 	rst JumpTable
 	ret
@@ -440,7 +440,7 @@ UseItem:
 	dw .Field   ; ITEMMENU_CLOSE
 
 .Oak:
-	ld hl, Text_ThisIsntTheTime
+	ld hl, OakThisIsntTheTimeText
 	call Pack_PrintTextNoScroll
 	ret
 
@@ -461,7 +461,7 @@ UseItem:
 	ret
 
 .NoPokemon:
-	ld hl, TextJump_YouDontHaveAMon
+	ld hl, YouDontHaveAMonText
 	call Pack_PrintTextNoScroll
 	ret
 
@@ -475,7 +475,7 @@ UseItem:
 	ret
 
 TossMenu:
-	ld hl, Text_ThrowAwayHowMany
+	ld hl, AskThrowAwayText
 	call Pack_PrintTextNoScroll
 	farcall SelectQuantityToToss
 	push af
@@ -483,8 +483,8 @@ TossMenu:
 	pop af
 	jr c, .finish
 	call Pack_GetItemName
-	ld hl, Text_ConfirmThrowAway
-	call MenuTextBox
+	ld hl, AskQuantityThrowAwayText
+	call MenuTextbox
 	call YesNoBox
 	push af
 	call ExitMenu
@@ -494,12 +494,12 @@ TossMenu:
 	ld a, [wCurItemQuantity]
 	call TossItem
 	call Pack_GetItemName
-	ld hl, Text_ThrewAway
+	ld hl, ThrewAwayText
 	call Pack_PrintTextNoScroll
 .finish
 	ret
 
-Unreferenced_ResetPocketCursorPositions:
+ResetPocketCursorPositions: ; unreferenced
 	ld a, [wCurPocket]
 	and a ; ITEM_POCKET
 	jr z, .items
@@ -529,7 +529,7 @@ Unreferenced_ResetPocketCursorPositions:
 
 RegisterItem:
 	farcall CheckSelectableItem
-	ld a, [wItemAttributeParamBuffer]
+	ld a, [wItemAttributeValue]
 	and a
 	jr nz, .cant_register
 	ld a, [wCurPocket]
@@ -547,12 +547,12 @@ RegisterItem:
 	call Pack_GetItemName
 	ld de, SFX_FULL_HEAL
 	call WaitPlaySFX
-	ld hl, Text_RegisteredItem
+	ld hl, RegisteredItemText
 	call Pack_PrintTextNoScroll
 	ret
 
 .cant_register
-	ld hl, Text_CantRegister
+	ld hl, CantRegisterText
 	call Pack_PrintTextNoScroll
 	ret
 
@@ -581,7 +581,7 @@ GiveItem:
 	ld a, [wCurPartySpecies]
 	cp EGG
 	jr nz, .give
-	ld hl, .Egg
+	ld hl, .AnEggCantHoldAnItemText
 	call PrintText
 	jr .loop
 
@@ -590,7 +590,7 @@ GiveItem:
 	push af
 	ld a, [wPackJumptableIndex]
 	push af
-	call GetCurNick
+	call GetCurNickname
 	ld hl, wStringBuffer1
 	ld de, wMonOrItemNameBuffer
 	ld bc, MON_NAME_LENGTH
@@ -611,12 +611,11 @@ GiveItem:
 	ret
 
 .NoPokemon:
-	ld hl, TextJump_YouDontHaveAMon
+	ld hl, YouDontHaveAMonText
 	call Pack_PrintTextNoScroll
 	ret
-.Egg:
-	; An EGG can't hold an item.
-	text_far Text_AnEGGCantHoldAnItem
+.AnEggCantHoldAnItemText:
+	text_far _AnEggCantHoldAnItemText
 	text_end
 
 QuitItemSubmenu:
@@ -684,7 +683,7 @@ BattlePack:
 	ld hl, ItemsPocketMenuHeader
 	call CopyMenuHeader
 	ld a, [wItemsPocketCursor]
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	ld a, [wItemsPocketScrollPosition]
 	ld [wMenuScrollPosition], a
 	call ScrollingMenu
@@ -712,7 +711,7 @@ BattlePack:
 	ld hl, KeyItemsPocketMenuHeader
 	call CopyMenuHeader
 	ld a, [wKeyItemsPocketCursor]
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	ld a, [wKeyItemsPocketScrollPosition]
 	ld [wMenuScrollPosition], a
 	call ScrollingMenu
@@ -735,7 +734,7 @@ BattlePack:
 	xor a
 	ldh [hBGMapMode], a
 	call WaitBGMap_DrawPackGFX
-	ld hl, Text_PackEmptyString
+	ld hl, PackEmptyText
 	call Pack_PrintTextNoScroll
 	call Pack_JumptableNext
 	ret
@@ -763,7 +762,7 @@ BattlePack:
 	ld hl, BallsPocketMenuHeader
 	call CopyMenuHeader
 	ld a, [wBallsPocketCursor]
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	ld a, [wBallsPocketScrollPosition]
 	ld [wMenuScrollPosition], a
 	call ScrollingMenu
@@ -780,7 +779,7 @@ BattlePack:
 
 ItemSubmenu:
 	farcall CheckItemContext
-	ld a, [wItemAttributeParamBuffer]
+	ld a, [wItemAttributeValue]
 TMHMSubmenu:
 	and a
 	jr z, .NoUse
@@ -835,7 +834,7 @@ TMHMSubmenu:
 
 .Use:
 	farcall CheckItemContext
-	ld a, [wItemAttributeParamBuffer]
+	ld a, [wItemAttributeValue]
 	ld hl, .ItemFunctionJumptable
 	rst JumpTable
 	ret
@@ -851,7 +850,7 @@ TMHMSubmenu:
 	dw .BattleOnly  ; ITEMMENU_CLOSE
 
 .Oak:
-	ld hl, Text_ThisIsntTheTime
+	ld hl, OakThisIsntTheTimeText
 	call Pack_PrintTextNoScroll
 	ret
 
@@ -952,7 +951,7 @@ DepositSellPack:
 	ld hl, PC_Mart_ItemsPocketMenuHeader
 	call CopyMenuHeader
 	ld a, [wItemsPocketCursor]
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	ld a, [wItemsPocketScrollPosition]
 	ld [wMenuScrollPosition], a
 	call ScrollingMenu
@@ -968,7 +967,7 @@ DepositSellPack:
 	ld hl, PC_Mart_KeyItemsPocketMenuHeader
 	call CopyMenuHeader
 	ld a, [wKeyItemsPocketCursor]
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	ld a, [wKeyItemsPocketScrollPosition]
 	ld [wMenuScrollPosition], a
 	call ScrollingMenu
@@ -993,7 +992,7 @@ DepositSellPack:
 	ld hl, PC_Mart_BallsPocketMenuHeader
 	call CopyMenuHeader
 	ld a, [wBallsPocketCursor]
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	ld a, [wBallsPocketScrollPosition]
 	ld [wMenuScrollPosition], a
 	call ScrollingMenu
@@ -1104,7 +1103,7 @@ TutorialPack:
 .ItemsMenuData:
 	db STATICMENU_ENABLE_SELECT | STATICMENU_ENABLE_LEFT_RIGHT | STATICMENU_ENABLE_START | STATICMENU_WRAP | STATICMENU_CURSOR ; flags
 	db 5, 8 ; rows, columns
-	db 2 ; horizontal spacing
+	db SCROLLINGMENU_ITEMS_QUANTITY ; item format
 	dbw 0, wDudeNumItems
 	dba PlaceMenuItemName
 	dba PlaceMenuItemQuantity
@@ -1124,7 +1123,7 @@ TutorialPack:
 .KeyItemsMenuData:
 	db STATICMENU_ENABLE_SELECT | STATICMENU_ENABLE_LEFT_RIGHT | STATICMENU_ENABLE_START | STATICMENU_WRAP | STATICMENU_CURSOR ; flags
 	db 5, 8 ; rows, columns
-	db 1 ; horizontal spacing
+	db SCROLLINGMENU_ITEMS_NORMAL ; item format
 	dbw 0, wDudeNumKeyItems
 	dba PlaceMenuItemName
 	dba PlaceMenuItemQuantity
@@ -1153,7 +1152,7 @@ TutorialPack:
 .BallsMenuData:
 	db STATICMENU_ENABLE_SELECT | STATICMENU_ENABLE_LEFT_RIGHT | STATICMENU_ENABLE_START | STATICMENU_WRAP | STATICMENU_CURSOR ; flags
 	db 5, 8 ; rows, columns
-	db 2 ; horizontal spacing
+	db SCROLLINGMENU_ITEMS_QUANTITY ; item format
 	dbw 0, wDudeNumBalls
 	dba PlaceMenuItemName
 	dba PlaceMenuItemQuantity
@@ -1298,7 +1297,7 @@ Pack_InterpretJoypad:
 
 .select
 	farcall SwitchItemsInBag
-	ld hl, Text_MoveItemWhere
+	ld hl, AskItemMoveText
 	call Pack_PrintTextNoScroll
 	scf
 	ret
@@ -1327,7 +1326,7 @@ Pack_InterpretJoypad:
 
 Pack_InitGFX:
 	call ClearBGPalettes
-	call ClearTileMap
+	call ClearTilemap
 	call ClearSprites
 	call DisableLCD
 	ld hl, PackMenuGFX
@@ -1358,7 +1357,7 @@ Pack_InitGFX:
 ; Place the textbox for displaying the item description
 	hlcoord 0, SCREEN_HEIGHT - 4 - 2
 	lb bc, 4, SCREEN_WIDTH - 2
-	call TextBox
+	call Textbox
 	call EnableLCD
 	call DrawPackGFX
 	ret
@@ -1410,32 +1409,18 @@ DrawPocketName:
 	jr nz, .row
 	ret
 
-.tilemap
-; ITEM_POCKET
-	db $00, $04, $04, $04, $01 ; top border
-	db $06, $07, $08, $09, $0a ; Items
-	db $02, $05, $05, $05, $03 ; bottom border
-; BALL_POCKET
-	db $00, $04, $04, $04, $01 ; top border
-	db $15, $16, $17, $18, $19 ; Balls
-	db $02, $05, $05, $05, $03 ; bottom border
-; KEY_ITEM_POCKET
-	db $00, $04, $04, $04, $01 ; top border
-	db $0b, $0c, $0d, $0e, $0f ; Key Items
-	db $02, $05, $05, $05, $03 ; bottom border
-; TM_HM_POCKET
-	db $00, $04, $04, $04, $01 ; top border
-	db $10, $11, $12, $13, $14 ; TM/HM
-	db $02, $05, $05, $05, $03 ; bottom border
+.tilemap: ; 5x12
+; the 5x3 pieces correspond to *_POCKET constants
+INCBIN "gfx/pack/pack_menu.tilemap"
 
 Pack_GetItemName:
 	ld a, [wCurItem]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetItemName
 	call CopyName1
 	ret
 
-Unreferenced_Pack_ClearTilemap:
+Pack_ClearTilemap: ; unreferenced
 	hlcoord 0, 0
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
 	ld a, " "
@@ -1465,7 +1450,7 @@ ItemsPocketMenuHeader:
 .MenuData:
 	db STATICMENU_ENABLE_SELECT | STATICMENU_ENABLE_LEFT_RIGHT | STATICMENU_ENABLE_START | STATICMENU_WRAP | STATICMENU_CURSOR ; flags
 	db 5, 8 ; rows, columns
-	db 2 ; horizontal spacing
+	db SCROLLINGMENU_ITEMS_QUANTITY ; item format
 	dbw 0, wNumItems
 	dba PlaceMenuItemName
 	dba PlaceMenuItemQuantity
@@ -1480,7 +1465,7 @@ PC_Mart_ItemsPocketMenuHeader:
 .MenuData:
 	db STATICMENU_ENABLE_SELECT | STATICMENU_ENABLE_LEFT_RIGHT | STATICMENU_ENABLE_START | STATICMENU_WRAP ; flags
 	db 5, 8 ; rows, columns
-	db 2 ; horizontal spacing
+	db SCROLLINGMENU_ITEMS_QUANTITY ; item format
 	dbw 0, wNumItems
 	dba PlaceMenuItemName
 	dba PlaceMenuItemQuantity
@@ -1495,7 +1480,7 @@ KeyItemsPocketMenuHeader:
 .MenuData:
 	db STATICMENU_ENABLE_SELECT | STATICMENU_ENABLE_LEFT_RIGHT | STATICMENU_ENABLE_START | STATICMENU_WRAP | STATICMENU_CURSOR ; flags
 	db 5, 8 ; rows, columns
-	db 1 ; horizontal spacing
+	db SCROLLINGMENU_ITEMS_NORMAL ; item format
 	dbw 0, wNumKeyItems
 	dba PlaceMenuItemName
 	dba PlaceMenuItemQuantity
@@ -1510,7 +1495,7 @@ PC_Mart_KeyItemsPocketMenuHeader:
 .MenuData:
 	db STATICMENU_ENABLE_SELECT | STATICMENU_ENABLE_LEFT_RIGHT | STATICMENU_ENABLE_START | STATICMENU_WRAP ; flags
 	db 5, 8 ; rows, columns
-	db 1 ; horizontal spacing
+	db SCROLLINGMENU_ITEMS_NORMAL ; item format
 	dbw 0, wNumKeyItems
 	dba PlaceMenuItemName
 	dba PlaceMenuItemQuantity
@@ -1525,7 +1510,7 @@ BallsPocketMenuHeader:
 .MenuData:
 	db STATICMENU_ENABLE_SELECT | STATICMENU_ENABLE_LEFT_RIGHT | STATICMENU_ENABLE_START | STATICMENU_WRAP | STATICMENU_CURSOR ; flags
 	db 5, 8 ; rows, columns
-	db 2 ; horizontal spacing
+	db SCROLLINGMENU_ITEMS_QUANTITY ; item format
 	dbw 0, wNumBalls
 	dba PlaceMenuItemName
 	dba PlaceMenuItemQuantity
@@ -1540,66 +1525,54 @@ PC_Mart_BallsPocketMenuHeader:
 .MenuData:
 	db STATICMENU_ENABLE_SELECT | STATICMENU_ENABLE_LEFT_RIGHT | STATICMENU_ENABLE_START | STATICMENU_WRAP ; flags
 	db 5, 8 ; rows, columns
-	db 2 ; horizontal spacing
+	db SCROLLINGMENU_ITEMS_QUANTITY ; item format
 	dbw 0, wNumBalls
 	dba PlaceMenuItemName
 	dba PlaceMenuItemQuantity
 	dba UpdateItemDescription
 
-Text_PackNoItems:
-	; No items.
-	text_far UnknownText_0x1c0b9a
+PackNoItemText: ; unreferenced
+	text_far _PackNoItemText
 	text_end
 
-Text_ThrowAwayHowMany:
-	; Throw away how many?
-	text_far UnknownText_0x1c0ba5
+AskThrowAwayText:
+	text_far _AskThrowAwayText
 	text_end
 
-Text_ConfirmThrowAway:
-	; Throw away @ @ (S)?
-	text_far UnknownText_0x1c0bbb
+AskQuantityThrowAwayText:
+	text_far _AskQuantityThrowAwayText
 	text_end
 
-Text_ThrewAway:
-	; Threw away @ (S).
-	text_far UnknownText_0x1c0bd8
+ThrewAwayText:
+	text_far _ThrewAwayText
 	text_end
 
-Text_ThisIsntTheTime:
-	; OAK:  ! This isn't the time to use that!
-	text_far UnknownText_0x1c0bee
+OakThisIsntTheTimeText:
+	text_far _OakThisIsntTheTimeText
 	text_end
 
-TextJump_YouDontHaveAMon:
-	; You don't have a #MON!
-	text_far Text_YouDontHaveAMon
+YouDontHaveAMonText:
+	text_far _YouDontHaveAMonText
 	text_end
 
-Text_RegisteredItem:
-	; Registered the @ .
-	text_far UnknownText_0x1c0c2e
+RegisteredItemText:
+	text_far _RegisteredItemText
 	text_end
 
-Text_CantRegister:
-	; You can't register that item.
-	text_far UnknownText_0x1c0c45
+CantRegisterText:
+	text_far _CantRegisterText
 	text_end
 
-Text_MoveItemWhere:
-	; Where should this be moved to?
-	text_far UnknownText_0x1c0c63
+AskItemMoveText:
+	text_far _AskItemMoveText
 	text_end
 
-Text_PackEmptyString:
-	;
-	text_far UnknownText_0x1c0c83
+PackEmptyText:
+	text_far _PackEmptyText
 	text_end
 
-TextJump_YouCantUseItInABattle:
-	; Doesn't seem to be used anywhere
-	; "You can't use it in a battle."
-	text_far Text_YouCantUseItInABattle
+YouCantUseItInABattleText: ; unreferenced
+	text_far _YouCantUseItInABattleText
 	text_end
 
 PackMenuGFX:

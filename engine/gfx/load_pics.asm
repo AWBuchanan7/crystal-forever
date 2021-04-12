@@ -125,7 +125,7 @@ GetFrontpicPointer:
 	push af
 	inc hl
 	ld a, d
-	call GetFarHalfword
+	call GetFarWord
 	pop bc
 	ret
 
@@ -208,7 +208,8 @@ GetMonBackpic:
 	push de
 
 	; These are assumed to be at the same address in their respective banks.
-	ld hl, PokemonPicPointers ; UnownPicPointers
+	assert PokemonPicPointers == UnownPicPointers
+	ld hl, PokemonPicPointers
 	ld a, b
 	ld d, BANK(PokemonPicPointers)
 	cp UNOWN
@@ -227,7 +228,7 @@ GetMonBackpic:
 	push af
 	inc hl
 	ld a, d
-	call GetFarHalfword
+	call GetFarWord
 	ld de, wDecompressScratch
 	pop af
 	call FarDecompress
@@ -247,7 +248,7 @@ FixPicBank:
 ; This is a thing for some reason.
 
 PICS_FIX EQU $36
-GLOBAL PICS_FIX
+EXPORT PICS_FIX
 
 	push hl
 	push bc
@@ -287,7 +288,7 @@ GLOBAL PICS_FIX
 	db BANK("Pics 23") ; BANK("Pics 1") + 22
 	db BANK("Pics 24") ; BANK("Pics 1") + 23
 
-Function511ec:
+GSIntro_GetMonFrontpic: ; unreferenced
 	ld a, c
 	push de
 	ld hl, PokemonPicPointers
@@ -300,7 +301,7 @@ Function511ec:
 	push af
 	inc hl
 	ld a, BANK(PokemonPicPointers)
-	call GetFarHalfword
+	call GetFarWord
 	pop af
 	pop de
 	call FarDecompress
@@ -310,7 +311,7 @@ GetTrainerPic:
 	ld a, [wTrainerClass]
 	and a
 	ret z
-	cp NUM_TRAINER_CLASSES
+	cp NUM_TRAINER_CLASSES + 1
 	ret nc
 	call WaitBGMap
 	xor a
@@ -331,7 +332,7 @@ GetTrainerPic:
 	push af
 	inc hl
 	ld a, BANK(TrainerPicPointers)
-	call GetFarHalfword
+	call GetFarWord
 	pop af
 	ld de, wDecompressScratch
 	call FarDecompress
@@ -344,12 +345,12 @@ GetTrainerPic:
 	pop af
 	ldh [rSVBK], a
 	call WaitBGMap
-	ld a, $1
+	ld a, 1
 	ldh [hBGMapMode], a
 	ret
 
 DecompressGet2bpp:
-; Decompress lz data from b:hl to scratch space at 6:d000, then copy it to address de.
+; Decompress lz data from b:hl to wDecompressScratch, then copy it to address de.
 
 	ldh a, [rSVBK]
 	push af

@@ -278,7 +278,7 @@ HOF_SlideBackpic:
 	ldh a, [hSCX]
 	cp $70
 	ret z
-	add $4
+	add 4
 	ldh [hSCX], a
 	call DelayFrame
 	jr .backpicloop
@@ -412,7 +412,7 @@ LoadHOFTeam:
 	ld bc, wHallOfFameTempEnd - wHallOfFameTemp + 1
 	call AddNTimes
 	ld a, BANK(sHallOfFame)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [hl]
 	and a
 	jr z, .absent
@@ -449,20 +449,20 @@ DisplayHOFMon:
 	ld bc, MON_NAME_LENGTH - 1
 	call CopyBytes
 	ld a, "@"
-	ld [wStringBuffer2 + 10], a
+	ld [wStringBuffer2 + MON_NAME_LENGTH - 1], a
 	hlcoord 0, 0
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
 	ld a, " "
 	call ByteFill
 	hlcoord 0, 0
 	lb bc, 3, SCREEN_WIDTH - 2
-	call TextBox
+	call Textbox
 	hlcoord 0, 12
 	lb bc, 4, SCREEN_WIDTH - 2
-	call TextBox
+	call Textbox
 	ld a, [wTempMonSpecies]
 	ld [wCurPartySpecies], a
-	ld [wDeciramBuffer], a
+	ld [wTextDecimalByte], a
 	ld hl, wTempMonDVs
 	predef GetUnownLetter
 	xor a
@@ -477,7 +477,7 @@ DisplayHOFMon:
 	ld [hli], a
 	ld [hl], "<DOT>"
 	hlcoord 3, 13
-	ld de, wDeciramBuffer
+	ld de, wTextDecimalByte
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
 	call GetBasePokemonName
@@ -567,10 +567,10 @@ HOF_AnimatePlayerPic:
 	ldh [hBGMapMode], a
 	hlcoord 0, 2
 	lb bc, 8, 9
-	call TextBox
+	call Textbox
 	hlcoord 0, 12
 	lb bc, 4, 18
-	call TextBox
+	call Textbox
 	hlcoord 2, 4
 	ld de, wPlayerName
 	call PlaceString

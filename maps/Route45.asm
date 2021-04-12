@@ -1,4 +1,4 @@
-	const_def 2 ; object constants
+	object_const_def
 	const ROUTE45_POKEFAN_M1
 	const ROUTE45_POKEFAN_M2
 	const ROUTE45_POKEFAN_M3
@@ -14,9 +14,9 @@
 	const ROUTE45_YOUNGSTER
 
 Route45_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 TrainerBlackbeltKenji:
 	trainer BLACKBELT_T, KENJI3, EVENT_BEAT_BLACKBELT_KENJI, BlackbeltKenji3SeenText, BlackbeltKenji3BeatenText, 0, .Script
@@ -78,48 +78,48 @@ TrainerBlackbeltKenji:
 	sjump Route45PackFullM
 
 Route45AskNumber1M:
-	jumpstd asknumber1m
+	jumpstd AskNumber1MScript
 	end
 
 Route45AskNumber2M:
-	jumpstd asknumber2m
+	jumpstd AskNumber2MScript
 	end
 
 Route45RegisteredNumberM:
-	jumpstd registerednumberm
+	jumpstd RegisteredNumberMScript
 	end
 
 Route45NumberAcceptedM:
-	jumpstd numberacceptedm
+	jumpstd NumberAcceptedMScript
 	end
 
 Route45NumberDeclinedM:
-	jumpstd numberdeclinedm
+	jumpstd NumberDeclinedMScript
 	end
 
 Route45PhoneFullM:
-	jumpstd phonefullm
+	jumpstd PhoneFullMScript
 	end
 
 Route45RematchM:
-	jumpstd rematchm
+	jumpstd RematchMScript
 	end
 
 Route45GiftM:
-	jumpstd giftm
+	jumpstd GiftMScript
 	end
 
 Route45PackFullM:
-	jumpstd packfullm
+	jumpstd PackFullMScript
 	end
 
 HikerParryHasIron:
 	setevent EVENT_PARRY_IRON
-	jumpstd packfullm
+	jumpstd PackFullMScript
 	end
 
 Route45RematchGiftM:
-	jumpstd rematchgiftm
+	jumpstd RematchGiftMScript
 	end
 
 TrainerHikerErik:
@@ -151,14 +151,14 @@ TrainerHikerParry:
 	loadvar VAR_CALLERID, PHONE_HIKER_PARRY
 	endifjustbattled
 	opentext
-	checkflag ENGINE_PARRY
+	checkflag ENGINE_PARRY_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	checkcellnum PHONE_HIKER_PARRY
 	iftrue Route45NumberAcceptedM
 	checkevent EVENT_PARRY_ASKED_FOR_PHONE_NUMBER
 	iftrue .AskedAlready
 	writetext HikerParryAfterBattleText
-	buttonsound
+	promptbutton
 	setevent EVENT_PARRY_ASKED_FOR_PHONE_NUMBER
 	scall Route45AskNumber1M
 	sjump .AskForNumber
@@ -191,7 +191,7 @@ TrainerHikerParry:
 	startbattle
 	reloadmapafterbattle
 	loadmem wParryFightCount, 1
-	clearflag ENGINE_PARRY
+	clearflag ENGINE_PARRY_READY_FOR_REMATCH
 	end
 
 .LoadFight1:
@@ -199,14 +199,14 @@ TrainerHikerParry:
 	startbattle
 	reloadmapafterbattle
 	loadmem wParryFightCount, 2
-	clearflag ENGINE_PARRY
+	clearflag ENGINE_PARRY_READY_FOR_REMATCH
 	end
 
 .LoadFight2:
 	loadtrainer HIKER, PARRY2
 	startbattle
 	reloadmapafterbattle
-	clearflag ENGINE_PARRY
+	clearflag ENGINE_PARRY_READY_FOR_REMATCH
 	checkevent EVENT_PARRY_IRON
 	iftrue .HasIron
 	checkevent EVENT_GOT_IRON_FROM_PARRY
@@ -285,7 +285,7 @@ TrainerCamperQuentin:
 	closetext
 	end
 
-Route45DummyScript:
+Route45DummyScript: ; unreferenced
 	writetext Route45DummyText
 	waitbutton
 	closetext
@@ -532,16 +532,16 @@ Route45SignText:
 Route45_MapEvents:
 	db 0, 0 ; filler
 
-	db 1 ; warp events
+	def_warp_events
 	warp_event  2,  5, DARK_CAVE_BLACKTHORN_ENTRANCE, 1
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 2 ; bg events
+	def_bg_events
 	bg_event 10,  4, BGEVENT_READ, Route45Sign
 	bg_event 13, 80, BGEVENT_ITEM, Route45HiddenPpUp
 
-	db 13 ; object events
+	def_object_events
 	object_event 10, 16, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 1, TrainerHikerErik, -1
 	object_event 15, 65, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 2, TrainerHikerMichael, -1
 	object_event  5, 28, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 2, TrainerHikerParry, -1

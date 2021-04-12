@@ -1,5 +1,6 @@
-; Graciously aped from:
-; http://nocash.emubase.de/pandocs.htm
+; Graciously derived from:
+; https://gbdev.io/pandocs/
+; https://github.com/gbdev/hardware.inc
 ; http://gameboy.mongenel.com/dmg/asmmemmap.html
 
 ; memory map
@@ -32,9 +33,9 @@ RTC_M  EQU $09 ; Minutes   0-59 (0-3Bh)
 RTC_H  EQU $0a ; Hours     0-23 (0-17h)
 RTC_DL EQU $0b ; Lower 8 bits of Day Counter (0-FFh)
 RTC_DH EQU $0c ; Upper 1 bit of Day Counter, Carry Bit, Halt Flag
-        ; Bit 0  Most significant bit of Day Counter (Bit 8)
-        ; Bit 6  Halt (0=Active, 1=Stop Timer)
-        ; Bit 7  Day Counter Carry Bit (1=Counter Overflow)
+               ; Bit 0  Most significant bit of Day Counter (Bit 8)
+               ; Bit 6  Halt (0=Active, 1=Stop Timer)
+               ; Bit 7  Day Counter Carry Bit (1=Counter Overflow)
 
 ; interrupt flags
 VBLANK   EQU 0
@@ -42,6 +43,7 @@ LCD_STAT EQU 1
 TIMER    EQU 2
 SERIAL   EQU 3
 JOYPAD   EQU 4
+IE_DEFAULT EQU (1 << SERIAL) | (1 << TIMER) | (1 << LCD_STAT) | (1 << VBLANK)
 
 ; OAM attribute flags
 OAM_TILE_BANK EQU 3
@@ -70,10 +72,10 @@ rTIMA       EQU $ff05 ; Timer counter (R/W)
 rTMA        EQU $ff06 ; Timer Modulo (R/W)
 rTAC        EQU $ff07 ; Timer Control (R/W)
 rTAC_ON        EQU 2
-rTAC_4096_HZ   EQU 0
-rTAC_262144_HZ EQU 1
-rTAC_65536_HZ  EQU 2
-rTAC_16384_HZ  EQU 3
+rTAC_4096_HZ   EQU %00
+rTAC_262144_HZ EQU %01
+rTAC_65536_HZ  EQU %10
+rTAC_16384_HZ  EQU %11
 rIF         EQU $ff0f ; Interrupt Flag (R/W)
 rNR10       EQU $ff10 ; Channel 1 Sweep register (R/W)
 rNR11       EQU $ff11 ; Channel 1 Sound length/Wave pattern duty (R/W)
@@ -146,6 +148,9 @@ rHDMA3      EQU $ff53 ; CGB Mode Only - New DMA Destination, High
 rHDMA4      EQU $ff54 ; CGB Mode Only - New DMA Destination, Low
 rHDMA5      EQU $ff55 ; CGB Mode Only - New DMA Length/Mode/Start
 rRP         EQU $ff56 ; CGB Mode Only - Infrared Communications Port
+rRP_LED_ON EQU 0
+rRP_RECEIVING EQU 1
+rRP_ENABLE_READ_MASK EQU %11000000
 rBGPI       EQU $ff68 ; CGB Mode Only - Background Palette Index
 rBGPI_AUTO_INCREMENT EQU 7 ; increment rBGPI after write to rBGPD
 rBGPD       EQU $ff69 ; CGB Mode Only - Background Palette Data

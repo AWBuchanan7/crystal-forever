@@ -33,11 +33,12 @@ SmallFarFlagAction:
 
 ; What are we doing to this flag?
 	dec b
-	jr z, .set ; 1
+	jr z, .set ; 1 = SET_FLAG
 	dec b
-	jr z, .check ; 2
+	jr z, .check ; 2 = CHECK_FLAG
+	; 0 = RESET_FLAG
 
-.reset
+; reset
 	ld a, c
 	cpl
 	and [hl]

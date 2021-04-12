@@ -3,7 +3,8 @@ LoadPoisonBGPals:
 	ldh a, [hCGB]
 	and a
 	ret nz
-	ret ; ????
+	; code was probably dummied out here
+	ret
 
 .LoadPals:
 	ldh a, [hCGB]
@@ -39,7 +40,7 @@ LoadPoisonBGPals:
 	jr nz, .loop
 	pop af
 	ldh [rSVBK], a
-	ld a, $1
+	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	ld c, 4
 	call DelayFrames

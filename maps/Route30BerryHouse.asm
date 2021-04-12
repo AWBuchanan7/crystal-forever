@@ -1,10 +1,10 @@
-	const_def 2 ; object constants
+	object_const_def
 	const ROUTE30BERRYHOUSE_POKEFAN_M
 
 Route30BerryHouse_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 Route30BerryHousePokefanMScript:
 	faceplayer
@@ -12,7 +12,7 @@ Route30BerryHousePokefanMScript:
 	checkevent EVENT_GOT_BERRY_FROM_ROUTE_30_HOUSE
 	iftrue .GotBerry
 	writetext Route30BerrySpeechHouseMonEatBerriesText
-	buttonsound
+	promptbutton
 	verbosegiveitem BERRY
 	iffalse .NoRoom
 	setevent EVENT_GOT_BERRY_FROM_ROUTE_30_HOUSE
@@ -24,7 +24,7 @@ Route30BerryHousePokefanMScript:
 	end
 
 Route30BerryHouseBookshelf:
-	jumpstd magazinebookshelf
+	jumpstd MagazineBookshelfScript
 
 Route30BerrySpeechHouseMonEatBerriesText:
 	text "You know, #MON"
@@ -47,15 +47,15 @@ Route30BerrySpeechHouseCheckTreesText:
 Route30BerryHouse_MapEvents:
 	db 0, 0 ; filler
 
-	db 2 ; warp events
+	def_warp_events
 	warp_event  2,  7, ROUTE_30, 1
 	warp_event  3,  7, ROUTE_30, 1
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 2 ; bg events
+	def_bg_events
 	bg_event  0,  1, BGEVENT_READ, Route30BerryHouseBookshelf
 	bg_event  1,  1, BGEVENT_READ, Route30BerryHouseBookshelf
 
-	db 1 ; object events
+	def_object_events
 	object_event  2,  3, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, Route30BerryHousePokefanMScript, -1

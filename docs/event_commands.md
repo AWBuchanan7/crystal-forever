@@ -263,7 +263,9 @@ If <code><i>item_id</i></code> = `USE_SCRIPT_VAR`, then it uses `[wScriptVar]` i
 ## `$49`: `closetext`
 
 
-## `$4A`: <code>loadbytec2cf <i>byte</i></code>
+## `$4A`: <code>writeunusedbyte <i>byte</i></code>
+
+<code>[<i>wUnusedScriptByte</i>] = <i>byte</i></code>
 
 
 ## `$4B`: <code>farwritetext <i>text_pointer</i></code>
@@ -296,7 +298,7 @@ If <code><i>item_id</i></code> = `USE_SCRIPT_VAR`, then it uses `[wScriptVar]` i
 ## `$54`: `waitbutton`
 
 
-## `$55`: `buttonsound`
+## `$55`: `promptbutton`
 
 
 ## `$56`: <code>pokepic <i>mon_id</i></code>
@@ -477,19 +479,19 @@ If <code><i>item_id</i></code> = `USE_SCRIPT_VAR`, then it uses `[wScriptVar]` i
 ## `$8F`: <code>stopandsjump <i>script</i></code>
 
 
-## `$90`: `return`
+## `$90`: `endcallback`
 
 
 ## `$91`: `end`
 
 
-## `$92`: <code>reloadandreturn <i>which_method</i></code>
+## `$92`: <code>reloadend <i>which_method</i></code>
 
 
 ## `$93`: `endall`
 
 
-## `$94`: <code>pokemart <i>dialog_id</i>, <i>mart_id</i></code>
+## `$94`: <code>pokemart <i>mart_type</i>, <i>mart_id</i></code>
 
 
 ## `$95`: <code>elevator <i>floor_list</i></code>

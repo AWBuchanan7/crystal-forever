@@ -1,10 +1,10 @@
-	const_def 2 ; object constants
+	object_const_def
 	const BLUESHOUSE_DAISY
 
 BluesHouse_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 DaisyScript:
 	faceplayer
@@ -39,7 +39,7 @@ DaisyScript:
 	opentext
 	writetext GroomedMonLooksContentText
 	special PlayCurMonCry
-	buttonsound
+	promptbutton
 	writetext DaisyAllDoneText
 	waitbutton
 	closetext
@@ -145,13 +145,13 @@ DaisyCantGroomEggText:
 BluesHouse_MapEvents:
 	db 0, 0 ; filler
 
-	db 2 ; warp events
+	def_warp_events
 	warp_event  2,  7, PALLET_TOWN, 2
 	warp_event  3,  7, PALLET_TOWN, 2
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 0 ; bg events
+	def_bg_events
 
-	db 1 ; object events
+	def_object_events
 	object_event  2,  3, SPRITE_DAISY, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, DaisyScript, -1

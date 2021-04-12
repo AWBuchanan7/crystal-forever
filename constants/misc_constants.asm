@@ -13,11 +13,18 @@ FEMALE EQU 1
 	const CHECK_FLAG
 
 ; G/S version ID: 0 = Gold, 1 = Silver (used by checkver)
+; Mystery Gift uses incremented values 1 and 2
 GS_VERSION EQU 0
+; Pokémon Pikachu 2, a step counter / virtual pet device (used by Mystery Gift)
+POKEMON_PIKACHU_2_VERSION EQU 3
+RESERVED_GAME_VERSION EQU 4
 
 ; save file corruption check values
 SAVE_CHECK_VALUE_1 EQU 99
 SAVE_CHECK_VALUE_2 EQU 127
+
+; RTC halted check value
+RTC_HALT_VALUE EQU $1234
 
 ; time of day boundaries
 MORN_HOUR EQU 4  ; 4 AM
@@ -40,10 +47,3 @@ MAX_DAY_CARE_EXP EQU $500000
 
 ; hall of fame
 HOF_MASTER_COUNT EQU 200
-
-; bug-catching contest
-BUG_CONTEST_MINUTES EQU 20
-BUG_CONTEST_SECONDS EQU 0
-BUG_CONTEST_PLAYER EQU 1
-NUM_BUG_CONTESTANTS EQU 10 ; not counting the player
-BUG_CONTESTANT_SIZE EQU 4

@@ -2,28 +2,28 @@ PRINTPARTY_HP EQU "◀" ; $71
 
 PrintPage1:
 	hlcoord 0, 0
-	decoord 0, 0, wPrinterTileMapBuffer
+	decoord 0, 0, wPrinterTilemapBuffer
 	ld bc, 17 * SCREEN_WIDTH
 	call CopyBytes
-	hlcoord 17, 1, wPrinterTileMapBuffer
+	hlcoord 17, 1, wPrinterTilemapBuffer
 	ld a, $62
 	ld [hli], a
-	inc a
+	inc a ; $63
 	ld [hl], a
-	hlcoord 17, 2, wPrinterTileMapBuffer
+	hlcoord 17, 2, wPrinterTilemapBuffer
 	ld a, $64
 	ld [hli], a
-	inc a
+	inc a ; $65
 	ld [hl], a
-	hlcoord 1, 9, wPrinterTileMapBuffer
+	hlcoord 1, 9, wPrinterTilemapBuffer
 	ld a, " "
 	ld [hli], a
 	ld [hl], a
-	hlcoord 1, 10, wPrinterTileMapBuffer
+	hlcoord 1, 10, wPrinterTilemapBuffer
 	ld a, $61
 	ld [hli], a
 	ld [hl], a
-	hlcoord 2, 11, wPrinterTileMapBuffer
+	hlcoord 2, 11, wPrinterTilemapBuffer
 	lb bc, 5, 18
 	call ClearBox
 	ld a, [wTempSpecies]
@@ -36,9 +36,9 @@ PrintPage1:
 	farcall GetDexEntryPagePointer
 	pop af
 	ld a, b
-	hlcoord 1, 11, wPrinterTileMapBuffer
-	call nz, FarString
-	hlcoord 19, 0, wPrinterTileMapBuffer
+	hlcoord 1, 11, wPrinterTilemapBuffer
+	call nz, PlaceFarString
+	hlcoord 19, 0, wPrinterTilemapBuffer
 	ld [hl], $35
 	ld de, SCREEN_WIDTH
 	add hl, de
@@ -52,26 +52,26 @@ PrintPage1:
 	ret
 
 PrintPage2:
-	hlcoord 0, 0, wPrinterTileMapBuffer
+	hlcoord 0, 0, wPrinterTilemapBuffer
 	ld bc, 8 * SCREEN_WIDTH
 	ld a, " "
 	call ByteFill
-	hlcoord 0, 0, wPrinterTileMapBuffer
+	hlcoord 0, 0, wPrinterTilemapBuffer
 	ld a, $36
 	ld b, 6
 	call .FillColumn
-	hlcoord 19, 0, wPrinterTileMapBuffer
+	hlcoord 19, 0, wPrinterTilemapBuffer
 	ld a, $37
 	ld b, 6
 	call .FillColumn
-	hlcoord 0, 6, wPrinterTileMapBuffer
+	hlcoord 0, 6, wPrinterTilemapBuffer
 	ld [hl], $38
 	inc hl
 	ld a, $39
 	ld bc, SCREEN_HEIGHT
 	call ByteFill
 	ld [hl], $3a
-	hlcoord 0, 7, wPrinterTileMapBuffer
+	hlcoord 0, 7, wPrinterTilemapBuffer
 	ld bc, SCREEN_WIDTH
 	ld a, $32
 	call ByteFill
@@ -84,9 +84,9 @@ PrintPage2:
 	ld c, 2 ; get page 2
 	farcall GetDexEntryPagePointer
 	pop af
-	hlcoord 1, 1, wPrinterTileMapBuffer
+	hlcoord 1, 1, wPrinterTilemapBuffer
 	ld a, b
-	call nz, FarString
+	call nz, PlaceFarString
 	ret
 
 .FillColumn:
@@ -132,7 +132,7 @@ GBPrinterString_PrinterError4:
 
 PrintPartyMonPage1:
 	call ClearBGPalettes
-	call ClearTileMap
+	call ClearTilemap
 	call ClearSprites
 	xor a
 	ldh [hBGMapMode], a
@@ -159,7 +159,7 @@ PrintPartyMonPage1:
 	hlcoord 0, 7
 	ld b, 9
 	ld c, 18
-	call TextBox
+	call Textbox
 	hlcoord 8, 2
 	ld a, [wTempMonLevel]
 	call PrintLevel_Force3Digits
@@ -170,10 +170,10 @@ PrintPartyMonPage1:
 	lb bc, 2, 3
 	call PrintNum
 	ld a, [wCurPartySpecies]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	ld [wCurSpecies], a
 	ld hl, wPartyMonNicknames
-	call Function1dc50e
+	call GetCurPartyMonName
 	hlcoord 8, 4
 	call PlaceString
 	hlcoord 9, 6
@@ -186,30 +186,30 @@ PrintPartyMonPage1:
 	inc hl
 	ld [hl], "."
 	inc hl
-	ld de, wNamedObjectIndexBuffer
+	ld de, wNamedObjectIndex
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
 	hlcoord 1, 9
-	ld de, String1dc550
+	ld de, PrintParty_OTString
 	call PlaceString
-	ld hl, wPartyMonOT
-	call Function1dc50e
+	ld hl, wPartyMonOTs
+	call GetCurPartyMonName
 	hlcoord 4, 9
 	call PlaceString
 	hlcoord 1, 11
-	ld de, String1dc559
+	ld de, PrintParty_IDNoString
 	call PlaceString
 	hlcoord 4, 11
 	ld de, wTempMonID
 	lb bc, PRINTNUM_LEADINGZEROS | 2, 5
 	call PrintNum
 	hlcoord 1, 14
-	ld de, String1dc554
+	ld de, PrintParty_MoveString
 	call PlaceString
 	hlcoord 7, 14
 	ld a, [wTempMonMoves + 0]
-	call Function1dc51a
-	call Function1dc52c
+	call PlaceMoveNameString
+	call PlaceGenderAndShininess
 	ld hl, wTempMonDVs
 	predef GetUnownLetter
 	ld hl, wBoxAlignment
@@ -217,10 +217,9 @@ PrintPartyMonPage1:
 	ld [hl], a
 	ld a, [wCurPartySpecies]
 	cp UNOWN
-	jr z, .asm_1dc469
+	jr z, .got_alignment
 	inc [hl]
-
-.asm_1dc469
+.got_alignment
 	hlcoord 0, 0
 	call _PrepMonFrontpic
 	call WaitBGMap
@@ -231,7 +230,7 @@ PrintPartyMonPage1:
 
 PrintPartyMonPage2:
 	call ClearBGPalettes
-	call ClearTileMap
+	call ClearTilemap
 	call ClearSprites
 	xor a
 	ldh [hBGMapMode], a
@@ -242,22 +241,22 @@ PrintPartyMonPage2:
 	hlcoord 0, 0
 	ld b, 15
 	ld c, 18
-	call TextBox
+	call Textbox
 	ld bc, SCREEN_WIDTH
 	decoord 0, 0
 	hlcoord 0, 1
 	call CopyBytes
 	hlcoord 7, 0
 	ld a, [wTempMonMoves + 1]
-	call Function1dc51a
+	call PlaceMoveNameString
 	hlcoord 7, 2
 	ld a, [wTempMonMoves + 2]
-	call Function1dc51a
+	call PlaceMoveNameString
 	hlcoord 7, 4
 	ld a, [wTempMonMoves + 3]
-	call Function1dc51a
+	call PlaceMoveNameString
 	hlcoord 7, 7
-	ld de, String1dc55d
+	ld de, PrintParty_StatsString
 	call PlaceString
 	hlcoord 16, 7
 	ld de, wTempMonAttack
@@ -285,7 +284,7 @@ PrintPartyMonPage2:
 	call PrintNum
 	ret
 
-Function1dc50e:
+GetCurPartyMonName:
 	ld bc, NAME_LENGTH
 	ld a, [wCurPartyMon]
 	call AddNTimes
@@ -293,22 +292,22 @@ Function1dc50e:
 	ld d, h
 	ret
 
-Function1dc51a:
+PlaceMoveNameString:
 	and a
 	jr z, .no_move
 
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetMoveName
 	jr .got_string
 
 .no_move
-	ld de, String1dc584
+	ld de, PrintParty_NoMoveString
 
 .got_string
 	call PlaceString
 	ret
 
-Function1dc52c:
+PlaceGenderAndShininess:
 	farcall GetGender
 	ld a, " "
 	jr c, .got_gender
@@ -326,16 +325,16 @@ Function1dc52c:
 	ld [hl], "⁂"
 	ret
 
-String1dc550:
+PrintParty_OTString:
 	db "OT/@"
 
-String1dc554:
+PrintParty_MoveString:
 	db "MOVE@"
 
-String1dc559:
+PrintParty_IDNoString:
 	db "<ID>№.@"
 
-String1dc55d:
+PrintParty_StatsString:
 	db   "ATTACK"
 	next "DEFENSE"
 	next "SPCL.ATK"
@@ -343,7 +342,7 @@ String1dc55d:
 	next "SPEED"
 	db   "@"
 
-String1dc584:
+PrintParty_NoMoveString:
 	db "------------@"
 
 GBPrinterHPIcon:

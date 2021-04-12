@@ -1,47 +1,47 @@
-	const_def 2 ; object constants
-	const POKEMONFANCLUB_GENTLEMAN
+	object_const_def
+	const POKEMONFANCLUB_CHAIRMAN
 	const POKEMONFANCLUB_RECEPTIONIST
-	const POKEMONFANCLUB_FISHER
+	const POKEMONFANCLUB_CLEFAIRY_GUY
 	const POKEMONFANCLUB_TEACHER
 	const POKEMONFANCLUB_FAIRY
 	const POKEMONFANCLUB_ODDISH
 
 PokemonFanClub_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
-PokemonFanClubPresidentScript:
+PokemonFanClubChairmanScript:
 	faceplayer
 	opentext
 	checkevent EVENT_LISTENED_TO_FAN_CLUB_PRESIDENT
 	iftrue .HeardSpeech
 	checkevent EVENT_LISTENED_TO_FAN_CLUB_PRESIDENT_BUT_BAG_WAS_FULL
 	iftrue .HeardSpeechButBagFull
-	writetext UnknownText_0x191881
+	writetext PokemonFanClubChairmanDidYouVisitToHearAboutMyMonText
 	yesorno
 	iffalse .NotListening
-	writetext UnknownText_0x191911
-	buttonsound
+	writetext PokemonFanClubChairmanRapidashText
+	promptbutton
 .HeardSpeechButBagFull:
-	writetext UnknownText_0x191a3d
-	buttonsound
+	writetext PokemonFanClubChairmanIWantYouToHaveThisText
+	promptbutton
 	verbosegiveitem RARE_CANDY
 	iffalse .BagFull
 	setevent EVENT_LISTENED_TO_FAN_CLUB_PRESIDENT
-	writetext UnknownText_0x191a72
+	writetext PokemonFanClubChairmanItsARareCandyText
 	waitbutton
 	closetext
 	end
 
 .HeardSpeech:
-	writetext UnknownText_0x191ae0
+	writetext PokemonFanClubChairmanMoreTalesToTellText
 	waitbutton
 	closetext
 	end
 
 .NotListening:
-	writetext UnknownText_0x191b38
+	writetext PokemonFanClubChairmanHowDisappointingText
 	waitbutton
 .BagFull:
 	closetext
@@ -57,13 +57,13 @@ PokemonFanClubClefairyGuyScript:
 	iftrue .GotLostItem
 	checkevent EVENT_RETURNED_MACHINE_PART
 	iftrue .FoundClefairyDoll
-	writetext UnknownText_0x191ba0
+	writetext PokemonFanClubClefairyGuyClefairyIsSoAdorableText
 	waitbutton
 	closetext
 	end
 
 .FoundClefairyDoll:
-	writetext UnknownText_0x191bff
+	writetext PokemonFanClubClefairyGuyMakingDoWithADollIFoundText
 	checkevent EVENT_MET_COPYCAT_FOUND_OUT_ABOUT_LOST_ITEM
 	iftrue .MetCopycat
 	waitbutton
@@ -71,14 +71,14 @@ PokemonFanClubClefairyGuyScript:
 	end
 
 .MetCopycat:
-	buttonsound
-	writetext UnknownText_0x191c5a
-	buttonsound
+	promptbutton
+	writetext PokemonFanClubClefairyGuyTakeThisDollBackToGirlText
+	promptbutton
 	waitsfx
 	giveitem LOST_ITEM
 	iffalse .NoRoom
 	disappear POKEMONFANCLUB_FAIRY
-	writetext UnknownText_0x191d0a
+	writetext PokemonFanClubPlayerReceivedDollText
 	playsound SFX_KEY_ITEM
 	waitsfx
 	itemnotify
@@ -87,13 +87,13 @@ PokemonFanClubClefairyGuyScript:
 	end
 
 .GotLostItem:
-	writetext UnknownText_0x191d1e
+	writetext PokemonFanClubClefairyGuyGoingToGetARealClefairyText
 	waitbutton
 	closetext
 	end
 
 .NoRoom:
-	writetext UnknownText_0x191d58
+	writetext PokemonFanClubClefairyGuyPackIsJammedFullText
 	waitbutton
 	closetext
 	end
@@ -102,11 +102,11 @@ PokemonFanClubTeacherScript:
 	jumptextfaceplayer PokemonFanClubTeacherText
 
 PokemonFanClubClefairyDollScript:
-	jumptext ClefairyDollText
+	jumptext PokemonFanClubClefairyDollText
 
 PokemonFanClubBayleefScript:
 	opentext
-	writetext FanClubBayleefText
+	writetext PokemonFanClubBayleefText
 	cry BAYLEEF
 	waitbutton
 	closetext
@@ -118,7 +118,7 @@ PokemonFanClubListenSign:
 PokemonFanClubBraggingSign:
 	jumptext PokemonFanClubBraggingSignText
 
-UnknownText_0x191881:
+PokemonFanClubChairmanDidYouVisitToHearAboutMyMonText:
 	text "I'm the CHAIRMAN"
 	line "of the #MON FAN"
 	cont "CLUB."
@@ -135,7 +135,7 @@ UnknownText_0x191881:
 	cont "#MON?"
 	done
 
-UnknownText_0x191911:
+PokemonFanClubChairmanRapidashText:
 	text "Good!"
 	line "Then listen up!"
 
@@ -161,13 +161,13 @@ UnknownText_0x191911:
 	cont "you too long!"
 	done
 
-UnknownText_0x191a3d:
+PokemonFanClubChairmanIWantYouToHaveThisText:
 	text "Thanks for hearing"
 	line "me out. I want you"
 	cont "to have this!"
 	done
 
-UnknownText_0x191a72:
+PokemonFanClubChairmanItsARareCandyText:
 	text "It's a RARE CANDY"
 	line "that makes #MON"
 	cont "stronger."
@@ -179,7 +179,7 @@ UnknownText_0x191a72:
 	line "you can have it."
 	done
 
-UnknownText_0x191ae0:
+PokemonFanClubChairmanMoreTalesToTellText:
 	text "Hello, <PLAY_G>!"
 
 	para "Did you come see"
@@ -190,7 +190,7 @@ UnknownText_0x191ae0:
 	line "tales to tell…"
 	done
 
-UnknownText_0x191b38:
+PokemonFanClubChairmanHowDisappointingText:
 	text "How disappointing…"
 
 	para "Come back if you"
@@ -203,7 +203,7 @@ PokemonFanClubReceptionistText:
 	cont "comes to #MON…"
 	done
 
-UnknownText_0x191ba0:
+PokemonFanClubClefairyGuyClefairyIsSoAdorableText:
 	text "I love the way"
 	line "CLEFAIRY waggles"
 
@@ -214,7 +214,7 @@ UnknownText_0x191ba0:
 	line "It's so adorable!"
 	done
 
-UnknownText_0x191bff:
+PokemonFanClubClefairyGuyMakingDoWithADollIFoundText:
 	text "I love CLEFAIRY,"
 	line "but I could never"
 
@@ -225,7 +225,7 @@ UnknownText_0x191bff:
 	line "found."
 	done
 
-UnknownText_0x191c5a:
+PokemonFanClubClefairyGuyTakeThisDollBackToGirlText:
 	text "Oh, I see now. The"
 	line "girl who lost this"
 
@@ -244,12 +244,12 @@ UnknownText_0x191c5a:
 	line "No worries!"
 	done
 
-UnknownText_0x191d0a:
+PokemonFanClubPlayerReceivedDollText:
 	text "<PLAYER> received"
 	line "# DOLL."
 	done
 
-UnknownText_0x191d1e:
+PokemonFanClubClefairyGuyGoingToGetARealClefairyText:
 	text "You watch. I'm"
 	line "going to get a"
 
@@ -257,7 +257,7 @@ UnknownText_0x191d1e:
 	line "my friend."
 	done
 
-UnknownText_0x191d58:
+PokemonFanClubClefairyGuyPackIsJammedFullText:
 	text "Your PACK is"
 	line "jammed full."
 	done
@@ -270,7 +270,7 @@ PokemonFanClubTeacherText:
 	line "head is so cute!"
 	done
 
-ClefairyDollText:
+PokemonFanClubClefairyDollText:
 	text "It's a CLEFAIRY!"
 	line "Huh?"
 
@@ -279,7 +279,7 @@ ClefairyDollText:
 	cont "DOLL."
 	done
 
-FanClubBayleefText:
+PokemonFanClubBayleefText:
 	text "BAYLEEF: Li liif!"
 	done
 
@@ -297,18 +297,18 @@ PokemonFanClubBraggingSignText:
 PokemonFanClub_MapEvents:
 	db 0, 0 ; filler
 
-	db 2 ; warp events
+	def_warp_events
 	warp_event  2,  7, VERMILION_CITY, 3
 	warp_event  3,  7, VERMILION_CITY, 3
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 2 ; bg events
+	def_bg_events
 	bg_event  7,  0, BGEVENT_READ, PokemonFanClubListenSign
 	bg_event  9,  0, BGEVENT_READ, PokemonFanClubBraggingSign
 
-	db 6 ; object events
-	object_event  3,  1, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PokemonFanClubPresidentScript, -1
+	def_object_events
+	object_event  3,  1, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PokemonFanClubChairmanScript, -1
 	object_event  4,  1, SPRITE_RECEPTIONIST, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, PokemonFanClubReceptionistScript, -1
 	object_event  2,  3, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PokemonFanClubClefairyGuyScript, -1
 	object_event  7,  2, SPRITE_TEACHER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PokemonFanClubTeacherScript, -1

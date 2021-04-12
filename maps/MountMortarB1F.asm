@@ -1,16 +1,16 @@
-	const_def 2 ; object constants
+	object_const_def
 	const MOUNTMORTARB1F_POKE_BALL1
 	const MOUNTMORTARB1F_POKE_BALL2
 	const MOUNTMORTARB1F_BOULDER
-	const MOUNTMORTARB1F_BLACK_BELT
+	const MOUNTMORTARB1F_KIYO
 	const MOUNTMORTARB1F_POKE_BALL3
 	const MOUNTMORTARB1F_POKE_BALL4
 	const MOUNTMORTARB1F_POKE_BALL5
 
 MountMortarB1F_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 MountMortarB1FKiyoScript:
 	faceplayer
@@ -19,40 +19,40 @@ MountMortarB1FKiyoScript:
 	iftrue .GotTyrogue
 	checkevent EVENT_BEAT_BLACKBELT_KIYO
 	iftrue .BeatKiyo
-	writetext UnknownText_0x7e24d
+	writetext MountMortarB1FKiyoIntroText
 	waitbutton
 	closetext
-	winlosstext UnknownText_0x7e2a9, 0
+	winlosstext MountMortarB1FKiyoWinText, 0
 	loadtrainer BLACKBELT_T, KIYO
 	startbattle
 	reloadmapafterbattle
 	setevent EVENT_BEAT_BLACKBELT_KIYO
 	opentext
 .BeatKiyo:
-	writetext UnknownText_0x7e2c0
-	buttonsound
+	writetext MountMortarB1FTyrogueRewardText
+	promptbutton
 	waitsfx
 	readvar VAR_PARTYCOUNT
 	ifequal PARTY_LENGTH, .NoRoom
-	writetext UnknownText_0x7e355
+	writetext MountMortarB1FReceiveMonText
 	playsound SFX_CAUGHT_MON
 	waitsfx
 	givepoke TYROGUE, 10
 	setevent EVENT_GOT_TYROGUE_FROM_KIYO
 .GotTyrogue:
-	writetext UnknownText_0x7e36a
+	writetext MountMortarB1FKiyoGotTyrogueText
 	waitbutton
 	closetext
 	end
 
 .NoRoom:
-	writetext UnknownText_0x7e3df
+	writetext MountMortarB1FKiyoFullPartyText
 	waitbutton
 	closetext
 	end
 
 MountMortarB1FBoulder:
-	jumpstd strengthboulder
+	jumpstd StrengthBoulderScript
 
 MountMortarB1FHyperPotion:
 	itemball HYPER_POTION
@@ -72,7 +72,7 @@ MountMortarB1FPPUp:
 MountMortarB1FHiddenMaxRevive:
 	hiddenitem MAX_REVIVE, EVENT_MOUNT_MORTAR_B1F_HIDDEN_MAX_REVIVE
 
-UnknownText_0x7e24d:
+MountMortarB1FKiyoIntroText:
 	text "Hey!"
 
 	para "I am the KARATE"
@@ -87,12 +87,12 @@ UnknownText_0x7e24d:
 	para "Hwaaarggh!"
 	done
 
-UnknownText_0x7e2a9:
+MountMortarB1FKiyoWinText:
 	text "Waaaarggh!"
 	line "I'm beaten!"
 	done
 
-UnknownText_0x7e2c0:
+MountMortarB1FTyrogueRewardText:
 	text "I… I'm crushed…"
 
 	para "My training is"
@@ -108,12 +108,12 @@ UnknownText_0x7e2c0:
 	line "fighting #MON."
 	done
 
-UnknownText_0x7e355:
+MountMortarB1FReceiveMonText:
 	text "<PLAYER> received"
 	line "TYROGUE."
 	done
 
-UnknownText_0x7e36a:
+MountMortarB1FKiyoGotTyrogueText:
 	text "TYROGUE is a"
 	line "fighting-type."
 
@@ -127,7 +127,7 @@ UnknownText_0x7e36a:
 	para "Farewell!"
 	done
 
-UnknownText_0x7e3df:
+MountMortarB1FKiyoFullPartyText:
 	text "You have no room"
 	line "in your party!"
 	done
@@ -135,16 +135,16 @@ UnknownText_0x7e3df:
 MountMortarB1F_MapEvents:
 	db 0, 0 ; filler
 
-	db 2 ; warp events
+	def_warp_events
 	warp_event  3,  3, MOUNT_MORTAR_1F_INSIDE, 5
 	warp_event 19, 29, MOUNT_MORTAR_1F_OUTSIDE, 7
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 1 ; bg events
+	def_bg_events
 	bg_event  4,  6, BGEVENT_ITEM, MountMortarB1FHiddenMaxRevive
 
-	db 7 ; object events
+	def_object_events
 	object_event 29, 12, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, MountMortarB1FHyperPotion, EVENT_MOUNT_MORTAR_B1F_HYPER_POTION
 	object_event  4, 16, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, MountMortarB1FCarbos, EVENT_MOUNT_MORTAR_B1F_CARBOS
 	object_event  9, 10, SPRITE_BOULDER, SPRITEMOVEDATA_STRENGTH_BOULDER, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MountMortarB1FBoulder, -1

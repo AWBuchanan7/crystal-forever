@@ -1,14 +1,14 @@
-	const_def 2 ; object constants
+	object_const_def
 	const VERMILIONPORT_SAILOR1
 	const VERMILIONPORT_SAILOR2
 	const VERMILIONPORT_SUPER_NERD
 
 VermilionPort_MapScripts:
-	db 2 ; scene scripts
+	def_scene_scripts
 	scene_script .DummyScene0 ; SCENE_DEFAULT
 	scene_script .LeaveFastShip ; SCENE_VERMILIONPORT_LEAVE_SHIP
 
-	db 1 ; callbacks
+	def_callbacks
 	callback MAPCALLBACK_NEWMAP, .FlyPoint
 
 .DummyScene0:
@@ -20,10 +20,10 @@ VermilionPort_MapScripts:
 
 .FlyPoint:
 	setflag ENGINE_FLYPOINT_VERMILION
-	return
+	endcallback
 
 .LeaveFastShipScript:
-	applymovement PLAYER, MovementData_0x74ef3
+	applymovement PLAYER, VermilionPortLeaveFastShipMovement
 	appear VERMILIONPORT_SAILOR1
 	setscene SCENE_DEFAULT
 	setevent EVENT_FAST_SHIP_CABINS_SE_SSE_CAPTAINS_CABIN_TWIN_1
@@ -40,7 +40,7 @@ VermilionPortSailorAtGangwayScript:
 	opentext
 	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
 	iftrue VermilionPortAlreadyRodeScript
-	writetext UnknownText_0x74f06
+	writetext VermilionPortDepartingText
 	waitbutton
 	closetext
 	turnobject VERMILIONPORT_SAILOR1, DOWN
@@ -48,7 +48,7 @@ VermilionPortSailorAtGangwayScript:
 	playsound SFX_EXIT_BUILDING
 	disappear VERMILIONPORT_SAILOR1
 	waitsfx
-	applymovement PLAYER, MovementData_0x74ef1
+	applymovement PLAYER, VermilionPortEnterFastShipMovement
 	playsound SFX_EXIT_BUILDING
 	special FadeOutPalettes
 	waitsfx
@@ -71,7 +71,7 @@ VermilionPortSailorAtGangwayScript:
 	end
 
 VermilionPortAlreadyRodeScript:
-	writetext UnknownText_0x74f31
+	writetext VermilionPortCantBoardText
 	waitbutton
 	closetext
 	end
@@ -90,55 +90,55 @@ VermilionPortWalkUpToShipScript:
 	ifequal THURSDAY, .NextShipSunday
 	ifequal FRIDAY, .NextShipSunday
 	ifequal SATURDAY, .NextShipSunday
-	writetext UnknownText_0x74f4d
+	writetext VermilionPortAskBoardingText
 	yesorno
 	iffalse VermilionPortNotRidingMoveAwayScript
-	writetext UnknownText_0x74f8b
-	buttonsound
+	writetext VermilionPortAskTicketText
+	promptbutton
 	checkitem S_S_TICKET
 	iffalse .NoTicket
 	writetext VermilionPortSSTicketText
 	waitbutton
 	closetext
 	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
-	applymovement PLAYER, MovementData_0x74ef8
+	applymovement PLAYER, VermilionPortApproachFastShipMovement
 	sjump VermilionPortSailorAtGangwayScript
 
 .NoTicket:
-	writetext UnknownText_0x74ff2
+	writetext VermilionPortNoTicketText
 	waitbutton
 	closetext
-	applymovement PLAYER, MovementData_0x74ef5
+	applymovement PLAYER, VermilionPortCannotEnterFastShipMovement
 	end
 
 .NextShipWednesday:
-	writetext UnknownText_0x75059
+	writetext VermilionPortSailMondayText
 	waitbutton
 	closetext
-	applymovement PLAYER, MovementData_0x74ef5
+	applymovement PLAYER, VermilionPortCannotEnterFastShipMovement
 	end
 
 .NextShipSunday:
-	writetext UnknownText_0x75080
+	writetext VermilionPortSailSundayText
 	waitbutton
 	closetext
-	applymovement PLAYER, MovementData_0x74ef5
+	applymovement PLAYER, VermilionPortCannotEnterFastShipMovement
 	end
 
 .skip:
 	end
 
 VermilionPortNotRidingScript:
-	writetext UnknownText_0x74fa7
+	writetext VermilionPortComeAgainText
 	waitbutton
 	closetext
 	end
 
 VermilionPortNotRidingMoveAwayScript:
-	writetext UnknownText_0x74fa7
+	writetext VermilionPortComeAgainText
 	waitbutton
 	closetext
-	applymovement PLAYER, MovementData_0x74ef5
+	applymovement PLAYER, VermilionPortCannotEnterFastShipMovement
 	end
 
 VermilionPortSailorScript:
@@ -152,34 +152,34 @@ VermilionPortSailorScript:
 	ifequal THURSDAY, .NextShipSunday
 	ifequal FRIDAY, .NextShipSunday
 	ifequal SATURDAY, .NextShipSunday
-	writetext UnknownText_0x74f4d
+	writetext VermilionPortAskBoardingText
 	yesorno
 	iffalse VermilionPortNotRidingScript
-	writetext UnknownText_0x74f8b
-	buttonsound
+	writetext VermilionPortAskTicketText
+	promptbutton
 	checkitem S_S_TICKET
 	iffalse .NoTicket
 	writetext VermilionPortSSTicketText
 	waitbutton
 	closetext
 	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
-	applymovement PLAYER, MovementData_0x74efe
+	applymovement PLAYER, VermilionPortApproachFastShipRightMovement
 	sjump VermilionPortSailorAtGangwayScript
 
 .NoTicket:
-	writetext UnknownText_0x74ff2
+	writetext VermilionPortNoTicketText
 	waitbutton
 	closetext
 	end
 
 .NextShipWednesday:
-	writetext UnknownText_0x75059
+	writetext VermilionPortSailMondayText
 	waitbutton
 	closetext
 	end
 
 .NextShipSunday:
-	writetext UnknownText_0x75080
+	writetext VermilionPortSailSundayText
 	waitbutton
 	closetext
 	end
@@ -187,7 +187,7 @@ VermilionPortSailorScript:
 VermilionPortSuperNerdScript:
 	faceplayer
 	opentext
-	writetext UnknownText_0x750a6
+	writetext VermilionPortSuperNerdText
 	waitbutton
 	closetext
 	end
@@ -195,20 +195,20 @@ VermilionPortSuperNerdScript:
 VermilionPortHiddenIron:
 	hiddenitem IRON, EVENT_VERMILION_PORT_HIDDEN_IRON
 
-MovementData_0x74ef1:
+VermilionPortEnterFastShipMovement:
 	step DOWN
 	step_end
 
-MovementData_0x74ef3:
+VermilionPortLeaveFastShipMovement:
 	step UP
 	step_end
 
-MovementData_0x74ef5:
+VermilionPortCannotEnterFastShipMovement:
 	step RIGHT
 	turn_head LEFT
 	step_end
 
-MovementData_0x74ef8:
+VermilionPortApproachFastShipMovement:
 	step DOWN
 	step DOWN
 	step DOWN
@@ -216,7 +216,7 @@ MovementData_0x74ef8:
 	step DOWN
 	step_end
 
-MovementData_0x74efe:
+VermilionPortApproachFastShipRightMovement:
 	step RIGHT
 	step DOWN
 	step DOWN
@@ -226,18 +226,18 @@ MovementData_0x74efe:
 	step DOWN
 	step_end
 
-UnknownText_0x74f06:
+VermilionPortDepartingText:
 	text "We're departing"
 	line "soon. Please get"
 	cont "on board."
 	done
 
-UnknownText_0x74f31:
+VermilionPortCantBoardText:
 	text "Sorry. You can't"
 	line "board now."
 	done
 
-UnknownText_0x74f4d:
+VermilionPortAskBoardingText:
 	text "Welcome to FAST"
 	line "SHIP S.S.AQUA."
 
@@ -245,12 +245,12 @@ UnknownText_0x74f4d:
 	line "ing today?"
 	done
 
-UnknownText_0x74f8b:
+VermilionPortAskTicketText:
 	text "May I see your"
 	line "S.S.TICKET?"
 	done
 
-UnknownText_0x74fa7:
+VermilionPortComeAgainText:
 	text "We hope to see you"
 	line "again!"
 	done
@@ -263,7 +263,7 @@ VermilionPortSSTicketText:
 	line "Thank you!"
 	done
 
-UnknownText_0x74ff2:
+VermilionPortNoTicketText:
 	text "<PLAYER> tried to"
 	line "show the S.S."
 	cont "TICKET…"
@@ -277,17 +277,17 @@ UnknownText_0x74ff2:
 	line "S.S.TICKET."
 	done
 
-UnknownText_0x75059:
+VermilionPortSailMondayText:
 	text "The FAST SHIP will"
 	line "sail on Wednesday."
 	done
 
-UnknownText_0x75080:
+VermilionPortSailSundayText:
 	text "The FAST SHIP will"
 	line "sail next Sunday."
 	done
 
-UnknownText_0x750a6:
+VermilionPortSuperNerdText:
 	text "You came from"
 	line "JOHTO?"
 
@@ -299,17 +299,17 @@ UnknownText_0x750a6:
 VermilionPort_MapEvents:
 	db 0, 0 ; filler
 
-	db 2 ; warp events
+	def_warp_events
 	warp_event  9,  5, VERMILION_PORT_PASSAGE, 5
 	warp_event  7, 17, FAST_SHIP_1F, 1
 
-	db 1 ; coord events
+	def_coord_events
 	coord_event  7, 11, SCENE_DEFAULT, VermilionPortWalkUpToShipScript
 
-	db 1 ; bg events
+	def_bg_events
 	bg_event 16, 13, BGEVENT_ITEM, VermilionPortHiddenIron
 
-	db 3 ; object events
+	def_object_events
 	object_event  7, 17, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPortSailorAtGangwayScript, EVENT_VERMILION_PORT_SAILOR_AT_GANGWAY
 	object_event  6, 11, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPortSailorScript, -1
 	object_event 11, 11, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 2, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPortSuperNerdScript, -1

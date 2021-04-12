@@ -14,5 +14,5 @@ HealingHPAmounts:
 	dbw ENERGY_ROOT,  200
 	dbw RAGECANDYBAR,  20
 	dbw BERRY_JUICE,   20
-	dbw POPCORN,	   80
+	dbw POPCORN,       80
 	dbw -1, 0 ; end

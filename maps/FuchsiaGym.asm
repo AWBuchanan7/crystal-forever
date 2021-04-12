@@ -1,15 +1,15 @@
-	const_def 2 ; object constants
+	object_const_def
 	const FUCHSIAGYM_JANINE
 	const FUCHSIAGYM_FUCHSIA_GYM_1
 	const FUCHSIAGYM_FUCHSIA_GYM_2
 	const FUCHSIAGYM_FUCHSIA_GYM_3
 	const FUCHSIAGYM_FUCHSIA_GYM_4
-	const FUCHSIAGYM_GYM_GUY
+	const FUCHSIAGYM_GYM_GUIDE
 
 FuchsiaGym_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 FuchsiaGymJanineScript:
 	checkflag ENGINE_SOULBADGE
@@ -47,7 +47,7 @@ FuchsiaGymJanineScript:
 	checkevent EVENT_GOT_TM06_TOXIC
 	iftrue .AfterTM
 	writetext JanineText_ToxicSpeech
-	buttonsound
+	promptbutton
 	verbosegiveitem TM_TOXIC
 	iffalse .AfterTM
 	setevent EVENT_GOT_TM06_TOXIC
@@ -193,18 +193,18 @@ CamperBarryScript:
 	closetext
 	end
 
-FuchsiaGymGuyScript:
+FuchsiaGymGuideScript:
 	faceplayer
 	opentext
 	checkevent EVENT_BEAT_JANINE
-	iftrue .FuchsiaGymGuyWinScript
-	writetext FuchsiaGymGuyText
+	iftrue .FuchsiaGymGuideWinScript
+	writetext FuchsiaGymGuideText
 	waitbutton
 	closetext
 	end
 
-.FuchsiaGymGuyWinScript:
-	writetext FuchsiaGymGuyWinText
+.FuchsiaGymGuideWinScript:
+	writetext FuchsiaGymGuideWinText
 	waitbutton
 	closetext
 	end
@@ -212,10 +212,10 @@ FuchsiaGymGuyScript:
 FuchsiaGymStatue:
 	checkflag ENGINE_SOULBADGE
 	iftrue .Beaten
-	jumpstd gymstatue1
+	jumpstd GymStatue1Script
 .Beaten:
 	gettrainername STRING_BUFFER_4, JANINE, JANINE1
-	jumpstd gymstatue2
+	jumpstd GymStatue2Script
 
 Movement_NinjaSpin:
 	turn_head DOWN
@@ -357,7 +357,7 @@ CamperBarryAfterText:
 	cont "what, huh?"
 	done
 
-FuchsiaGymGuyText:
+FuchsiaGymGuideText:
 	text "Yo, CHAMP in"
 	line "making!"
 
@@ -372,7 +372,7 @@ FuchsiaGymGuyText:
 	line "the real JANINE?"
 	done
 
-FuchsiaGymGuyWinText:
+FuchsiaGymGuideWinText:
 	text "That was a great"
 	line "battle, trainer"
 	cont "from JOHTO!"
@@ -381,20 +381,20 @@ FuchsiaGymGuyWinText:
 FuchsiaGym_MapEvents:
 	db 0, 0 ; filler
 
-	db 2 ; warp events
+	def_warp_events
 	warp_event  4, 17, FUCHSIA_CITY, 3
 	warp_event  5, 17, FUCHSIA_CITY, 3
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 2 ; bg events
+	def_bg_events
 	bg_event  3, 15, BGEVENT_READ, FuchsiaGymStatue
 	bg_event  6, 15, BGEVENT_READ, FuchsiaGymStatue
 
-	db 6 ; object events
+	def_object_events
 	object_event  1, 10, SPRITE_JANINE, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, FuchsiaGymJanineScript, -1
 	object_event  5,  7, SPRITE_FUCHSIA_GYM_1, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, LassAliceScript, -1
 	object_event  5, 11, SPRITE_FUCHSIA_GYM_2, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, LassLindaScript, -1
 	object_event  9,  4, SPRITE_FUCHSIA_GYM_3, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, PicnickerCindyScript, -1
 	object_event  4,  2, SPRITE_FUCHSIA_GYM_4, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CamperBarryScript, -1
-	object_event  7, 15, SPRITE_GYM_GUY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, FuchsiaGymGuyScript, -1
+	object_event  7, 15, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, FuchsiaGymGuideScript, -1

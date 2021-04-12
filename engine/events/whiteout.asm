@@ -2,7 +2,7 @@ Script_BattleWhiteout::
 	callasm BattleBGMap
 	sjump Script_Whiteout
 
-Script_OverworldWhiteout::
+OverworldWhiteoutScript::
 	refreshscreen
 	callasm OverworldBGMap
 
@@ -22,11 +22,10 @@ Script_Whiteout:
 	endall
 
 .bug_contest
-	jumpstd bugcontestresultswarp
+	jumpstd BugContestResultsWarpScript
 
 .WhitedOutText:
-	; is out of useable #MON!  whited out!
-	text_far UnknownText_0x1c0a4e
+	text_far _WhitedOutText
 	text_end
 
 OverworldBGMap:

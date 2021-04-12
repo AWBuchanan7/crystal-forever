@@ -1,4 +1,5 @@
-; GetSGBLayout arguments (see engine/gfx/cgb_layouts.asm and engine/gfx/sgb_layouts.asm)
+; CGBLayoutJumptable indexes (see engine/gfx/cgb_layouts.asm)
+; SGBLayoutJumptable indexes (see engine/gfx/sgb_layouts.asm)
 	const_def
 	const SCGB_BATTLE_GRAYSCALE
 	const SCGB_BATTLE_COLORS
@@ -31,16 +32,24 @@
 	const SCGB_TRAINER_OR_MON_FRONTPIC_PALS
 	const SCGB_MYSTERY_GIFT
 	const SCGB_1E
+NUM_SCGB_LAYOUTS EQU const_value
 
-SCGB_PARTY_MENU_HP_PALS  EQU -4
-SCGB_RAM EQU -1
+SCGB_PARTY_MENU_HP_BARS EQU $fc
+SCGB_DEFAULT EQU $ff
+
+; GetCrystalCGBLayout arguments (see engine/gfx/crystal_layouts.asm)
+	const_def
+	const CRYSTAL_CGB_MOBILE_0
+	const CRYSTAL_CGB_MOBILE_1
+	const CRYSTAL_CGB_NAME_CARD
 
 ; PredefPals indexes (see gfx/sgb/predef.pal)
 ; GetPredefPal arguments (see engine/gfx/color.asm)
 	const_def
-	const PREDEFPAL_00
+	const PREDEFPAL_ROUTES
 	const PREDEFPAL_PALLET
 	const PREDEFPAL_VIRIDIAN
+	const PREDEFPAL_VIRIDIAN_FOREST
 	const PREDEFPAL_PEWTER
 	const PREDEFPAL_CERULEAN
 	const PREDEFPAL_LAVENDER
@@ -74,7 +83,7 @@ SCGB_RAM EQU -1
 	const PREDEFPAL_RB_GREENMON
 	const PREDEFPAL_RB_PINKMON
 	const PREDEFPAL_RB_YELLOWMON
-	const PREDEFPAL_CGB_BADGE ; RB_GREYMON
+	const PREDEFPAL_CGB_BADGE ; RB_GRAYMON
 	const PREDEFPAL_BETA_SHINY_MEWMON
 	const PREDEFPAL_BETA_SHINY_BLUEMON
 	const PREDEFPAL_BETA_SHINY_REDMON
@@ -84,7 +93,7 @@ SCGB_RAM EQU -1
 	const PREDEFPAL_BETA_SHINY_GREENMON
 	const PREDEFPAL_BETA_SHINY_PINKMON
 	const PREDEFPAL_BETA_SHINY_YELLOWMON
-	const PREDEFPAL_PARTY_ICON ; BETA_SHINY_GREYMON
+	const PREDEFPAL_PARTY_ICON ; BETA_SHINY_GRAYMON
 	const PREDEFPAL_HP_GREEN
 	const PREDEFPAL_HP_YELLOW
 	const PREDEFPAL_HP_RED
@@ -138,7 +147,7 @@ SCGB_RAM EQU -1
 	const SGB_ICON_EN
 	const SGB_DATA_SND
 	const SGB_DATA_TRN
-	const SGB_MLT_REG
+	const SGB_MLT_REQ
 	const SGB_JUMP
 	const SGB_CHR_TRN
 	const SGB_PCT_TRN

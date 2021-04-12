@@ -39,7 +39,7 @@ BattleCommand_Curse:
 ; Raise Attack and Defense, and lower Speed.
 
 	ld a, $1
-	ld [wKickCounter], a
+	ld [wBattleAnimParam], a
 	call AnimateCurrentMove
 	ld a, SPEED
 	call LowerStat
@@ -76,7 +76,7 @@ BattleCommand_Curse:
 	call CallBattleCore
 	call UpdateUserInParty
 	ld hl, PutACurseText
-	jp StdBattleTextBox
+	jp StdBattleTextbox
 
 .failed
 	call AnimateFailedMove
@@ -90,4 +90,4 @@ BattleCommand_Curse:
 	call GetStatName
 	call AnimateFailedMove
 	ld hl, WontRiseAnymoreText
-	jp StdBattleTextBox
+	jp StdBattleTextbox

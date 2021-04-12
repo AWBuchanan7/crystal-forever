@@ -132,7 +132,7 @@ BattleTowerFade:
 	ld c, $9
 	call GetTimePalFade
 	ld b, $4
-.asm_8c09c
+.loop
 	call DmgToCgbTimePals
 	inc hl
 	inc hl
@@ -140,7 +140,7 @@ BattleTowerFade:
 	ld c, $7
 	call DelayFrames
 	dec b
-	jr nz, .asm_8c09c
+	jr nz, .loop
 	ret
 
 FadeInQuickly:
@@ -188,80 +188,73 @@ endr
 ReplaceTimeOfDayPals:
 	ld hl, .BrightnessLevels
 	ld a, [wMapTimeOfDay]
-	cp $4 ; Dark cave, needs Flash
-	jr z, .DarkCave
-	and $7
+	cp PALETTE_DARK
+	jr z, .NeedsFlash
+	maskbits NUM_MAP_PALETTES
 	add l
 	ld l, a
-	ld a, $0
+	ld a, 0
 	adc h
 	ld h, a
 	ld a, [hl]
 	ld [wTimeOfDayPalset], a
 	ret
 
-.DarkCave:
+.NeedsFlash:
 	ld a, [wStatusFlags]
 	bit STATUSFLAGS_FLASH_F, a
 	jr nz, .UsedFlash
-	ld a, %11111111 ; 3, 3, 3, 3
+	ld a, DARKNESS_PALSET
 	ld [wTimeOfDayPalset], a
 	ret
 
 .UsedFlash:
-	ld a, %10101010 ; 2, 2, 2, 2
+	ld a, (NITE_F << 6) | (NITE_F << 4) | (NITE_F << 2) | NITE_F
 	ld [wTimeOfDayPalset], a
 	ret
 
 .BrightnessLevels:
-	dc 3, 2, 1, 0
-	dc 1, 1, 1, 1
-	dc 2, 2, 2, 2
-	dc 0, 0, 0, 0
-	dc 3, 3, 3, 3
-	dc 3, 2, 1, 0
-	dc 3, 2, 1, 0
-	dc 3, 2, 1, 0
+; actual palettes used when time is
+; DARKNESS_F, NITE_F, DAY_F, MORN_F
+	dc DARKNESS_F, NITE_F,     DAY_F,      MORN_F     ; PALETTE_AUTO
+	dc DAY_F,      DAY_F,      DAY_F,      DAY_F      ; PALETTE_DAY
+	dc NITE_F,     NITE_F,     NITE_F,     NITE_F     ; PALETTE_NITE
+	dc MORN_F,     MORN_F,     MORN_F,     MORN_F     ; PALETTE_MORN
+	dc DARKNESS_F, DARKNESS_F, DARKNESS_F, DARKNESS_F ; PALETTE_DARK
+	dc DARKNESS_F, NITE_F,     DAY_F,      MORN_F
+	dc DARKNESS_F, NITE_F,     DAY_F,      MORN_F
+	dc DARKNESS_F, NITE_F,     DAY_F,      MORN_F
 
 GetTimePalette:
-	ld a, [wTimeOfDay]
-	ld e, a
-	ld d, 0
-	ld hl, .TimePalettes
-	add hl, de
-	add hl, de
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp hl
+	jumptable .TimePalettes, wTimeOfDay
 
 .TimePalettes:
-	dw .MorningPalette
-	dw .DayPalette
-	dw .NitePalette
-	dw .DarknessPalette
+	dw .MorningPalette  ; MORN_F
+	dw .DayPalette      ; DAY_F
+	dw .NitePalette     ; NITE_F
+	dw .DarknessPalette ; DARKNESS_F
 
 .MorningPalette:
 	ld a, [wTimeOfDayPalset]
-	and %00000011 ; 0
+	and %00000011
 	ret
 
 .DayPalette:
 	ld a, [wTimeOfDayPalset]
-	and %00001100 ; 1
+	and %00001100
 	srl a
 	srl a
 	ret
 
 .NitePalette:
 	ld a, [wTimeOfDayPalset]
-	and %00110000 ; 2
+	and %00110000
 	swap a
 	ret
 
 .DarknessPalette:
 	ld a, [wTimeOfDayPalset]
-	and %11000000 ; 3
+	and %11000000
 	rlca
 	rlca
 	ret
@@ -319,7 +312,7 @@ GetTimePalFade:
 ; get fade table
 	push bc
 	ld c, a
-	ld b, $0
+	ld b, 0
 	ld hl, .dmgfades
 	add hl, bc
 	add hl, bc
@@ -329,13 +322,13 @@ GetTimePalFade:
 	pop bc
 
 ; get place in fade table
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ret
 
 .cgb
 	ld hl, .cgbfade
-	ld b, $0
+	ld b, 0
 	add hl, bc
 	ret
 

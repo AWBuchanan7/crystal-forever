@@ -1,4 +1,4 @@
-	const_def 2 ; object constants
+	object_const_def
 	const ROUTE36_YOUNGSTER1
 	const ROUTE36_YOUNGSTER2
 	const ROUTE36_WEIRD_TREE
@@ -10,11 +10,11 @@
 	const ROUTE36_SUICUNE
 
 Route36_MapScripts:
-	db 2 ; scene scripts
+	def_scene_scripts
 	scene_script .DummyScene0 ; SCENE_ROUTE36_NOTHING
 	scene_script .DummyScene1 ; SCENE_ROUTE36_SUICUNE
 
-	db 1 ; callbacks
+	def_callbacks
 	callback MAPCALLBACK_OBJECTS, .ArthurCallback
 
 .DummyScene0:
@@ -27,11 +27,11 @@ Route36_MapScripts:
 	readvar VAR_WEEKDAY
 	ifequal THURSDAY, .ArthurAppears
 	disappear ROUTE36_ARTHUR
-	return
+	endcallback
 
 .ArthurAppears:
 	appear ROUTE36_ARTHUR
-	return
+	endcallback
 
 Route36SuicuneScript:
 	showemote EMOTE_SHOCK, PLAYER, 15
@@ -137,7 +137,7 @@ Route36RockSmashGuyScript:
 
 .ClearedSudowoodo:
 	writetext RockSmashGuyText2
-	buttonsound
+	promptbutton
 	verbosegiveitem TM_ROCK_SMASH
 	iffalse .NoRoomForTM
 	setevent EVENT_GOT_TM08_ROCK_SMASH
@@ -171,7 +171,7 @@ TrainerSchoolboyAlan1:
 	loadvar VAR_CALLERID, PHONE_SCHOOLBOY_ALAN
 	endifjustbattled
 	opentext
-	checkflag ENGINE_ALAN
+	checkflag ENGINE_ALAN_READY_FOR_REMATCH
 	iftrue .ChooseRematch
 	checkflag ENGINE_ALAN_HAS_FIRE_STONE
 	iftrue .GiveFireStone
@@ -179,8 +179,8 @@ TrainerSchoolboyAlan1:
 	iftrue .NumberAccepted
 	checkevent EVENT_ALAN_ASKED_FOR_PHONE_NUMBER
 	iftrue .AskAgainForPhoneNumber
-	writetext UnknownText_0x1947aa
-	buttonsound
+	writetext SchoolboyAlanBooksText
+	promptbutton
 	setevent EVENT_ALAN_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber1
 	sjump .ContinueAskForPhoneNumber
@@ -221,7 +221,7 @@ TrainerSchoolboyAlan1:
 	startbattle
 	reloadmapafterbattle
 	loadmem wAlanFightCount, 1
-	clearflag ENGINE_ALAN
+	clearflag ENGINE_ALAN_READY_FOR_REMATCH
 	end
 
 .LoadFight1:
@@ -229,7 +229,7 @@ TrainerSchoolboyAlan1:
 	startbattle
 	reloadmapafterbattle
 	loadmem wAlanFightCount, 2
-	clearflag ENGINE_ALAN
+	clearflag ENGINE_ALAN_READY_FOR_REMATCH
 	end
 
 .LoadFight2:
@@ -237,7 +237,7 @@ TrainerSchoolboyAlan1:
 	startbattle
 	reloadmapafterbattle
 	loadmem wAlanFightCount, 3
-	clearflag ENGINE_ALAN
+	clearflag ENGINE_ALAN_READY_FOR_REMATCH
 	end
 
 .LoadFight3:
@@ -245,14 +245,14 @@ TrainerSchoolboyAlan1:
 	startbattle
 	reloadmapafterbattle
 	loadmem wAlanFightCount, 4
-	clearflag ENGINE_ALAN
+	clearflag ENGINE_ALAN_READY_FOR_REMATCH
 	end
 
 .LoadFight4:
 	loadtrainer SCHOOLBOY, ALAN5
 	startbattle
 	reloadmapafterbattle
-	clearflag ENGINE_ALAN
+	clearflag ENGINE_ALAN_READY_FOR_REMATCH
 	end
 
 .GiveFireStone:
@@ -267,39 +267,39 @@ TrainerSchoolboyAlan1:
 	sjump .PackFull
 
 .AskNumber1:
-	jumpstd asknumber1m
+	jumpstd AskNumber1MScript
 	end
 
 .AskNumber2:
-	jumpstd asknumber2m
+	jumpstd AskNumber2MScript
 	end
 
 .RegisteredNumber:
-	jumpstd registerednumberm
+	jumpstd RegisteredNumberMScript
 	end
 
 .NumberAccepted:
-	jumpstd numberacceptedm
+	jumpstd NumberAcceptedMScript
 	end
 
 .NumberDeclined:
-	jumpstd numberdeclinedm
+	jumpstd NumberDeclinedMScript
 	end
 
 .PhoneFull:
-	jumpstd phonefullm
+	jumpstd PhoneFullMScript
 	end
 
 .Rematch:
-	jumpstd rematchm
+	jumpstd RematchMScript
 	end
 
 .Gift:
-	jumpstd giftm
+	jumpstd GiftMScript
 	end
 
 .PackFull:
-	jumpstd packfullm
+	jumpstd PackFullMScript
 	end
 
 TrainerPsychicMark:
@@ -323,11 +323,11 @@ ArthurScript:
 	checkevent EVENT_MET_ARTHUR_OF_THURSDAY
 	iftrue .MetArthur
 	writetext MeetArthurText
-	buttonsound
+	promptbutton
 	setevent EVENT_MET_ARTHUR_OF_THURSDAY
 .MetArthur:
 	writetext ArthurGivesGiftText
-	buttonsound
+	promptbutton
 	verbosegiveitem HARD_STONE
 	iffalse .BagFull
 	setevent EVENT_GOT_HARD_STONE_FROM_ARTHUR
@@ -365,7 +365,7 @@ Route36FruitTree:
 	fruittree FRUITTREE_ROUTE_36
 
 SudowoodoShakeMovement:
-	tree_shake ; shake
+	tree_shake
 	step_end
 
 WeirdTreeMovement_Flee:
@@ -489,7 +489,7 @@ RockSmashGuyText2:
 	cont "have this."
 	done
 
-UnknownText_0x19451a:
+Text_ReceivedTM08: ; unreferenced
 	text "<PLAYER> received"
 	line "TM08."
 	done
@@ -509,7 +509,7 @@ RockSmashGuyText3:
 	cont "smash 'em up!"
 	done
 
-UnknownText_0x1945b8:
+UnusedOddTreeText: ; unreferenced
 	text "An odd tree is"
 	line "blocking the way"
 	cont "to GOLDENROD CITY."
@@ -570,7 +570,7 @@ SchoolboyAlan1BeatenText:
 	line "error?"
 	done
 
-UnknownText_0x1947aa:
+SchoolboyAlanBooksText:
 	text "Darn. I study five"
 	line "hours a day too."
 
@@ -660,23 +660,23 @@ Route36TrainerTips2Text:
 Route36_MapEvents:
 	db 0, 0 ; filler
 
-	db 4 ; warp events
+	def_warp_events
 	warp_event 18,  8, ROUTE_36_NATIONAL_PARK_GATE, 3
 	warp_event 18,  9, ROUTE_36_NATIONAL_PARK_GATE, 4
 	warp_event 47, 13, ROUTE_36_RUINS_OF_ALPH_GATE, 1
 	warp_event 48, 13, ROUTE_36_RUINS_OF_ALPH_GATE, 2
 
-	db 2 ; coord events
+	def_coord_events
 	coord_event 20,  7, SCENE_ROUTE36_SUICUNE, Route36SuicuneScript
 	coord_event 22,  7, SCENE_ROUTE36_SUICUNE, Route36SuicuneScript
 
-	db 4 ; bg events
+	def_bg_events
 	bg_event 29,  1, BGEVENT_READ, Route36TrainerTips2
 	bg_event 45, 11, BGEVENT_READ, RuinsOfAlphNorthSign
 	bg_event 55,  7, BGEVENT_READ, Route36Sign
 	bg_event 21,  7, BGEVENT_READ, Route36TrainerTips1
 
-	db 9 ; object events
+	def_object_events
 	object_event 20, 13, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 3, TrainerPsychicMark, -1
 	object_event 31, 14, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 5, TrainerSchoolboyAlan1, -1
 	object_event 35,  9, SPRITE_WEIRD_TREE, SPRITEMOVEDATA_SUDOWOODO, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, SudowoodoScript, EVENT_ROUTE_36_SUDOWOODO

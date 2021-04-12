@@ -7,6 +7,7 @@ BATTLETRANSITION_FINISH           EQU $20
 BATTLETRANSITION_END              EQU $80
 
 BATTLETRANSITION_SQUARE EQU "8" ; $fe
+BATTLETRANSITION_BLACK  EQU "9" ; $ff
 
 DoBattleTransition:
 	call .InitGFX
@@ -54,7 +55,7 @@ DoBattleTransition:
 	ldh [hLYOverrideEnd], a
 	ldh [hSCY], a
 
-	ld a, 1 ; unnecessary bankswitch?
+	ld a, $1 ; unnecessary bankswitch?
 	ldh [rSVBK], a
 	pop af
 	ldh [hVBlank], a
@@ -151,7 +152,7 @@ INCBIN "gfx/overworld/trainer_battle_pokeball_tiles.2bpp"
 BattleTransitionJumptable:
 	jumptable .Jumptable, wJumptableIndex
 
-.Jumptable
+.Jumptable:
 	dw StartTrainerBattle_DetermineWhichAnimation ; 00
 
 	; BATTLETRANSITION_CAVE
@@ -257,7 +258,7 @@ StartTrainerBattle_NextScene:
 StartTrainerBattle_SetUpBGMap:
 	call StartTrainerBattle_NextScene
 	xor a
-	ld [wcf64], a
+	ld [wBattleTransitionCounter], a
 	ldh [hBGMapMode], a
 	ret
 
@@ -269,9 +270,9 @@ StartTrainerBattle_Flash:
 
 .DoFlashAnimation:
 	ld a, [wTimeOfDayPalset]
-	cp %11111111 ; dark cave
+	cp DARKNESS_PALSET
 	jr z, .done
-	ld hl, wcf64
+	ld hl, wBattleTransitionCounter
 	ld a, [hl]
 	inc [hl]
 	srl a
@@ -289,11 +290,11 @@ StartTrainerBattle_Flash:
 
 .done
 	xor a
-	ld [wcf64], a
+	ld [wBattleTransitionCounter], a
 	scf
 	ret
 
-.pals
+.pals:
 	dc 3, 3, 2, 1
 	dc 3, 3, 3, 2
 	dc 3, 3, 3, 3
@@ -309,10 +310,9 @@ StartTrainerBattle_Flash:
 	dc 0, 0, 0, 1
 
 StartTrainerBattle_SetUpForWavyOutro:
-	farcall Function5602
+	farcall RespawnPlayerAndOpponent
 	ld a, BANK(wLYOverrides)
 	ldh [rSVBK], a
-
 	call StartTrainerBattle_NextScene
 
 	ld a, LOW(rSCX)
@@ -322,12 +322,12 @@ StartTrainerBattle_SetUpForWavyOutro:
 	ld a, $90
 	ldh [hLYOverrideEnd], a
 	xor a
-	ld [wcf64], a
-	ld [wcf65], a
+	ld [wBattleTransitionCounter], a
+	ld [wBattleTransitionSineWaveOffset], a
 	ret
 
 StartTrainerBattle_SineWave:
-	ld a, [wcf64]
+	ld a, [wBattleTransitionCounter]
 	cp $60
 	jr nc, .end
 	call .DoSineWave
@@ -339,16 +339,16 @@ StartTrainerBattle_SineWave:
 	ret
 
 .DoSineWave:
-	ld hl, wcf65
+	ld hl, wBattleTransitionSineWaveOffset
 	ld a, [hl]
 	inc [hl]
-	ld hl, wcf64
+	ld hl, wBattleTransitionCounter
 	ld d, [hl]
 	add [hl]
 	ld [hl], a
 	ld a, wLYOverridesEnd - wLYOverrides
 	ld bc, wLYOverrides
-	ld e, $0
+	ld e, 0
 
 .loop
 	push af
@@ -359,7 +359,7 @@ StartTrainerBattle_SineWave:
 	inc bc
 	pop de
 	ld a, e
-	add $2
+	add 2
 	ld e, a
 	pop af
 	dec a
@@ -367,39 +367,39 @@ StartTrainerBattle_SineWave:
 	ret
 
 StartTrainerBattle_SetUpForSpinOutro:
-	farcall Function5602
+	farcall RespawnPlayerAndOpponent
 	ld a, BANK(wLYOverrides)
 	ldh [rSVBK], a
 	call StartTrainerBattle_NextScene
 	xor a
-	ld [wcf64], a
+	ld [wBattleTransitionCounter], a
 	ret
 
 StartTrainerBattle_SpinToBlack:
 	xor a
 	ldh [hBGMapMode], a
-	ld a, [wcf64]
+	ld a, [wBattleTransitionCounter]
 	ld e, a
 	ld d, 0
-	ld hl, .spintable
+	ld hl, .spin_quadrants
 rept 5
 	add hl, de
 endr
 	ld a, [hli]
 	cp -1
 	jr z, .end
-	ld [wcf65], a
+	ld [wBattleTransitionSineWaveOffset], a
 	call .load
-	ld a, $1
+	ld a, 1
 	ldh [hBGMapMode], a
 	call DelayFrame
 	call DelayFrame
-	ld hl, wcf64
+	ld hl, wBattleTransitionCounter
 	inc [hl]
 	ret
 
 .end
-	ld a, $1
+	ld a, 1
 	ldh [hBGMapMode], a
 	call DelayFrame
 	call DelayFrame
@@ -421,35 +421,35 @@ endr
 RIGHT_QUADRANT_F EQU 0 ; bit set in UPPER_RIGHT and LOWER_RIGHT
 LOWER_QUADRANT_F EQU 1 ; bit set in LOWER_LEFT and LOWER_RIGHT
 
-.spintable
-spintable_entry: MACRO
+.spin_quadrants:
+spin_quadrant: MACRO
 	db \1
-	dw .wedge\2
+	dw \2
 	dwcoord \3, \4
 ENDM
-	spintable_entry UPPER_LEFT,  1,  1,  6
-	spintable_entry UPPER_LEFT,  2,  0,  3
-	spintable_entry UPPER_LEFT,  3,  1,  0
-	spintable_entry UPPER_LEFT,  4,  5,  0
-	spintable_entry UPPER_LEFT,  5,  9,  0
-	spintable_entry UPPER_RIGHT, 5, 10,  0
-	spintable_entry UPPER_RIGHT, 4, 14,  0
-	spintable_entry UPPER_RIGHT, 3, 18,  0
-	spintable_entry UPPER_RIGHT, 2, 19,  3
-	spintable_entry UPPER_RIGHT, 1, 18,  6
-	spintable_entry LOWER_RIGHT, 1, 18, 11
-	spintable_entry LOWER_RIGHT, 2, 19, 14
-	spintable_entry LOWER_RIGHT, 3, 18, 17
-	spintable_entry LOWER_RIGHT, 4, 14, 17
-	spintable_entry LOWER_RIGHT, 5, 10, 17
-	spintable_entry LOWER_LEFT,  5,  9, 17
-	spintable_entry LOWER_LEFT,  4,  5, 17
-	spintable_entry LOWER_LEFT,  3,  1, 17
-	spintable_entry LOWER_LEFT,  2,  0, 14
-	spintable_entry LOWER_LEFT,  1,  1, 11
+	spin_quadrant UPPER_LEFT,  .wedge1,  1,  6
+	spin_quadrant UPPER_LEFT,  .wedge2,  0,  3
+	spin_quadrant UPPER_LEFT,  .wedge3,  1,  0
+	spin_quadrant UPPER_LEFT,  .wedge4,  5,  0
+	spin_quadrant UPPER_LEFT,  .wedge5,  9,  0
+	spin_quadrant UPPER_RIGHT, .wedge5, 10,  0
+	spin_quadrant UPPER_RIGHT, .wedge4, 14,  0
+	spin_quadrant UPPER_RIGHT, .wedge3, 18,  0
+	spin_quadrant UPPER_RIGHT, .wedge2, 19,  3
+	spin_quadrant UPPER_RIGHT, .wedge1, 18,  6
+	spin_quadrant LOWER_RIGHT, .wedge1, 18, 11
+	spin_quadrant LOWER_RIGHT, .wedge2, 19, 14
+	spin_quadrant LOWER_RIGHT, .wedge3, 18, 17
+	spin_quadrant LOWER_RIGHT, .wedge4, 14, 17
+	spin_quadrant LOWER_RIGHT, .wedge5, 10, 17
+	spin_quadrant LOWER_LEFT,  .wedge5,  9, 17
+	spin_quadrant LOWER_LEFT,  .wedge4,  5, 17
+	spin_quadrant LOWER_LEFT,  .wedge3,  1, 17
+	spin_quadrant LOWER_LEFT,  .wedge2,  0, 14
+	spin_quadrant LOWER_LEFT,  .wedge1,  1, 11
 	db -1
 
-.load
+.load:
 	ld a, [hli]
 	ld e, a
 	ld a, [hli]
@@ -463,8 +463,8 @@ ENDM
 	ld c, a
 	inc de
 .loop1
-	ld [hl], $ff
-	ld a, [wcf65]
+	ld [hl], BATTLETRANSITION_BLACK
+	ld a, [wBattleTransitionSineWaveOffset]
 	bit RIGHT_QUADRANT_F, a
 	jr z, .leftside
 	inc hl
@@ -475,7 +475,7 @@ ENDM
 	dec c
 	jr nz, .loop1
 	pop hl
-	ld a, [wcf65]
+	ld a, [wBattleTransitionSineWaveOffset]
 	bit LOWER_QUADRANT_F, a
 	ld bc, SCREEN_WIDTH
 	jr z, .upper
@@ -490,7 +490,7 @@ ENDM
 	jr z, .loop
 	ld c, a
 .loop2
-	ld a, [wcf65]
+	ld a, [wBattleTransitionSineWaveOffset]
 	bit RIGHT_QUADRANT_F, a
 	jr z, .leftside2
 	dec hl
@@ -502,25 +502,25 @@ ENDM
 	jr nz, .loop2
 	jr .loop
 
-.wedge1 db 2, 3, 5, 4, 9, -1
-.wedge2 db 1, 1, 2, 2, 4, 2, 4, 2, 3, -1
-.wedge3 db 2, 1, 3, 1, 4, 1, 4, 1, 4, 1, 3, 1, 2, 1, 1, 1, 1, -1
-.wedge4 db 4, 1, 4, 0, 3, 1, 3, 0, 2, 1, 2, 0, 1, -1
-.wedge5 db 4, 0, 3, 0, 3, 0, 2, 0, 2, 0, 1, 0, 1, 0, 1, -1
+.wedge1: db 2, 3, 5, 4, 9, -1
+.wedge2: db 1, 1, 2, 2, 4, 2, 4, 2, 3, -1
+.wedge3: db 2, 1, 3, 1, 4, 1, 4, 1, 4, 1, 3, 1, 2, 1, 1, 1, 1, -1
+.wedge4: db 4, 1, 4, 0, 3, 1, 3, 0, 2, 1, 2, 0, 1, -1
+.wedge5: db 4, 0, 3, 0, 3, 0, 2, 0, 2, 0, 1, 0, 1, 0, 1, -1
 
 StartTrainerBattle_SetUpForRandomScatterOutro:
-	farcall Function5602
+	farcall RespawnPlayerAndOpponent
 	ld a, BANK(wLYOverrides)
 	ldh [rSVBK], a
 	call StartTrainerBattle_NextScene
 	ld a, $10
-	ld [wcf64], a
-	ld a, $1
+	ld [wBattleTransitionCounter], a
+	ld a, 1
 	ldh [hBGMapMode], a
 	ret
 
 StartTrainerBattle_SpeckleToBlack:
-	ld hl, wcf64
+	ld hl, wBattleTransitionCounter
 	ld a, [hl]
 	and a
 	jr z, .done
@@ -572,9 +572,9 @@ StartTrainerBattle_SpeckleToBlack:
 ; If the tile has already been blacked out,
 ; sample a new tile
 	ld a, [hl]
-	cp $ff
+	cp BATTLETRANSITION_BLACK
 	jr z, .y_loop
-	ld [hl], $ff
+	ld [hl], BATTLETRANSITION_BLACK
 	ret
 
 StartTrainerBattle_LoadPokeBallGraphics:
@@ -584,35 +584,36 @@ StartTrainerBattle_LoadPokeBallGraphics:
 
 	xor a
 	ldh [hBGMapMode], a
-	hlcoord 0, 0, wAttrMap
+
+	hlcoord 0, 0, wAttrmap
 	ld bc, SCREEN_HEIGHT * SCREEN_WIDTH
 	inc b
 	inc c
 	jr .enter_loop_midway
 
-.loop
+.pal_loop
 ; set all pals to 7
 	ld a, [hl]
-	or %00000111
+	or PAL_BG_TEXT
 	ld [hli], a
 .enter_loop_midway
 	dec c
-	jr nz, .loop
+	jr nz, .pal_loop
 	dec b
-	jr nz, .loop
+	jr nz, .pal_loop
 
 	call .loadpokeballgfx
 	hlcoord 2, 1
 
 	ld b, SCREEN_WIDTH - 4
-.loop2
+.tile_loop
 	push hl
 	ld c, 2
-.loop3
+.row_loop
 	push hl
 	ld a, [de]
 	inc de
-.loop4
+.col_loop
 ; Loading is done bit by bit
 	and a
 	jr z, .done
@@ -621,7 +622,7 @@ StartTrainerBattle_LoadPokeBallGraphics:
 	ld [hl], BATTLETRANSITION_SQUARE
 .no_load
 	inc hl
-	jr .loop4
+	jr .col_loop
 
 .done
 	pop hl
@@ -630,7 +631,7 @@ StartTrainerBattle_LoadPokeBallGraphics:
 	add hl, bc
 	pop bc
 	dec c
-	jr nz, .loop3
+	jr nz, .row_loop
 
 	pop hl
 	push bc
@@ -638,25 +639,25 @@ StartTrainerBattle_LoadPokeBallGraphics:
 	add hl, bc
 	pop bc
 	dec b
-	jr nz, .loop2
+	jr nz, .tile_loop
 
 	ldh a, [hCGB]
 	and a
 	jr nz, .cgb
-	ld a, $1
+	ld a, 1
 	ldh [hBGMapMode], a
 	call DelayFrame
 	call DelayFrame
 	jr .nextscene
 
 .cgb
-	ld hl, .daypals
+	ld hl, .pals
 	ld a, [wTimeOfDayPal]
 	maskbits NUM_DAYTIMES
 	cp DARKNESS_F
-	jr nz, .daytime
-	ld hl, .nightpals
-.daytime
+	jr nz, .not_dark
+	ld hl, .darkpals
+.not_dark
 	ldh a, [rSVBK]
 	push af
 	ld a, BANK(wBGPals1)
@@ -672,7 +673,7 @@ StartTrainerBattle_LoadPokeBallGraphics:
 	call CopyBytes
 	pop af
 	ldh [rSVBK], a
-	ld a, $1
+	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	call DelayFrame
 	call BattleStart_CopyTilemapAtOnce
@@ -701,13 +702,13 @@ StartTrainerBattle_LoadPokeBallGraphics:
 	pop hl
 	ret
 
-.daypals
-INCLUDE "gfx/overworld/trainer_battle_day.pal"
+.pals:
+INCLUDE "gfx/overworld/trainer_battle.pal"
 
-.nightpals
-INCLUDE "gfx/overworld/trainer_battle_nite.pal"
+.darkpals:
+INCLUDE "gfx/overworld/trainer_battle_dark.pal"
 
-.loadpokeballgfx
+.loadpokeballgfx:
 	ld a, [wOtherTrainerClass]
 	ld de, PokeBallTransition
 	ret
@@ -762,7 +763,7 @@ StartTrainerBattle_DrawSineWave:
 	calc_sine_wave
 
 StartTrainerBattle_ZoomToBlack:
-	farcall Function5602
+	farcall RespawnPlayerAndOpponent
 	ld de, .boxes
 
 .loop
@@ -809,7 +810,7 @@ ENDM
 	db -1
 
 .Copy:
-	ld a, $ff
+	ld a, BATTLETRANSITION_BLACK
 .row
 	push bc
 	push hl
@@ -825,9 +826,9 @@ ENDM
 	jr nz, .row
 	ret
 
-Unreferenced_Function8c7c9:
-	ld a, $1
-	ldh [hBGMapMode], a
+UnusedWaitBGMapOnce: ; unreferenced
+	ld a, 1
+	ldh [hBGMapMode], a ; redundant
 	call WaitBGMap
 	xor a
 	ldh [hBGMapMode], a

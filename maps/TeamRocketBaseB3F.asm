@@ -1,4 +1,4 @@
-	const_def 2 ; object constants
+	object_const_def
 	const TEAMROCKETBASEB3F_LANCE
 	const TEAMROCKETBASEB3F_ROCKET1
 	const TEAMROCKETBASEB3F_MOLTRES
@@ -15,13 +15,13 @@
 	const TEAMROCKETBASEB3F_POKE_BALL5
 
 TeamRocketBaseB3F_MapScripts:
-	db 4 ; scene scripts
+	def_scene_scripts
 	scene_script .LanceGetsPassword ; SCENE_DEFAULT
 	scene_script .DummyScene1 ; SCENE_TEAMROCKETBASEB3F_RIVAL_ENCOUNTER
 	scene_script .DummyScene2 ; SCENE_TEAMROCKETBASEB3F_ROCKET_BOSS
 	scene_script .DummyScene3 ; SCENE_TEAMROCKETBASEB3F_NOTHING
 
-	db 1 ; callbacks
+	def_callbacks
 	callback MAPCALLBACK_TILES, .CheckGiovanniDoor
 
 .LanceGetsPassword:
@@ -40,23 +40,23 @@ TeamRocketBaseB3F_MapScripts:
 .CheckGiovanniDoor:
 	checkevent EVENT_OPENED_DOOR_TO_GIOVANNIS_OFFICE
 	iftrue .OpenSesame
-	return
+	endcallback
 
 .OpenSesame:
 	changeblock 10, 8, $07 ; floor
-	return
+	endcallback
 
 LanceGetPasswordScript:
 	turnobject PLAYER, LEFT
 	pause 5
 	turnobject TEAMROCKETBASEB3F_MOLTRES, RIGHT
 	pause 20
-	applymovement TEAMROCKETBASEB3F_LANCE, MovementData_0x6e12a
+	applymovement TEAMROCKETBASEB3F_LANCE, RocketBaseLanceApproachesPlayerMovement
 	opentext
 	writetext LanceGetPasswordText
 	waitbutton
 	closetext
-	applymovement TEAMROCKETBASEB3F_LANCE, MovementData_0x6e12c
+	applymovement TEAMROCKETBASEB3F_LANCE, RocketBaseLanceLeavesMovement
 	disappear TEAMROCKETBASEB3F_LANCE
 	setscene SCENE_TEAMROCKETBASEB3F_RIVAL_ENCOUNTER
 	end
@@ -75,7 +75,7 @@ RocketBaseRival:
 	closetext
 	playsound SFX_TACKLE
 	applymovement PLAYER, RocketBaseRivalShovesPlayerMovement
-	applymovement TEAMROCKETBASEB3F_SILVER, RocketBaseRivalLeaveMovement
+	applymovement TEAMROCKETBASEB3F_SILVER, RocketBaseRivalLeavesMovement
 	disappear TEAMROCKETBASEB3F_SILVER
 	setscene SCENE_TEAMROCKETBASEB3F_ROCKET_BOSS
 	special RestartMapMusic
@@ -85,11 +85,11 @@ TeamRocketBaseB3FRocketScript:
 	jumptextfaceplayer TeamRocketBaseB3FRocketText
 
 RocketBaseBossLeft:
-	applymovement PLAYER, MovementData_0x6e133
+	applymovement PLAYER, RocketBasePlayerApproachesBossLeftMovement
 	sjump RocketBaseBoss
 
 RocketBaseBossRight:
-	applymovement PLAYER, MovementData_0x6e13a
+	applymovement PLAYER, RocketBasePlayerApproachesBossRightMovement
 RocketBaseBoss:
 	pause 30
 	showemote EMOTE_SHOCK, TEAMROCKETBASEB3F_ROCKET1, 15
@@ -99,7 +99,7 @@ RocketBaseBoss:
 	writetext ExecutiveM4BeforeText
 	waitbutton
 	closetext
-	applymovement TEAMROCKETBASEB3F_ROCKET1, MovementData_0x6e142
+	applymovement TEAMROCKETBASEB3F_ROCKET1, RocketBaseBossApproachesPlayerMovement
 	winlosstext ExecutiveM4BeatenText, 0
 	setlasttalked TEAMROCKETBASEB3F_ROCKET1
 	loadtrainer EXECUTIVEM, EXECUTIVEM_4
@@ -110,9 +110,9 @@ RocketBaseBoss:
 	writetext ExecutiveM4AfterText
 	waitbutton
 	closetext
-	applymovement TEAMROCKETBASEB3F_ROCKET1, MovementData_0x6e144
+	applymovement TEAMROCKETBASEB3F_ROCKET1, RocketBaseBossHitsTableMovement
 	playsound SFX_TACKLE
-	applymovement TEAMROCKETBASEB3F_ROCKET1, MovementData_0x6e147
+	applymovement TEAMROCKETBASEB3F_ROCKET1, RocketBaseBossLeavesMovement
 	disappear TEAMROCKETBASEB3F_ROCKET1
 	setscene SCENE_TEAMROCKETBASEB3F_NOTHING
 	end
@@ -200,7 +200,7 @@ TeamRocketBaseB3FLockedDoor:
 	end
 
 TeamRocketBaseB3FOathScript:
-	jumpstd teamrocketoath
+	jumpstd TeamRocketOathScript
 
 TeamRocketBaseB3FProtein:
 	itemball PROTEIN
@@ -217,11 +217,11 @@ TeamRocketBaseB3FIceHeal:
 TeamRocketBaseB3FUltraBall:
 	itemball ULTRA_BALL
 
-MovementData_0x6e12a:
+RocketBaseLanceApproachesPlayerMovement:
 	step RIGHT
 	step_end
 
-MovementData_0x6e12c:
+RocketBaseLanceLeavesMovement:
 	step DOWN
 	step LEFT
 	step LEFT
@@ -230,7 +230,7 @@ MovementData_0x6e12c:
 	step LEFT
 	step_end
 
-MovementData_0x6e133:
+RocketBasePlayerApproachesBossLeftMovement:
 	step UP
 	step UP
 	step UP
@@ -239,7 +239,7 @@ MovementData_0x6e133:
 	turn_head UP
 	step_end
 
-MovementData_0x6e13a:
+RocketBasePlayerApproachesBossRightMovement:
 	step UP
 	step UP
 	step LEFT
@@ -249,16 +249,16 @@ MovementData_0x6e13a:
 	turn_head UP
 	step_end
 
-MovementData_0x6e142:
+RocketBaseBossApproachesPlayerMovement:
 	step DOWN
 	step_end
 
-MovementData_0x6e144:
+RocketBaseBossHitsTableMovement:
 	big_step RIGHT
 	big_step RIGHT
 	step_end
 
-MovementData_0x6e147:
+RocketBaseBossLeavesMovement:
 	fix_facing
 	fast_jump_step LEFT
 	remove_fixed_facing
@@ -300,7 +300,7 @@ RocketBaseRivalEnterMovement:
 	step RIGHT
 	step_end
 
-RocketBaseRivalLeaveMovement:
+RocketBaseRivalLeavesMovement:
 	step LEFT
 	step LEFT
 	step UP
@@ -566,18 +566,18 @@ TeamRocketBaseB3FLockedDoorOpenSesameText:
 TeamRocketBaseB3F_MapEvents:
 	db 0, 0 ; filler
 
-	db 4 ; warp events
+	def_warp_events
 	warp_event  3,  2, TEAM_ROCKET_BASE_B2F, 2
 	warp_event 27,  2, TEAM_ROCKET_BASE_B2F, 3
 	warp_event  3,  6, TEAM_ROCKET_BASE_B2F, 4
 	warp_event 27, 14, TEAM_ROCKET_BASE_B2F, 5
 
-	db 3 ; coord events
+	def_coord_events
 	coord_event 10,  8, SCENE_TEAMROCKETBASEB3F_ROCKET_BOSS, RocketBaseBossLeft
 	coord_event 11,  8, SCENE_TEAMROCKETBASEB3F_ROCKET_BOSS, RocketBaseBossRight
 	coord_event  8, 10, SCENE_TEAMROCKETBASEB3F_RIVAL_ENCOUNTER, RocketBaseRival
 
-	db 10 ; bg events
+	def_bg_events
 	bg_event 10,  9, BGEVENT_IFNOTSET, TeamRocketBaseB3FLockedDoor
 	bg_event 11,  9, BGEVENT_IFNOTSET, TeamRocketBaseB3FLockedDoor
 	bg_event 10,  1, BGEVENT_READ, TeamRocketBaseB3FOathScript
@@ -589,7 +589,7 @@ TeamRocketBaseB3F_MapEvents:
 	bg_event  6, 13, BGEVENT_READ, TeamRocketBaseB3FOathScript
 	bg_event  7, 13, BGEVENT_READ, TeamRocketBaseB3FOathScript
 
-	db 14 ; object events
+	def_object_events
 	object_event 25, 14, SPRITE_LANCE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, LanceGetPasswordScript, EVENT_TEAM_ROCKET_BASE_B3F_LANCE_PASSWORDS
 	object_event  8,  3, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_TEAM_ROCKET_BASE_B3F_EXECUTIVE
 	object_event  7,  2, SPRITE_MOLTRES, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, RocketBaseMurkrow, EVENT_TEAM_ROCKET_BASE_POPULATION

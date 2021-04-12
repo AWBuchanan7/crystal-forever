@@ -47,7 +47,7 @@ ShowOTTrainerMonsRemaining:
 StageBallTilesData:
 	ld a, [de]
 	push af
-	ld de, wBuffer1
+	ld de, wBattleHUDTiles
 	ld c, PARTY_LENGTH
 	ld a, $34 ; empty slot
 .loop1
@@ -56,7 +56,8 @@ StageBallTilesData:
 	dec c
 	jr nz, .loop1
 	pop af
-	ld de, wBuffer1
+
+	ld de, wBattleHUDTiles
 .loop2
 	push af
 	call .GetHUDTile
@@ -200,7 +201,7 @@ LinkBattle_TrainerHuds:
 	jp LoadTrainerHudOAM
 
 LoadTrainerHudOAM:
-	ld de, wBuffer1
+	ld de, wBattleHUDTiles
 	ld c, PARTY_LENGTH
 .loop
 	ld a, [wPlaceBallsY]
@@ -225,7 +226,7 @@ LoadBallIconGFX:
 	ld de, .gfx
 	ld hl, vTiles0 tile $31
 	lb bc, BANK(LoadBallIconGFX), 4
-	call Get2bpp_2
+	call Get2bppViaHDMA
 	ret
 
 .gfx
@@ -237,7 +238,7 @@ _ShowLinkBattleParticipants:
 	hlcoord 2, 3
 	ld b, 9
 	ld c, 14
-	call TextBox
+	call Textbox
 	hlcoord 4, 5
 	ld de, wPlayerName
 	call PlaceString

@@ -1,7 +1,7 @@
 unownword: MACRO
 x = 1
 rept STRLEN(\1)
-	db STRSUB(\1, x, 1) - $40
+	db STRSUB(\1, x, 1) - "A" + FIRST_UNOWN_CHAR
 x = x + 1
 endr
 	db -1
@@ -9,7 +9,8 @@ ENDM
 
 UnownWords:
 ; entries correspond to UNOWN_* form constants
-	dw UnownWordA
+	table_width 2, UnownWords
+	dw UnownWordA ; unused
 	dw UnownWordA
 	dw UnownWordB
 	dw UnownWordC
@@ -36,6 +37,7 @@ UnownWords:
 	dw UnownWordX
 	dw UnownWordY
 	dw UnownWordZ
+	assert_table_length NUM_UNOWN + 1
 
 UnownWordA: unownword "ANGRY"
 UnownWordB: unownword "BEAR"

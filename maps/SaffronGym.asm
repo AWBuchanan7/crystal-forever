@@ -1,15 +1,15 @@
-	const_def 2 ; object constants
+	object_const_def
 	const SAFFRONGYM_SABRINA
 	const SAFFRONGYM_GRANNY1
 	const SAFFRONGYM_YOUNGSTER1
 	const SAFFRONGYM_GRANNY2
 	const SAFFRONGYM_YOUNGSTER2
-	const SAFFRONGYM_GYM_GUY
+	const SAFFRONGYM_GYM_GUIDE
 
 SaffronGym_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 SaffronGymSabrinaScript:
 	faceplayer
@@ -88,18 +88,18 @@ TrainerPsychicJared:
 	closetext
 	end
 
-SaffronGymGuyScript:
+SaffronGymGuideScript:
 	faceplayer
 	opentext
 	checkevent EVENT_BEAT_SABRINA
-	iftrue .SaffronGymGuyWinScript
-	writetext SaffronGymGuyText
+	iftrue .SaffronGymGuideWinScript
+	writetext SaffronGymGuideText
 	waitbutton
 	closetext
 	end
 
-.SaffronGymGuyWinScript:
-	writetext SaffronGymGuyWinText
+.SaffronGymGuideWinScript:
+	writetext SaffronGymGuideWinText
 	waitbutton
 	closetext
 	end
@@ -107,10 +107,10 @@ SaffronGymGuyScript:
 SaffronGymStatue:
 	checkflag ENGINE_MARSHBADGE
 	iftrue .Beaten
-	jumpstd gymstatue1
+	jumpstd GymStatue1Script
 .Beaten:
 	gettrainername STRING_BUFFER_4, SABRINA, SABRINA1
-	jumpstd gymstatue2
+	jumpstd GymStatue2Script
 
 SabrinaIntroText:
 	text "SABRINA: I knew"
@@ -264,7 +264,7 @@ PsychicJaredAfterBattleText:
 	cont "SABRINA."
 	done
 
-SaffronGymGuyText:
+SaffronGymGuideText:
 	text "Yo, CHAMP in"
 	line "making!"
 
@@ -283,7 +283,7 @@ SaffronGymGuyText:
 	para "Good luck!"
 	done
 
-SaffronGymGuyWinText:
+SaffronGymGuideWinText:
 	text "That was another"
 	line "fantastic battle!"
 	done
@@ -291,7 +291,7 @@ SaffronGymGuyWinText:
 SaffronGym_MapEvents:
 	db 0, 0 ; filler
 
-	db 32 ; warp events
+	def_warp_events
 	warp_event  8, 17, SAFFRON_CITY, 2
 	warp_event  9, 17, SAFFRON_CITY, 2
 	warp_event 11, 15, SAFFRON_GYM, 18
@@ -325,15 +325,15 @@ SaffronGym_MapEvents:
 	warp_event  1,  3, SAFFRON_GYM, 16
 	warp_event 11,  9, SAFFRON_GYM, 17
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 1 ; bg events
+	def_bg_events
 	bg_event  8, 15, BGEVENT_READ, SaffronGymStatue
 
-	db 6 ; object events
+	def_object_events
 	object_event  9,  8, SPRITE_SABRINA, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, SaffronGymSabrinaScript, -1
 	object_event 17, 16, SPRITE_GRANNY, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 3, TrainerMediumRebecca, -1
 	object_event  3, 16, SPRITE_YOUNGSTER, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 3, TrainerPsychicFranklin, -1
 	object_event  3,  4, SPRITE_GRANNY, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 2, TrainerMediumDoris, -1
 	object_event 17,  4, SPRITE_YOUNGSTER, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 2, TrainerPsychicJared, -1
-	object_event  9, 14, SPRITE_GYM_GUY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SaffronGymGuyScript, -1
+	object_event  9, 14, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SaffronGymGuideScript, -1

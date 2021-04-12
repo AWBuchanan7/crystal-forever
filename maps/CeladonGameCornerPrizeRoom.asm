@@ -5,14 +5,14 @@ CELADONGAMECORNERPRIZEROOM_PIKACHU_COINS  EQU 2222
 CELADONGAMECORNERPRIZEROOM_PORYGON_COINS  EQU 5555
 CELADONGAMECORNERPRIZEROOM_LARVITAR_COINS EQU 8888
 
-	const_def 2 ; object constants
+	object_const_def
 	const CELADONGAMECORNERPRIZEROOM_GENTLEMAN
 	const CELADONGAMECORNERPRIZEROOM_PHARMACIST
 
 CeladonGameCornerPrizeRoom_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 CeladonGameCornerPrizeRoomGentlemanScript:
 	jumptextfaceplayer CeladonGameCornerPrizeRoomGentlemanText
@@ -116,9 +116,9 @@ CeladonPrizeRoom_TMMenuHeader:
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 4 ; items
-	db "TM32    1500@"
-	db "TM29    3500@"
-	db "TM15    7500@"
+	db "TM32    {d:CELADONGAMECORNERPRIZEROOM_TM32_COINS}@"
+	db "TM29    {d:CELADONGAMECORNERPRIZEROOM_TM29_COINS}@"
+	db "TM15    {d:CELADONGAMECORNERPRIZEROOM_TM15_COINS}@"
 	db "CANCEL@"
 
 CeladonGameCornerPrizeRoomPokemonVendor:
@@ -202,9 +202,9 @@ CeladonGameCornerPrizeRoomPokemonVendor:
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 4 ; items
-	db "PIKACHU    2222@"
-	db "PORYGON    5555@"
-	db "LARVITAR   8888@"
+	db "PIKACHU    {d:CELADONGAMECORNERPRIZEROOM_PIKACHU_COINS}@"
+	db "PORYGON    {d:CELADONGAMECORNERPRIZEROOM_PORYGON_COINS}@"
+	db "LARVITAR   {d:CELADONGAMECORNERPRIZEROOM_LARVITAR_COINS}@"
 	db "CANCEL@"
 
 CeladonGameCornerPrizeRoomGentlemanText:
@@ -214,6 +214,11 @@ CeladonGameCornerPrizeRoomGentlemanText:
 	done
 
 CeladonGameCornerPrizeRoomPharmacistText:
+if DEF(_CRYSTAL_AU)
+	text "I don't want to"
+	line "lose my coins."
+	done
+else
 	text "Whew…"
 
 	para "I've got to stay"
@@ -223,6 +228,7 @@ CeladonGameCornerPrizeRoomPharmacistText:
 	line "cool, or I'll lose"
 	cont "all my money…"
 	done
+endc
 
 CeladonPrizeRoom_PrizeVendorIntroText:
 	text "Welcome!"
@@ -271,16 +277,16 @@ CeladonPrizeRoom_NoCoinCaseText:
 CeladonGameCornerPrizeRoom_MapEvents:
 	db 0, 0 ; filler
 
-	db 2 ; warp events
+	def_warp_events
 	warp_event  2,  5, CELADON_CITY, 7
 	warp_event  3,  5, CELADON_CITY, 7
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 2 ; bg events
+	def_bg_events
 	bg_event  2,  1, BGEVENT_READ, CeladonGameCornerPrizeRoomTMVendor
 	bg_event  4,  1, BGEVENT_READ, CeladonGameCornerPrizeRoomPokemonVendor
 
-	db 2 ; object events
+	def_object_events
 	object_event  0,  2, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerPrizeRoomGentlemanScript, -1
 	object_event  4,  4, SPRITE_PHARMACIST, SPRITEMOVEDATA_WALK_UP_DOWN, 0, 1, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerPrizeRoomPharmacistScript, -1

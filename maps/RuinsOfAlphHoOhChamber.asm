@@ -1,9 +1,9 @@
 RuinsOfAlphHoOhChamber_MapScripts:
-	db 2 ; scene scripts
+	def_scene_scripts
 	scene_script .CheckWall ; SCENE_DEFAULT
 	scene_script .DummyScene ; SCENE_FINISHED
 
-	db 1 ; callbacks
+	def_callbacks
 	callback MAPCALLBACK_TILES, .HiddenDoors
 
 .CheckWall:
@@ -26,12 +26,12 @@ RuinsOfAlphHoOhChamber_MapScripts:
 .WallOpen:
 	checkevent EVENT_SOLVED_HO_OH_PUZZLE
 	iffalse .FloorClosed
-	return
+	endcallback
 
 .FloorClosed:
 	changeblock 2, 2, $01 ; left floor
 	changeblock 4, 2, $02 ; right floor
-	return
+	endcallback
 
 .WallOpenScript:
 	pause 30
@@ -113,8 +113,7 @@ RuinsOfAlphHoOhChamberWallPatternLeftText:
 	line "on the walls…"
 	done
 
-RuinsOfAlphHoOhChamberUnownText:
-; unused
+RuinsOfAlphHoOhChamberUnownText: ; unreferenced
 	text "It's UNOWN text!"
 	done
 
@@ -145,16 +144,16 @@ RuinsOfAlphHoOhChamberDescriptionText:
 RuinsOfAlphHoOhChamber_MapEvents:
 	db 0, 0 ; filler
 
-	db 5 ; warp events
+	def_warp_events
 	warp_event  3,  9, RUINS_OF_ALPH_OUTSIDE, 1
 	warp_event  4,  9, RUINS_OF_ALPH_OUTSIDE, 1
 	warp_event  3,  3, RUINS_OF_ALPH_INNER_CHAMBER, 2
 	warp_event  4,  3, RUINS_OF_ALPH_INNER_CHAMBER, 3
 	warp_event  4,  0, RUINS_OF_ALPH_HO_OH_ITEM_ROOM, 1
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 6 ; bg events
+	def_bg_events
 	bg_event  2,  3, BGEVENT_READ, RuinsOfAlphHoOhChamberAncientReplica
 	bg_event  5,  3, BGEVENT_READ, RuinsOfAlphHoOhChamberAncientReplica
 	bg_event  3,  2, BGEVENT_UP, RuinsOfAlphHoOhChamberPuzzle
@@ -162,4 +161,4 @@ RuinsOfAlphHoOhChamber_MapEvents:
 	bg_event  3,  0, BGEVENT_UP, RuinsOfAlphHoOhChamberWallPatternLeft
 	bg_event  4,  0, BGEVENT_UP, RuinsOfAlphHoOhChamberWallPatternRight
 
-	db 0 ; object events
+	def_object_events

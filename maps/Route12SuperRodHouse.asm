@@ -1,10 +1,10 @@
-	const_def 2 ; object constants
+	object_const_def
 	const ROUTE12SUPERRODHOUSE_FISHING_GURU
 
 Route12SuperRodHouse_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 Route12SuperRodHouseFishingGuruScript:
 	faceplayer
@@ -15,7 +15,7 @@ Route12SuperRodHouseFishingGuruScript:
 	yesorno
 	iffalse .Refused
 	writetext GiveSuperRodText
-	buttonsound
+	promptbutton
 	verbosegiveitem SUPER_ROD
 	iffalse .NoRoom
 	setevent EVENT_GOT_SUPER_ROD
@@ -32,9 +32,8 @@ Route12SuperRodHouseFishingGuruScript:
 	closetext
 	end
 
-SuperRodHouseBookshelf:
-; unused
-	jumpstd picturebookshelf
+SuperRodHouseBookshelf: ; unreferenced
+	jumpstd PictureBookshelfScript
 
 OfferSuperRodText:
 	text "I'm the FISHING"
@@ -80,13 +79,13 @@ DontWantSuperRodText:
 Route12SuperRodHouse_MapEvents:
 	db 0, 0 ; filler
 
-	db 2 ; warp events
+	def_warp_events
 	warp_event  2,  7, ROUTE_12, 1
 	warp_event  3,  7, ROUTE_12, 1
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 0 ; bg events
+	def_bg_events
 
-	db 1 ; object events
+	def_object_events
 	object_event  5,  3, SPRITE_FISHING_GURU, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, Route12SuperRodHouseFishingGuruScript, -1

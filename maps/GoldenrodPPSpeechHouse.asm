@@ -1,11 +1,11 @@
-	const_def 2 ; object constants
+	object_const_def
 	const GOLDENRODPPSPEECHHOUSE_FISHER
 	const GOLDENRODPPSPEECHHOUSE_LASS
 
 GoldenrodPPSpeechHouse_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 GoldenrodPPSpeechHouseFisherScript:
 	jumptextfaceplayer GoldenrodPPSpeechHouseFisherText
@@ -14,13 +14,13 @@ GoldenrodPPSpeechHouseLassScript:
 	jumptextfaceplayer GoldenrodPPSpeechHouseLassText
 
 GoldenrodPPSpeechHouseBookshelf2:
-	jumpstd difficultbookshelf
+	jumpstd DifficultBookshelfScript
 
 GoldenrodPPSpeechHouseBookshelf1:
-	jumpstd magazinebookshelf
+	jumpstd MagazineBookshelfScript
 
 GoldenrodPPSpeechHouseRadio:
-	jumpstd radio2
+	jumpstd Radio2Script
 
 GoldenrodPPSpeechHouseFisherText:
 	text "Once while I was"
@@ -52,17 +52,17 @@ GoldenrodPPSpeechHouseLassText:
 GoldenrodPPSpeechHouse_MapEvents:
 	db 0, 0 ; filler
 
-	db 2 ; warp events
+	def_warp_events
 	warp_event  2,  7, GOLDENROD_CITY, 7
 	warp_event  3,  7, GOLDENROD_CITY, 7
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 3 ; bg events
+	def_bg_events
 	bg_event  0,  1, BGEVENT_READ, GoldenrodPPSpeechHouseBookshelf1
 	bg_event  1,  1, BGEVENT_READ, GoldenrodPPSpeechHouseBookshelf2
 	bg_event  7,  1, BGEVENT_READ, GoldenrodPPSpeechHouseRadio
 
-	db 2 ; object events
+	def_object_events
 	object_event  2,  4, SPRITE_FISHER, SPRITEMOVEDATA_WALK_UP_DOWN, 0, 1, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, GoldenrodPPSpeechHouseFisherScript, -1
 	object_event  5,  3, SPRITE_LASS, SPRITEMOVEDATA_STANDING_LEFT, 0, 1, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, GoldenrodPPSpeechHouseLassScript, -1

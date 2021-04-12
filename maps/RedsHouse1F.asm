@@ -1,11 +1,11 @@
-	const_def 2 ; object constants
+	object_const_def
 	const REDSHOUSE1F_REDS_MOM
 
 RedsHouse1F_MapScripts:
-	db 1 ; scene scripts
+	def_scene_scripts
 	scene_script .DummyScene
 
-	db 0 ; callbacks
+	def_callbacks
 
 .DummyScene:
 	end
@@ -30,7 +30,7 @@ RedsHouse1FTV:
 	jumptext RedsHouse1FTVText
 
 RedsHouse1FBookshelf:
-	jumpstd picturebookshelf
+	jumpstd PictureBookshelfScript
 
 RedsMomText1:
 	text "Hi!"
@@ -75,17 +75,17 @@ RedsHouse1FTVText:
 RedsHouse1F_MapEvents:
 	db 0, 0 ; filler
 
-	db 3 ; warp events
+	def_warp_events
 	warp_event  2,  7, PALLET_TOWN, 1
 	warp_event  3,  7, PALLET_TOWN, 1
 	warp_event  7,  0, REDS_HOUSE_2F, 1
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 3 ; bg events
+	def_bg_events
 	bg_event  0,  1, BGEVENT_READ, RedsHouse1FBookshelf
 	bg_event  1,  1, BGEVENT_READ, RedsHouse1FBookshelf
 	bg_event  2,  1, BGEVENT_READ, RedsHouse1FTV
 
-	db 1 ; object events
+	def_object_events
 	object_event  5,  3, SPRITE_REDS_MOM, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, RedsMom, -1

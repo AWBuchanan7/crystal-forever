@@ -8,17 +8,6 @@ ln: MACRO ; r, hi, lo
 	ld \1, ((\2) & $f) << 4 | ((\3) & $f)
 ENDM
 
-ldpixel: MACRO
-if _NARG >= 5
-	lb \1, \2 * 8 + \4, \3 * 8 + \5
-else
-	lb \1, \2 * 8, \3 * 8
-endc
-ENDM
-
-depixel EQUS "ldpixel de,"
-bcpixel EQUS "ldpixel bc,"
-
 ; Design patterns
 
 jumptable: MACRO
@@ -45,6 +34,7 @@ maskbits: MACRO
 ; 	maskbits 26
 ; 	cp 26
 ; 	jr nc, .loop
+	assert 0 < (\1) && (\1) <= $100, "bitmask must be 8-bit"
 x = 1
 rept 8
 if x + 1 < (\1)
@@ -62,7 +52,7 @@ calc_sine_wave: MACRO
 ; input: a = a signed 6-bit value
 ; output: a = d * sin(a * pi/32)
 	and %111111
-	cp  %100000
+	cp %100000
 	jr nc, .negative\@
 	call .apply\@
 	ld a, h

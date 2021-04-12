@@ -66,10 +66,8 @@ BattleCommand_Teleport:
 	srl b
 	srl b
 	cp b
-	; This does the wrong thing. What was
-	; probably intended was jr c, .failed
-	; The way this is made makes enemy use
-	; of Teleport always succeed if able
+	; This should be jr c, .failed
+	; As written, it makes enemy use of Teleport always succeed if able
 	jr nc, .run_away
 .run_away
 	call UpdateBattleMonInParty
@@ -77,7 +75,7 @@ BattleCommand_Teleport:
 	ld [wNumHits], a
 	inc a
 	ld [wForcedSwitch], a
-	ld [wKickCounter], a
+	ld [wBattleAnimParam], a
 	call SetBattleDraw
 	call BattleCommand_LowerSub
 	call LoadMoveAnim
@@ -86,4 +84,4 @@ BattleCommand_Teleport:
 	call SetBattleDraw
 
 	ld hl, FledFromBattleText
-	jp StdBattleTextBox
+	jp StdBattleTextbox

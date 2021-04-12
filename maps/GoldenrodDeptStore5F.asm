@@ -1,4 +1,4 @@
-	const_def 2 ; object constants
+	object_const_def
 	const GOLDENRODDEPTSTORE5F_CLERK
 	const GOLDENRODDEPTSTORE5F_LASS
 	const GOLDENRODDEPTSTORE5F_MIKE
@@ -7,20 +7,20 @@
 	const GOLDENRODDEPTSTORE5F_RECEPTIONIST
 
 GoldenrodDeptStore5F_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 1 ; callbacks
+	def_callbacks
 	callback MAPCALLBACK_OBJECTS, .CheckIfSunday
 
 .CheckIfSunday:
 	readvar VAR_WEEKDAY
 	ifequal SUNDAY, .yes
 	disappear GOLDENRODDEPTSTORE5F_RECEPTIONIST
-	return
+	endcallback
 
 .yes
 	appear GOLDENRODDEPTSTORE5F_RECEPTIONIST
-	return
+	endcallback
 
 GoldenrodDeptStore5FClerkScript:
 	faceplayer
@@ -64,15 +64,15 @@ GoldenrodDeptStore5FReceptionistScript:
 	checkflag ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN
 	iftrue .EventIsOver
 	special GetFirstPokemonHappiness
-	writetext UnknownText_0x56143
-	buttonsound
+	writetext GoldenrodDeptStore5FReceptionistOhYourMonDotDotDotText
+	promptbutton
 	ifgreater 150 - 1, .VeryHappy
 	ifgreater 50 - 1, .SomewhatHappy
 	sjump .NotVeryHappy
 
 .VeryHappy:
-	writetext UnknownText_0x5615a
-	buttonsound
+	writetext GoldenrodDeptStore5FReceptionistThisMoveShouldBePerfectText
+	promptbutton
 	verbosegiveitem TM_RETURN
 	iffalse .Done
 	setflag ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN
@@ -80,14 +80,14 @@ GoldenrodDeptStore5FReceptionistScript:
 	end
 
 .SomewhatHappy:
-	writetext UnknownText_0x561a6
+	writetext GoldenrodDeptStore5FReceptionistItsAdorableText
 	waitbutton
 	closetext
 	end
 
 .NotVeryHappy:
-	writetext UnknownText_0x561d8
-	buttonsound
+	writetext GoldenrodDeptStore5FReceptionistItLooksEvilHowAboutThisTMText
+	promptbutton
 	verbosegiveitem TM_FRUSTRATION
 	iffalse .Done
 	setflag ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN
@@ -95,7 +95,7 @@ GoldenrodDeptStore5FReceptionistScript:
 	end
 
 .EventIsOver:
-	writetext UnknownText_0x56202
+	writetext GoldenrodDeptStore5FReceptionistThereAreTMsPerfectForMonText
 	waitbutton
 .Done:
 	closetext
@@ -106,14 +106,14 @@ Carrie:
 	opentext
 	special GameboyCheck
 	ifnotequal GBCHECK_CGB, .NotGBC ; This is a dummy check from Gold/Silver
-	writetext UnknownText_0x56241
+	writetext GoldenrodDeptStore5FCarrieMysteryGiftExplanationText
 	waitbutton
 	closetext
 	special UnlockMysteryGift
 	end
 
 .NotGBC:
-	writetext UnknownText_0x56279
+	writetext GoldenrodDeptStore5FCarrieMysteryGiftRequiresGBCText
 	waitbutton
 	closetext
 	end
@@ -136,14 +136,14 @@ GoldenrodDeptStore5FDirectory:
 	jumptext GoldenrodDeptStore5FDirectoryText
 
 GoldenrodDeptStore5FElevatorButton:
-	jumpstd elevatorbutton
+	jumpstd ElevatorButtonScript
 
-UnknownText_0x56143:
+GoldenrodDeptStore5FReceptionistOhYourMonDotDotDotText:
 	text "Hello. Oh, your"
 	line "#MON…"
 	done
 
-UnknownText_0x5615a:
+GoldenrodDeptStore5FReceptionistThisMoveShouldBePerfectText:
 	text "It's very attached"
 	line "to you."
 
@@ -152,20 +152,20 @@ UnknownText_0x5615a:
 	cont "pair like you."
 	done
 
-UnknownText_0x561a6:
+GoldenrodDeptStore5FReceptionistItsAdorableText:
 	text "It's adorable!"
 
 	para "You should teach"
 	line "it good TM moves."
 	done
 
-UnknownText_0x561d8:
+GoldenrodDeptStore5FReceptionistItLooksEvilHowAboutThisTMText:
 	text "It looks evil. How"
 	line "about this TM for"
 	cont "it?"
 	done
 
-UnknownText_0x56202:
+GoldenrodDeptStore5FReceptionistThereAreTMsPerfectForMonText:
 	text "There are sure to"
 	line "be TMs that are"
 
@@ -173,7 +173,7 @@ UnknownText_0x56202:
 	line "your #MON."
 	done
 
-UnknownText_0x56241:
+GoldenrodDeptStore5FCarrieMysteryGiftExplanationText:
 	text "MYSTERY GIFT."
 
 	para "With just a"
@@ -181,7 +181,7 @@ UnknownText_0x56241:
 	cont "get a gift."
 	done
 
-UnknownText_0x56279:
+GoldenrodDeptStore5FCarrieMysteryGiftRequiresGBCText:
 	text "The MYSTERY GIFT"
 	line "option requires a"
 	cont "Game Boy Color."
@@ -218,18 +218,18 @@ GoldenrodDeptStore5FDirectoryText:
 GoldenrodDeptStore5F_MapEvents:
 	db 0, 0 ; filler
 
-	db 3 ; warp events
+	def_warp_events
 	warp_event 12,  0, GOLDENROD_DEPT_STORE_4F, 1
 	warp_event 15,  0, GOLDENROD_DEPT_STORE_6F, 1
 	warp_event  2,  0, GOLDENROD_DEPT_STORE_ELEVATOR, 1
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 2 ; bg events
+	def_bg_events
 	bg_event 14,  0, BGEVENT_READ, GoldenrodDeptStore5FDirectory
 	bg_event  3,  0, BGEVENT_READ, GoldenrodDeptStore5FElevatorButton
 
-	db 6 ; object events
+	def_object_events
 	object_event  8,  5, SPRITE_CLERK, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, GoldenrodDeptStore5FClerkScript, -1
 	object_event  3,  6, SPRITE_LASS, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, GoldenrodDeptStore5FLassScript, -1
 	object_event  6,  3, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Mike, -1

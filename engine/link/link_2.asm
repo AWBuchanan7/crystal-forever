@@ -10,7 +10,7 @@ LinkMonStatsScreen:
 	call ClearScreen
 	call ClearBGPalettes
 	call MaxVolume
-	farcall LoadTradeScreenBorder
+	farcall LoadTradeScreenBorderGFX
 	farcall Link_WaitBGMap
 	farcall InitTradeSpeciesList
 	farcall SetTradeRoomBGPals
@@ -31,7 +31,7 @@ LinkTextbox2:
 	pop hl
 	pop bc
 
-	ld de, wAttrMap - wTileMap
+	ld de, wAttrmap - wTilemap
 	add hl, de
 	inc b
 	inc b

@@ -58,7 +58,7 @@ CheckOwnMonAnywhere:
 	ld d, a
 	ld e, 0
 	ld hl, wPartyMon1Species
-	ld bc, wPartyMonOT
+	ld bc, wPartyMonOTs
 
 	; Run CheckOwnMon on each Pokémon in the party.
 .partymon
@@ -75,14 +75,14 @@ CheckOwnMonAnywhere:
 
 	; Run CheckOwnMon on each Pokémon in the PC.
 	ld a, BANK(sBoxCount)
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [sBoxCount]
 	and a
 	jr z, .boxes
 
 	ld d, a
 	ld hl, sBoxMon1Species
-	ld bc, sBoxMonOT
+	ld bc, sBoxMonOTs
 .openboxmon
 	call CheckOwnMon
 	jr nc, .loop
@@ -113,13 +113,13 @@ CheckOwnMonAnywhere:
 	jr z, .loopbox
 
 	; Load the box.
-	ld hl, BoxAddressTable1
+	ld hl, SearchBoxAddressTable
 	ld b, 0
 	add hl, bc
 	add hl, bc
 	add hl, bc
 	ld a, [hli]
-	call GetSRAMBank
+	call OpenSRAM
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
@@ -138,7 +138,7 @@ CheckOwnMonAnywhere:
 	ld e, l
 	pop hl
 	push de
-	ld de, sBoxMonOT - sBoxCount
+	ld de, sBoxMonOTs - sBoxCount
 	add hl, de
 	ld b, h
 	ld c, l
@@ -216,7 +216,7 @@ CheckOwnMon:
 
 	ld hl, wPlayerName
 
-rept NAME_LENGTH_JAPANESE + -2 ; should be PLAYER_NAME_LENGTH + -2
+rept NAME_LENGTH_JAPANESE - 2 ; should be PLAYER_NAME_LENGTH - 2
 	ld a, [de]
 	cp [hl]
 	jr nz, .notfound
@@ -244,7 +244,8 @@ endr
 	scf
 	ret
 
-BoxAddressTable1:
+SearchBoxAddressTable:
+	table_width 3, SearchBoxAddressTable
 	dba sBox1
 	dba sBox2
 	dba sBox3
@@ -259,6 +260,7 @@ BoxAddressTable1:
 	dba sBox12
 	dba sBox13
 	dba sBox14
+	assert_table_length NUM_BOXES
 
 UpdateOTPointer:
 	push hl

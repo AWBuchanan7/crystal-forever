@@ -1,4 +1,4 @@
-	const_def 2 ; object constants
+	object_const_def
 	const AZALEATOWN_AZALEA_ROCKET1
 	const AZALEATOWN_GRAMPS
 	const AZALEATOWN_TEACHER
@@ -13,12 +13,12 @@
 	const AZALEATOWN_KURT_OUTSIDE
 
 AzaleaTown_MapScripts:
-	db 3 ; scene scripts
+	def_scene_scripts
 	scene_script .DummyScene0 ; SCENE_AZALEATOWN_NOTHING
 	scene_script .DummyScene1 ; SCENE_AZALEATOWN_RIVAL_BATTLE
 	scene_script .DummyScene2 ; SCENE_AZALEATOWN_KURT_RETURNS_GS_BALL
 
-	db 1 ; callbacks
+	def_callbacks
 	callback MAPCALLBACK_NEWMAP, .Flypoint
 
 .DummyScene0:
@@ -32,7 +32,7 @@ AzaleaTown_MapScripts:
 
 .Flypoint:
 	setflag ENGINE_FLYPOINT_AZALEA
-	return
+	endcallback
 
 AzaleaTownRivalBattleScene1:
 	moveobject AZALEATOWN_SILVER, 11, 11
@@ -143,8 +143,7 @@ AzaleaTownSlowpokeScript:
 	closetext
 	end
 
-UnusedWoosterScript:
-; unused
+UnusedWoosterScript: ; unreferenced
 	faceplayer
 	opentext
 	writetext WoosterText
@@ -157,10 +156,10 @@ AzaleaTownCelebiScene:
 	applymovement PLAYER, AzaleaTownPlayerLeavesKurtsHouseMovement
 	opentext
 	writetext AzaleaTownKurtText1
-	buttonsound
+	promptbutton
 	turnobject AZALEATOWN_KURT_OUTSIDE, RIGHT
 	writetext AzaleaTownKurtText2
-	buttonsound
+	promptbutton
 	writetext AzaleaTownKurtText3
 	waitbutton
 	verbosegiveitem GS_BALL
@@ -200,10 +199,10 @@ AzaleaTownIlextForestSign:
 	jumptext AzaleaTownIlexForestSignText
 
 AzaleaTownPokecenterSign:
-	jumpstd pokecentersign
+	jumpstd PokecenterSignScript
 
 AzaleaTownMartSign:
-	jumpstd martsign
+	jumpstd MartSignScript
 
 WhiteApricornTree:
 	fruittree FRUITTREE_AZALEA_TOWN
@@ -456,7 +455,7 @@ AzaleaTownIlexForestSignText:
 AzaleaTown_MapEvents:
 	db 0, 0 ; filler
 
-	db 8 ; warp events
+	def_warp_events
 	warp_event 15,  9, AZALEA_POKECENTER_1F, 1
 	warp_event 21, 13, CHARCOAL_KILN, 1
 	warp_event 21,  5, AZALEA_MART, 2
@@ -466,12 +465,12 @@ AzaleaTown_MapEvents:
 	warp_event  2, 10, ILEX_FOREST_AZALEA_GATE, 3
 	warp_event  2, 11, ILEX_FOREST_AZALEA_GATE, 4
 
-	db 3 ; coord events
+	def_coord_events
 	coord_event  5, 10, SCENE_AZALEATOWN_RIVAL_BATTLE, AzaleaTownRivalBattleScene1
 	coord_event  5, 11, SCENE_AZALEATOWN_RIVAL_BATTLE, AzaleaTownRivalBattleScene2
 	coord_event  9,  6, SCENE_AZALEATOWN_KURT_RETURNS_GS_BALL, AzaleaTownCelebiScene
 
-	db 9 ; bg events
+	def_bg_events
 	bg_event 19,  9, BGEVENT_READ, AzaleaTownSign
 	bg_event 10,  9, BGEVENT_READ, KurtsHouseSign
 	bg_event 14, 15, BGEVENT_READ, AzaleaGymSign
@@ -482,7 +481,7 @@ AzaleaTown_MapEvents:
 	bg_event  3,  9, BGEVENT_READ, AzaleaTownIlextForestSign
 	bg_event 31,  6, BGEVENT_ITEM, AzaleaTownHiddenFullHeal
 
-	db 12 ; object events
+	def_object_events
 	object_event 31,  9, SPRITE_AZALEA_ROCKET, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, AzaleaTownRocket1Script, EVENT_AZALEA_TOWN_SLOWPOKETAIL_ROCKET
 	object_event 21,  9, SPRITE_GRAMPS, SPRITEMOVEDATA_WANDER, 1, 2, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, AzaleaTownGrampsScript, -1
 	object_event 15, 13, SPRITE_TEACHER, SPRITEMOVEDATA_WALK_UP_DOWN, 0, 2, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, AzaleaTownTeacherScript, -1

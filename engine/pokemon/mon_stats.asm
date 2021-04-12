@@ -174,7 +174,7 @@ GetGender:
 	ld a, [wMonType]
 	cp BOXMON
 	ld a, BANK(sBox)
-	call z, GetSRAMBank
+	call z, OpenSRAM
 
 ; Attack DV
 	ld a, [hli]
@@ -242,9 +242,9 @@ ListMovePP:
 	sub c
 	ld b, a
 	push hl
-	ld a, [wBuffer1]
+	ld a, [wListMovesLineSpacing]
 	ld e, a
-	ld d, $0
+	ld d, 0
 	ld a, $3e ; P
 	call .load_loop
 	ld a, b
@@ -299,7 +299,7 @@ ListMovePP:
 	lb bc, 1, 2
 	call PrintNum
 	pop hl
-	ld a, [wBuffer1]
+	ld a, [wListMovesLineSpacing]
 	ld e, a
 	ld d, 0
 	add hl, de
@@ -323,11 +323,15 @@ ListMovePP:
 	jr nz, .load_loop
 	ret
 
-Unreferenced_Function50cd0:
+BrokenPlacePPUnits: ; unreferenced
+; Probably would have these parameters:
+; hl = starting coordinate
+; de = SCREEN_WIDTH or SCREEN_WIDTH * 2
+; c = the number of moves (1-4)
 .loop
-	ld [hl], $32
+	ld [hl], $32 ; typo for P?
 	inc hl
-	ld [hl], $3e
+	ld [hl], $3e ; P
 	dec hl
 	add hl, de
 	dec c
@@ -339,7 +343,7 @@ Unused_PlaceEnemyHPLevel:
 	push hl
 	ld hl, wPartyMonNicknames
 	ld a, [wCurPartyMon]
-	call GetNick
+	call GetNickname
 	pop hl
 	call PlaceString
 	call CopyMonToTempMon
@@ -350,7 +354,7 @@ Unused_PlaceEnemyHPLevel:
 	push hl
 	ld bc, -12
 	add hl, bc
-	ld b, $0
+	ld b, 0
 	call DrawEnemyHP
 	pop hl
 	ld bc, 5
@@ -363,6 +367,7 @@ Unused_PlaceEnemyHPLevel:
 	ret
 
 PlaceStatusString:
+; Return nz if the status is not OK
 	push de
 	inc de
 	inc de
@@ -377,7 +382,7 @@ PlaceStatusString:
 	ld de, FntString
 	call CopyStatusString
 	pop de
-	ld a, $1
+	ld a, TRUE
 	and a
 	ret
 
@@ -416,7 +421,7 @@ PlaceNonFaintStatus:
 
 .place
 	call CopyStatusString
-	ld a, $1
+	ld a, TRUE
 	and a
 
 .no_status
@@ -430,9 +435,9 @@ FrzString: db "FRZ@"
 ParString: db "PAR@"
 
 ListMoves:
-; List moves at hl, spaced every [wBuffer1] tiles.
+; List moves at hl, spaced every [wListMovesLineSpacing] tiles.
 	ld de, wListMoves_MoveIndicesBuffer
-	ld b, $0
+	ld b, 0
 .moves_loop
 	ld a, [de]
 	inc de
@@ -443,7 +448,7 @@ ListMoves:
 	push hl
 	ld [wCurSpecies], a
 	ld a, MOVE_NAME
-	ld [wNamedObjectTypeBuffer], a
+	ld [wNamedObjectType], a
 	call GetName
 	ld de, wStringBuffer1
 	pop hl
@@ -455,7 +460,7 @@ ListMoves:
 	inc b
 	pop hl
 	push bc
-	ld a, [wBuffer1]
+	ld a, [wListMovesLineSpacing]
 	ld c, a
 	ld b, 0
 	add hl, bc
@@ -471,7 +476,7 @@ ListMoves:
 .nonmove_loop
 	push af
 	ld [hl], "-"
-	ld a, [wBuffer1]
+	ld a, [wListMovesLineSpacing]
 	ld c, a
 	ld b, 0
 	add hl, bc

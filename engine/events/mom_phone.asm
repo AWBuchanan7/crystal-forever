@@ -39,13 +39,13 @@ MomTriesToBuySomething::
 .ok
 	ld a, PHONE_MOM
 	ld [wCurCaller], a
-	ld bc, wEngineBuffer2
-	ld hl, 0
+	ld bc, wCallerContact
+	ld hl, PHONE_CONTACT_TRAINER_CLASS
 	add hl, bc
-	ld [hl], 0
+	ld [hl], TRAINER_NONE
 	inc hl
-	ld [hl], 1
-	ld hl, wPhoneScriptPointer - wEngineBuffer2
+	ld [hl], PHONE_MOM
+	ld hl, PHONE_CONTACT_SCRIPT2_BANK
 	add hl, bc
 	ld a, BANK(Mom_GetScriptPointer)
 	ld [hli], a
@@ -146,8 +146,8 @@ Mom_GiveItemOrDoll:
 	ld a, [hl]
 	ld [wCurItem], a
 	ld a, 1
-	ld [wItemQuantityChangeBuffer], a
-	ld hl, wPCItems
+	ld [wItemQuantityChange], a
+	ld hl, wNumPCItems
 	call ReceiveItem
 	ret
 
@@ -163,17 +163,17 @@ Mom_GetScriptPointer:
 	ret
 
 .ItemScript:
-	writetext _MomText_HiHowAreYou
-	writetext _MomText_FoundAnItem
-	writetext _MomText_BoughtWithYourMoney
-	writetext _MomText_ItsInPC
+	writetext MomHiHowAreYouText
+	writetext MomFoundAnItemText
+	writetext MomBoughtWithYourMoneyText
+	writetext MomItsInPCText
 	end
 
 .DollScript:
-	writetext _MomText_HiHowAreYou
-	writetext _MomText_FoundADoll
-	writetext _MomText_BoughtWithYourMoney
-	writetext _MomText_ItsInRoom
+	writetext MomHiHowAreYouText
+	writetext MomFoundADollText
+	writetext MomBoughtWithYourMoneyText
+	writetext MomItsInYourRoomText
 	end
 
 GetItemFromMom:
@@ -204,41 +204,36 @@ endr
 
 INCLUDE "data/items/mom_phone.asm"
 
-	db 0, 0, 0 ; unused
-
-_MomText_HiHowAreYou:
-	; Hi,  ! How are you?
-	text_far UnknownText_0x1bc615
+MomHiHowAreYouText:
+	text_far _MomHiHowAreYouText
 	text_end
 
-_MomText_FoundAnItem:
-	; I found a useful item shopping, so
-	text_far UnknownText_0x1bc62a
+MomFoundAnItemText:
+	text_far _MomFoundAnItemText
 	text_end
 
-_MomText_BoughtWithYourMoney:
-	; I bought it with your money. Sorry!
-	text_far UnknownText_0x1bc64e
+MomBoughtWithYourMoneyText:
+	text_far _MomBoughtWithYourMoneyText
 	text_end
 
-_MomText_ItsInPC:
-	; It's in your PC. You'll like it!
-	text_far UnknownText_0x1bc673
+MomItsInPCText:
+	text_far _MomItsInPCText
 	text_end
 
-_MomText_FoundADoll:
-	; While shopping today, I saw this adorable doll, so
-	text_far UnknownText_0x1bc693
+MomFoundADollText:
+	text_far _MomFoundADollText
 	text_end
 
-_MomText_ItsInRoom:
-	; It's in your room. You'll love it!
-	text_far UnknownText_0x1bc6c7
+MomItsInYourRoomText:
+	text_far _MomItsInYourRoomText
 	text_end
 
-	db 0 ; unused
+
+DummyPredef3A_DummyData: ; unreferenced
+	db 0
 
 DummyPredef3A:
 	ret
 
-	ret ; unused
+DummyPredef3A_DummyFunction: ; unreferenced
+	ret

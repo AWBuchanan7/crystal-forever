@@ -1,4 +1,4 @@
-	const_def 2 ; object constants
+	object_const_def
 	const ROUTE2_BUG_CATCHER1
 	const ROUTE2_BUG_CATCHER2
 	const ROUTE2_BUG_CATCHER3
@@ -9,9 +9,9 @@
 	const ROUTE2_FRUIT_TREE
 
 Route2_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 TrainerBugCatcherRob:
 	trainer BUG_CATCHER, ROB, EVENT_BEAT_BUG_CATCHER_ROB, BugCatcherRobSeenText, BugCatcherRobBeatenText, 0, .Script
@@ -147,7 +147,7 @@ Route2DiglettsCaveSignText:
 Route2_MapEvents:
 	db 0, 0 ; filler
 
-	db 7 ; warp events
+	def_warp_events
 	warp_event 15, 15, ROUTE_2_NUGGET_HOUSE, 1
 	warp_event 15, 31, ROUTE_2_GATE, 3
 	warp_event 16, 27, ROUTE_2_GATE, 1
@@ -156,9 +156,9 @@ Route2_MapEvents:
 	warp_event 3, 9, VIRIDIAN_FOREST, 1
 	warp_event 3, 33, VIRIDIAN_FOREST, 2
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 6 ; bg events
+	def_bg_events
 	bg_event  7, 51, BGEVENT_READ, Route2Sign
 	bg_event 11,  9, BGEVENT_READ, Route2DiglettsCaveSign
 	bg_event  7, 23, BGEVENT_ITEM, Route2HiddenMaxEther
@@ -166,7 +166,7 @@ Route2_MapEvents:
 	bg_event  4, 27, BGEVENT_ITEM, Route2HiddenFullRestore
 	bg_event 11, 30, BGEVENT_ITEM, Route2HiddenRevive
 
-	db 8 ; object events
+	def_object_events
 	object_event 10, 45, SPRITE_BUG_CATCHER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 5, TrainerBugCatcherRob, -1
 	object_event  6,  4, SPRITE_BUG_CATCHER, SPRITEMOVEDATA_SPINCLOCKWISE, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 3, TrainerBugCatcherEd, -1
 	object_event  0, 40, SPRITE_BUG_CATCHER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 3, TrainerBugCatcherDoug, -1

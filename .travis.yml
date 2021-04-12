@@ -5,8 +5,8 @@ os:
 install:
   - |-
     ( cd
-        git clone --depth=1 https://github.com/rednex/rgbds
-        sudo make -C rgbds CFLAGS=-O2 install
+        git clone -b v0.4.2 --depth=1 https://github.com/gbdev/rgbds
+        sudo make -C rgbds install
         rm -rf rgbds
     )
 before_script:
@@ -19,10 +19,13 @@ before_script:
       fi;
     }
 script:
-  - make -j2 compare
+  - make DEBUG=1 -j2 compare
   - check_status
 after_success:
   - |-
     if [ "$TRAVIS_BRANCH" = master -a "$TRAVIS_PULL_REQUEST" = false -a "$TRAVIS_OS_NAME" = linux ]; then
-        ./.travis/webhook.sh
+      ./.travis/webhook.sh
+      if [ -n "$GITHUB_API_KEY" ]; then
+        ./.travis/upload_symbols.sh
+      fi
     fi

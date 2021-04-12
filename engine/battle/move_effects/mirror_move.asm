@@ -18,13 +18,13 @@ BattleCommand_MirrorMove:
 	call AnimateFailedMove
 
 	ld hl, MirrorMoveFailedText
-	call StdBattleTextBox
+	call StdBattleTextbox
 	jp EndMoveEffect
 
 .use
 	ld a, b
 	ld [hl], a
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 
 	push af
 	ld a, BATTLE_VARS_MOVE_ANIM
@@ -40,11 +40,11 @@ BattleCommand_MirrorMove:
 	call CheckUserIsCharging
 	jr nz, .done
 
-	ld a, [wKickCounter]
+	ld a, [wBattleAnimParam]
 	push af
 	call BattleCommand_LowerSub
 	pop af
-	ld [wKickCounter], a
+	ld [wBattleAnimParam], a
 
 .done
 	call BattleCommand_MoveDelay

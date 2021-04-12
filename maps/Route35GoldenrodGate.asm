@@ -1,12 +1,12 @@
-	const_def 2 ; object constants
-	const ROUTE35GOLDENRODGATE_OFFICER
+	object_const_def
+	const ROUTE35GOLDENRODGATE_RANDY
 	const ROUTE35GOLDENRODGATE_POKEFAN_F
 	const ROUTE35GOLDENRODGATE_FISHER
 
 Route35GoldenrodGate_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 RandyScript:
 	faceplayer
@@ -17,46 +17,46 @@ RandyScript:
 	iftrue .questcomplete
 	checkevent EVENT_GOT_KENYA
 	iftrue .alreadyhavekenya
-	writetext UnknownText_0x69ddd
+	writetext Route35GoldenrodGateRandyAskTakeThisMonToMyFriendText
 	yesorno
 	iffalse .refused
-	writetext UnknownText_0x69e48
-	buttonsound
+	writetext Route35GoldenrodGateRandyThanksText
+	promptbutton
 	waitsfx
 	readvar VAR_PARTYCOUNT
 	ifequal PARTY_LENGTH, .partyfull
-	writetext UnknownText_0x69eb8
+	writetext Route35GoldenrodGatePlayerReceivedAMonWithMailText
 	playsound SFX_KEY_ITEM
 	waitsfx
 	givepoke SPEAROW, 10, NO_ITEM, TRUE, GiftSpearowName, GiftSpearowOTName
 	givepokemail GiftSpearowMail
 	setevent EVENT_GOT_KENYA
 .alreadyhavekenya
-	writetext UnknownText_0x69ed6
+	writetext Route35GoldenrodGateRandyWeirdTreeBlockingRoadText
 	waitbutton
 	closetext
 	end
 
 .partyfull
-	writetext UnknownText_0x69f56
+	writetext Route35GoldenrodGateRandyCantCarryAnotherMonText
 	waitbutton
 	closetext
 	end
 
 .refused
-	writetext UnknownText_0x69f74
+	writetext Route35GoldenrodGateRandyOhNeverMindThenText
 	waitbutton
 	closetext
 	end
 
 .questcomplete
-	writetext UnknownText_0x69f8b
-	buttonsound
+	writetext Route35GoldenrodGateRandySomethingForYourTroubleText
+	promptbutton
 	verbosegiveitem HP_UP
 	iffalse .bagfull
 	setevent EVENT_GOT_HP_UP_FROM_RANDY
 .gothpup
-	writetext UnknownText_0x69fd9
+	writetext Route35GoldenrodGateRandyMyPalWasSnoozingRightText
 	waitbutton
 .bagfull
 	closetext
@@ -73,7 +73,7 @@ GiftSpearowName:
 GiftSpearowOTName:
 	db "RANDY@"
 
-	db 0 ; filler
+	db 0 ; unused
 
 Route35GoldenrodGatePokefanFScript:
 	faceplayer
@@ -94,7 +94,7 @@ Route35GoldenrodGatePokefanFScript:
 Route35GoldenrodGateFisherScript:
 	jumptextfaceplayer Route35GoldenrodGateFisherText
 
-UnknownText_0x69ddd:
+Route35GoldenrodGateRandyAskTakeThisMonToMyFriendText:
 	text "Excuse me, kid!"
 	line "Can you do a guy"
 	cont "a favor?"
@@ -106,7 +106,7 @@ UnknownText_0x69ddd:
 	para "He's on ROUTE 31."
 	done
 
-UnknownText_0x69e48:
+Route35GoldenrodGateRandyThanksText:
 	text "You will? Perfect!"
 	line "Thanks, kid!"
 
@@ -118,12 +118,12 @@ UnknownText_0x69e48:
 	line "him right away!"
 	done
 
-UnknownText_0x69eb8:
+Route35GoldenrodGatePlayerReceivedAMonWithMailText:
 	text "<PLAYER> received a"
 	line "#MON with MAIL."
 	done
 
-UnknownText_0x69ed6:
+Route35GoldenrodGateRandyWeirdTreeBlockingRoadText:
 	text "You can read it,"
 	line "but don't lose it!"
 	cont "ROUTE 31!"
@@ -136,17 +136,17 @@ UnknownText_0x69ed6:
 	line "been cleared?"
 	done
 
-UnknownText_0x69f56:
+Route35GoldenrodGateRandyCantCarryAnotherMonText:
 	text "You can't carry"
 	line "another #MON…"
 	done
 
-UnknownText_0x69f74:
+Route35GoldenrodGateRandyOhNeverMindThenText:
 	text "Oh… Never mind,"
 	line "then…"
 	done
 
-UnknownText_0x69f8b:
+Route35GoldenrodGateRandySomethingForYourTroubleText:
 	text "Thanks, kid! You"
 	line "made the delivery"
 	cont "for me!"
@@ -155,7 +155,7 @@ UnknownText_0x69f8b:
 	line "for your trouble!"
 	done
 
-UnknownText_0x69fd9:
+Route35GoldenrodGateRandyMyPalWasSnoozingRightText:
 	text "My pal was snooz-"
 	line "ing, right? Heh,"
 	cont "what'd I say?"
@@ -198,17 +198,17 @@ Route35GoldenrodGateFisherText:
 Route35GoldenrodGate_MapEvents:
 	db 0, 0 ; filler
 
-	db 4 ; warp events
+	def_warp_events
 	warp_event  4,  0, ROUTE_35, 1
 	warp_event  5,  0, ROUTE_35, 2
 	warp_event  4,  7, GOLDENROD_CITY, 12
 	warp_event  5,  7, GOLDENROD_CITY, 12
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 0 ; bg events
+	def_bg_events
 
-	db 3 ; object events
+	def_object_events
 	object_event  0,  4, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, RandyScript, -1
 	object_event  6,  4, SPRITE_POKEFAN_F, SPRITEMOVEDATA_WALK_UP_DOWN, 0, 1, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, Route35GoldenrodGatePokefanFScript, -1
 	object_event  3,  2, SPRITE_FISHER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, Route35GoldenrodGateFisherScript, -1

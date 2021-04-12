@@ -1,4 +1,4 @@
-	const_def 2 ; object constants
+	object_const_def
 	const FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_CAPTAIN
 	const FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_GENTLEMAN
 	const FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_TWIN1
@@ -12,11 +12,11 @@
 	const FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_SUPER_NERD2
 
 FastShipCabins_SE_SSE_CaptainsCabin_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
-.UnreferencedDummyScene:
+.DummyScene: ; unreferenced
 	end
 
 SSAquaCaptain:
@@ -49,7 +49,7 @@ SSAquaGranddaughterBefore:
 	special FadeBlackQuickly
 	special ReloadSpritesNoPalettes
 	disappear FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_TWIN2
-	applymovement PLAYER, MovementData_0x76004
+	applymovement PLAYER, SSAquaCaptainsCabinWarpsToGrandpasCabinMovement
 	moveobject FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_TWIN1, 3, 19
 	appear FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_TWIN1
 	turnobject PLAYER, UP
@@ -57,7 +57,7 @@ SSAquaGranddaughterBefore:
 	special FadeInQuickly
 	turnobject FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_GENTLEMAN, DOWN
 	showemote EMOTE_SHOCK, FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_GENTLEMAN, 15
-	applymovement FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_TWIN1, MovementData_0x7600c
+	applymovement FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_TWIN1, SSAquaGranddaughterEntersCabinMovement
 	turnobject FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_GENTLEMAN, RIGHT
 	checkflag ENGINE_PLAYER_IS_FEMALE
 	iftrue .PlayerIsFemale
@@ -74,10 +74,10 @@ SSAquaGranddaughterBefore:
 	closetext
 .cont:
 	turnobject FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_TWIN2, DOWN
-	applymovement FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_GENTLEMAN, MovementData_0x76010
+	applymovement FASTSHIPCABINS_SE_SSE_CAPTAINSCABIN_GENTLEMAN, SSAquaGrandpaApproachesPlayerMovement
 	opentext
 	writetext SSAquaEntertainedGranddaughterText
-	buttonsound
+	promptbutton
 	setevent EVENT_VERMILION_PORT_SAILOR_AT_GANGWAY
 	setmapscene FAST_SHIP_1F, SCENE_DEFAULT
 	sjump SSAquaMetalCoatAndDocking
@@ -97,7 +97,7 @@ SSAquaGrandpa:
 
 SSAquaMetalCoatAndDocking:
 	writetext SSAquaGrandpaHaveThisText
-	buttonsound
+	promptbutton
 	verbosegiveitem METAL_COAT
 	iffalse .NoRoom
 	setevent EVENT_GOT_METAL_COAT_FROM_GRANDPA_ON_SS_AQUA
@@ -116,7 +116,7 @@ SSAquaMetalCoatAndDocking:
 
 SSAquaFoundGranddaughter:
 	writetext SSAquaGrandpaHaveThisText
-	buttonsound
+	promptbutton
 	verbosegiveitem METAL_COAT
 	iffalse .NoRoom
 	setevent EVENT_GOT_METAL_COAT_FROM_GRANDPA_ON_SS_AQUA
@@ -216,9 +216,9 @@ TrainerSupernerdShawn:
 	end
 
 FastShipCaptainsCabinTrashcan:
-	jumpstd trashcan
+	jumpstd TrashCanScript
 
-MovementData_0x76004:
+SSAquaCaptainsCabinWarpsToGrandpasCabinMovement:
 	big_step RIGHT
 	big_step UP
 	big_step UP
@@ -228,13 +228,13 @@ MovementData_0x76004:
 	big_step UP
 	step_end
 
-MovementData_0x7600c:
+SSAquaGranddaughterEntersCabinMovement:
 	step UP
 	step UP
 	turn_head LEFT
 	step_end
 
-MovementData_0x76010:
+SSAquaGrandpaApproachesPlayerMovement:
 	step DOWN
 	step_end
 
@@ -463,7 +463,7 @@ SSAquaHasArrivedVermilionText:
 FastShipCabins_SE_SSE_CaptainsCabin_MapEvents:
 	db 0, 0 ; filler
 
-	db 6 ; warp events
+	def_warp_events
 	warp_event  2,  7, FAST_SHIP_1F, 8
 	warp_event  3,  7, FAST_SHIP_1F, 8
 	warp_event  2, 19, FAST_SHIP_1F, 9
@@ -471,12 +471,12 @@ FastShipCabins_SE_SSE_CaptainsCabin_MapEvents:
 	warp_event  2, 33, FAST_SHIP_1F, 10
 	warp_event  3, 33, FAST_SHIP_1F, 10
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 1 ; bg events
+	def_bg_events
 	bg_event  4, 25, BGEVENT_READ, FastShipCaptainsCabinTrashcan
 
-	db 11 ; object events
+	def_object_events
 	object_event  3, 25, SPRITE_CAPTAIN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SSAquaCaptain, -1
 	object_event  2, 17, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SSAquaGrandpa, EVENT_FAST_SHIP_CABINS_SE_SSE_GENTLEMAN
 	object_event  3, 17, SPRITE_TWIN, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, SSAquaGranddaughterAfter, EVENT_FAST_SHIP_CABINS_SE_SSE_CAPTAINS_CABIN_TWIN_1

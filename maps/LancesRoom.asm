@@ -1,14 +1,14 @@
-	const_def 2 ; object constants
+	object_const_def
 	const LANCESROOM_LANCE
 	const LANCESROOM_MARY
 	const LANCESROOM_OAK
 
 LancesRoom_MapScripts:
-	db 2 ; scene scripts
+	def_scene_scripts
 	scene_script .LockDoor ; SCENE_DEFAULT
 	scene_script .DummyScene ; SCENE_LANCESROOM_APPROACH_LANCE
 
-	db 1 ; callbacks
+	def_callbacks
 	callback MAPCALLBACK_TILES, .LancesRoomDoors
 
 .LockDoor:
@@ -27,7 +27,7 @@ LancesRoom_MapScripts:
 	iffalse .KeepExitClosed
 	changeblock 4, 0, $0b ; open door
 .KeepExitClosed:
-	return
+	endcallback
 
 .LancesDoorLocksBehindYou:
 	applymovement PLAYER, LancesRoom_EnterMovement
@@ -80,7 +80,7 @@ LancesRoomLanceScript:
 	appear LANCESROOM_MARY
 	applymovement LANCESROOM_MARY, LancesRoomMovementData_MaryRushesIn
 	opentext
-	writetext UnknownText_0x1811dd
+	writetext LancesRoomMaryOhNoOakText
 	waitbutton
 	closetext
 	appear LANCESROOM_OAK
@@ -91,19 +91,19 @@ LancesRoomLanceScript:
 	turnobject LANCESROOM_OAK, UP
 	turnobject LANCESROOM_LANCE, LEFT
 	opentext
-	writetext UnknownText_0x18121b
+	writetext LancesRoomOakCongratulationsText
 	waitbutton
 	closetext
 	applymovement LANCESROOM_MARY, LancesRoomMovementData_MaryInterviewChampion
 	turnobject PLAYER, LEFT
 	opentext
-	writetext UnknownText_0x18134b
+	writetext LancesRoomMaryInterviewText
 	waitbutton
 	closetext
 	applymovement LANCESROOM_LANCE, LancesRoomMovementData_LancePositionsSelfToGuidePlayerAway
 	turnobject PLAYER, UP
 	opentext
-	writetext UnknownText_0x18137b
+	writetext LancesRoomNoisyText
 	waitbutton
 	closetext
 	follow LANCESROOM_LANCE, PLAYER
@@ -119,7 +119,7 @@ LancesRoomLanceScript:
 	applymovement LANCESROOM_MARY, LancesRoomMovementData_MaryTriesToFollow
 	showemote EMOTE_SHOCK, LANCESROOM_MARY, 15
 	opentext
-	writetext UnknownText_0x1813c5
+	writetext LancesRoomMaryNoInterviewText
 	pause 30
 	closetext
 	applymovement LANCESROOM_MARY, LancesRoomMovementData_MaryRunsBackAndForth
@@ -273,7 +273,7 @@ LanceBattleAfterText:
 	line "your #MON."
 	done
 
-UnknownText_0x1811dd:
+LancesRoomMaryOhNoOakText:
 	text "MARY: Oh, no!"
 	line "It's all over!"
 
@@ -281,7 +281,7 @@ UnknownText_0x1811dd:
 	line "weren't so slow…"
 	done
 
-UnknownText_0x18121b:
+LancesRoomOakCongratulationsText:
 	text "PROF.OAK: Ah,"
 	line "<PLAY_G>!"
 
@@ -314,13 +314,13 @@ UnknownText_0x18121b:
 	line "<PLAY_G>!"
 	done
 
-UnknownText_0x18134b:
+LancesRoomMaryInterviewText:
 	text "MARY: Let's inter-"
 	line "view the brand new"
 	cont "CHAMPION!"
 	done
 
-UnknownText_0x18137b:
+LancesRoomNoisyText:
 	text "LANCE: This is"
 	line "getting to be a"
 	cont "bit too noisy…"
@@ -329,7 +329,7 @@ UnknownText_0x18137b:
 	line "come with me?"
 	done
 
-UnknownText_0x1813c5:
+LancesRoomMaryNoInterviewText:
 	text "MARY: Oh, wait!"
 	line "We haven't done"
 	cont "the interview!"
@@ -338,19 +338,19 @@ UnknownText_0x1813c5:
 LancesRoom_MapEvents:
 	db 0, 0 ; filler
 
-	db 4 ; warp events
+	def_warp_events
 	warp_event  4, 23, KARENS_ROOM, 3
 	warp_event  5, 23, KARENS_ROOM, 4
 	warp_event  4,  1, HALL_OF_FAME, 1
 	warp_event  5,  1, HALL_OF_FAME, 2
 
-	db 2 ; coord events
+	def_coord_events
 	coord_event  4,  5, SCENE_LANCESROOM_APPROACH_LANCE, Script_ApproachLanceFromLeft
 	coord_event  5,  5, SCENE_LANCESROOM_APPROACH_LANCE, Script_ApproachLanceFromRight
 
-	db 0 ; bg events
+	def_bg_events
 
-	db 3 ; object events
+	def_object_events
 	object_event  5,  3, SPRITE_LANCE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, LancesRoomLanceScript, -1
 	object_event  4,  7, SPRITE_TEACHER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_LANCES_ROOM_OAK_AND_MARY
 	object_event  4,  7, SPRITE_OAK, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_LANCES_ROOM_OAK_AND_MARY

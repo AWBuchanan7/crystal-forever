@@ -1,15 +1,15 @@
-	const_def 2 ; object constants
+	object_const_def
 	const CERULEANPOKECENTER1F_NURSE
 	const CERULEANPOKECENTER1F_SUPER_NERD
-	const CERULEANPOKECENTER1F_GYM_GUY
+	const CERULEANPOKECENTER1F_GYM_GUIDE
 
 CeruleanPokecenter1F_MapScripts:
-	db 0 ; scene scripts
+	def_scene_scripts
 
-	db 0 ; callbacks
+	def_callbacks
 
 CeruleanPokecenter1FNurseScript:
-	jumpstd pokecenternurse
+	jumpstd PokecenterNurseScript
 
 CeruleanPokecenter1FSuperNerdScript:
 	special Mobile_DummyReturnFalse
@@ -19,8 +19,8 @@ CeruleanPokecenter1FSuperNerdScript:
 .mobile
 	jumptextfaceplayer CeruleanPokecenter1FSuperNerdText_Mobile
 
-CeruleanPokecenter1FGymGuyScript:
-	jumptextfaceplayer CeruleanPokecenter1FGymGuyText
+CeruleanPokecenter1FGymGuideScript:
+	jumptextfaceplayer CeruleanPokecenter1FGymGuideText
 
 CeruleanPokecenter1FSuperNerdText:
 	text "For battles, I'd"
@@ -46,7 +46,7 @@ CeruleanPokecenter1FSuperNerdText_Mobile:
 	cont "nerve wracking."
 	done
 
-CeruleanPokecenter1FGymGuyText:
+CeruleanPokecenter1FGymGuideText:
 	text "The MAGNET TRAIN"
 	line "travels at over"
 
@@ -63,16 +63,16 @@ CeruleanPokecenter1FGymGuyText:
 CeruleanPokecenter1F_MapEvents:
 	db 0, 0 ; filler
 
-	db 3 ; warp events
+	def_warp_events
 	warp_event  3,  7, CERULEAN_CITY, 4
 	warp_event  4,  7, CERULEAN_CITY, 4
 	warp_event  0,  7, POKECENTER_2F, 1
 
-	db 0 ; coord events
+	def_coord_events
 
-	db 0 ; bg events
+	def_bg_events
 
-	db 3 ; object events
+	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanPokecenter1FNurseScript, -1
 	object_event  8,  4, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanPokecenter1FSuperNerdScript, -1
-	object_event  1,  5, SPRITE_GYM_GUY, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeruleanPokecenter1FGymGuyScript, -1
+	object_event  1,  5, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeruleanPokecenter1FGymGuideScript, -1
