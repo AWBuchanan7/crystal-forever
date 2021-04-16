@@ -136,28 +136,27 @@ CheckUpdatePlayerSprite:
 	cp INDOOR
 	jr z, .no_biking
 	jr z, .no_skateboarding
+	jr nz, .nope
 	cp ENVIRONMENT_5
 	jr z, .no_biking
 	jr z, .no_skateboarding
+	jr nz, .nope
 	cp DUNGEON
 	jr z, .no_biking
 	jr z, .no_skateboarding
+	jr nz, .nope
 	jr .nope
 .no_biking
 	ld a, [wPlayerState]
 	cp PLAYER_BIKE
-	jr nz, .nope
 .no_skateboarding
 	ld a, [wPlayerState]
 	cp PLAYER_SKATEBOARD
-	jr nz, .nope
 .surfing
 	ld a, PLAYER_NORMAL
 	ld [wPlayerState], a
 	scf
 	ret
-
-
 .nope
 	and a
 	ret
